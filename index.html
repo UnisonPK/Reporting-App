@@ -2664,23 +2664,80 @@ function executiveCountProjectTower(rows){
   return map;
 }
 
+function normalizeExecutiveActivityName(name){
+  let s=String(name||"").trim().toLowerCase();
+
+  // Standardize obvious historical naming variations for executive aggregation.
+  // Examples: Brickwork / Brick Work / Brick Works / brick work -> brickwork
+  s=s.replace(/&/g,"and");
+  s=s.replace(/[^a-z0-9]+/g,"");
+  if(s.endsWith("works"))s=s.slice(0,-1);
+
+  return s||"unspecified";
+}
+
+function formatExecutiveDateRange(dateList){
+  const valid=dateList
+    .filter(d=>d&&!isNaN(d.getTime()))
+    .sort((a,b)=>a-b);
+
+  if(!valid.length)return "-";
+
+  const first=valid[0];
+  const last=valid[valid.length-1];
+
+  const fmt=d=>d.toLocaleDateString(undefined,{
+    day:"2-digit",
+    month:"short",
+    year:"numeric"
+  });
+
+  return first.toDateString()===last.toDateString()
+    ? fmt(first)
+    : fmt(first)+" – "+fmt(last);
+}
+
 function renderExecutiveQuantities(rows){
   const el=document.getElementById("execQuantities");
+  const grouped={};
 
-  const items=rows
-    .map(r=>{
-      const qty=Number(r.todayQuantity);
-      return {
-        timestamp:r.timestamp||"",
-        timestampMs:r.timestampMs||0,
-        activity:String(r.activity||"Unspecified").trim()||"Unspecified",
-        tower:String(r.tower||"-").trim()||"-",
-        unit:String(r.unit||"").trim(),
-        qty:qty
+  rows.forEach(r=>{
+    const qty=Number(r.todayQuantity);
+    if(isNaN(qty)||qty===0)return;
+
+    const activity=String(r.activity||"Unspecified").trim()||"Unspecified";
+    const tower=String(r.tower||"-").trim()||"-";
+    const unit=String(r.unit||"").trim();
+    const activityKey=normalizeExecutiveActivityName(activity);
+    const key=[activityKey,tower.toLowerCase(),unit.toLowerCase()].join("|||");
+
+    if(!grouped[key]){
+      grouped[key]={
+        activity:activity,
+        tower:tower,
+        unit:unit,
+        qty:0,
+        dates:[]
       };
-    })
-    .filter(x=>!isNaN(x.qty)&&x.qty!==0)
-    .sort((a,b)=>(b.timestampMs||0)-(a.timestampMs||0));
+    }
+
+    grouped[key].qty+=qty;
+
+    const d=parseReportDate(r.timestamp);
+    if(d&&!isNaN(d.getTime()))grouped[key].dates.push(d);
+
+    // Prefer the cleanest/shortest display label among equivalent historical names.
+    if(activity.length<grouped[key].activity.length){
+      grouped[key].activity=activity;
+    }
+  });
+
+  const items=Object.values(grouped).sort((a,b)=>{
+    const da=a.dates.length?Math.max(...a.dates.map(d=>d.getTime())):0;
+    const db=b.dates.length?Math.max(...b.dates.map(d=>d.getTime())):0;
+    if(db!==da)return db-da;
+    return (a.activity+" "+a.tower).localeCompare(b.activity+" "+b.tower);
+  });
 
   if(!items.length){
     el.innerHTML='<div class="empty-state">No quantity data in selected period.</div>';
@@ -2688,18 +2745,12 @@ function renderExecutiveQuantities(rows){
   }
 
   let h='<div style="overflow-x:auto"><table class="exec-quantity-table"><thead><tr>'+
-    '<th>Reporting Date</th><th>Activity</th><th>Tower</th><th>Reported Qty</th>'+
+    '<th>Reporting Date(s)</th><th>Activity</th><th>Tower</th><th>Reported Qty</th>'+
     '</tr></thead><tbody>';
 
   items.forEach(x=>{
-    let reportDate=x.timestamp;
-    const d=parseReportDate(x.timestamp);
-    if(d&&!isNaN(d.getTime())){
-      reportDate=d.toLocaleDateString(undefined,{day:"2-digit",month:"short",year:"numeric"});
-    }
-
     h+='<tr>'+
-      '<td>'+escapeHtml(reportDate||"-")+'</td>'+
+      '<td>'+escapeHtml(formatExecutiveDateRange(x.dates))+'</td>'+
       '<td>'+escapeHtml(x.activity)+'</td>'+
       '<td>'+escapeHtml(x.tower)+'</td>'+
       '<td>'+escapeHtml(String(x.qty))+(x.unit?' '+escapeHtml(x.unit):'')+'</td>'+
