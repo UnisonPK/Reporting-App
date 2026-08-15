@@ -1,6 +1,6 @@
 {
-  "name": "LCRG / OLC Reporting App",
-  "short_name": "LCRG OLC",
+  "name": "Reporting App",
+  "short_name": "Reporting App",
   "description": "Site Daily Activity Reporting System",
   "start_url": "./",
   "scope": "./",
