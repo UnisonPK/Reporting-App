@@ -731,9 +731,30 @@ label{color:#344054;font-size:13px;margin-top:14px}
   .admin-reset-request button{width:100%}
 }
 
+
+.menu-card{position:relative}
+.menu-notification-badge{position:absolute;right:12px;top:10px;z-index:4;min-width:25px;height:25px;padding:0 7px;border-radius:999px;background:#dc2626;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 9px rgba(220,38,38,.24)}
+.menu-notification-badge.draft-badge{background:#2563eb;min-width:auto;padding:0 9px}
+.site-utility-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid #e2e8f0;background:#f8fafc;border-radius:12px;padding:10px 12px;margin-bottom:14px}
+.site-utility-actions{display:flex;gap:7px;flex-wrap:wrap}
+.site-utility-btn{border:0;border-radius:8px;background:#0b3f88;color:#fff;padding:9px 11px;font-weight:800;font-size:12px;cursor:pointer}
+.site-utility-btn.secondary{background:#e8f0fe;color:#0b3f88}
+.site-utility-btn.danger-lite{background:#fee2e2;color:#991b1b}
+.site-utility-btn:disabled{opacity:.55;cursor:not-allowed}
+.site-utility-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;color:#64748b;text-align:right}
+.network-status{display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:999px;font-weight:800}
+.network-status.online{background:#dcfce7;color:#166534}
+.network-status.offline{background:#fee2e2;color:#991b1b}
+.draft-restore-notice{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid #bfdbfe;background:#eff6ff;border-radius:11px;padding:10px 12px;margin-bottom:14px;color:#1e3a8a;font-size:12px}
+.draft-restore-notice b{display:block;margin-bottom:2px}.draft-restore-notice span{color:#475569}
+.draft-restore-notice button{border:0;background:#fff;color:#991b1b;border-radius:7px;padding:7px 9px;font-weight:800;cursor:pointer;white-space:nowrap}
+.gps-capture-row{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #eef2f7;margin-top:14px;padding-top:12px}
+.gps-title{font-size:12px;font-weight:800;color:#334155}.gps-status{font-size:11px;color:#64748b;margin-top:2px}
+@media(max-width:700px){.site-utility-bar{align-items:flex-start;flex-direction:column}.site-utility-status{text-align:left}.draft-restore-notice{align-items:flex-start;flex-direction:column}.draft-restore-notice button{width:100%}.gps-capture-row{align-items:flex-start;flex-direction:column}.gps-capture-row .site-utility-btn{width:100%}}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
-<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div id="dashboardManagementAttention" class="dashboard-management-attention" style="display:none"><div class="dashboard-attention-head"><div><b>🚨 Management Attention</b><span>Today's constraints, holds and rectification items</span></div><button onclick="openDailySummary()">View Daily Summary</button></div><div id="dashboardAttentionList" class="dashboard-attention-list"><div class="summary-empty">Loading...</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
+<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div id="dashboardManagementAttention" class="dashboard-management-attention" style="display:none"><div class="dashboard-attention-head"><div><b>🚨 Management Attention</b><span>Today's constraints, holds and rectification items</span></div><button onclick="openDailySummary()">View Daily Summary</button></div><div id="dashboardAttentionList" class="dashboard-attention-list"><div class="summary-empty">Loading...</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><span id="draftNotificationBadge" class="menu-notification-badge draft-badge" style="display:none">Draft</span><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><span id="inspectionNotificationBadge" class="menu-notification-badge" style="display:none">0</span><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><span id="adminNotificationBadge" class="menu-notification-badge" style="display:none">0</span><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
 
 
 
@@ -1509,6 +1530,23 @@ label{color:#344054;font-size:13px;margin-top:14px}
         <div class="single-form-status">ONE-PAGE FORM</div>
       </div>
 
+      <div class="site-utility-bar">
+        <div class="site-utility-actions">
+          <button type="button" class="site-utility-btn" onclick="copyLastActivity()">⧉ Copy Last Activity</button>
+          <button type="button" class="site-utility-btn secondary" onclick="saveActivityDraft(true)">💾 Save Draft</button>
+          <button type="button" class="site-utility-btn danger-lite" onclick="clearActivityDraft(true)">Clear Draft</button>
+        </div>
+        <div class="site-utility-status">
+          <span id="networkStatusBadge" class="network-status online">● Online</span>
+          <span id="draftStatusText">Auto-save ready</span>
+        </div>
+      </div>
+
+      <div id="draftRestoreNotice" class="draft-restore-notice" style="display:none">
+        <div><b>Saved draft restored.</b><span>Photo files cannot be restored by the browser; please select photos again before submission.</span></div>
+        <button type="button" onclick="clearActivityDraft(true)">Discard Draft</button>
+      </div>
+
       <section class="activity-section" id="sectionLocation">
         <div class="activity-section-head">
           <div class="section-number">1</div>
@@ -1522,6 +1560,17 @@ label{color:#344054;font-size:13px;margin-top:14px}
           <div><label>Apartment / Room No. *</label><input id="apartment"></div>
           <div><label>Specific Location *</label><input id="specificLocation"></div>
         </div>
+        <div class="gps-capture-row">
+          <div>
+            <div class="gps-title">Optional Site Location & Timestamp</div>
+            <div id="gpsStatus" class="gps-status">Not captured. Submission time is recorded automatically.</div>
+          </div>
+          <button type="button" id="captureGpsButton" class="site-utility-btn secondary" onclick="captureSiteLocation()">📍 Capture GPS</button>
+        </div>
+        <input id="siteLatitude" type="hidden">
+        <input id="siteLongitude" type="hidden">
+        <input id="siteGpsAccuracy" type="hidden">
+        <input id="siteLocationCapturedAt" type="hidden">
       </section>
 
       <section class="activity-section" id="sectionWork">
@@ -1583,7 +1632,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
       <section class="activity-section" id="sectionPhotos">
         <div class="activity-section-head">
           <div class="section-number">6</div>
-          <div><div class="activity-section-title">📷 Photo Evidence</div><div class="activity-section-subtitle">Photo requirements adapt to work and inspection status</div></div>
+          <div><div class="activity-section-title">📷 Photo Evidence</div><div class="activity-section-subtitle">Photo requirements adapt to work and inspection status • images are compressed before upload</div></div>
         </div>
         <div class="form-grid">
           <div>
@@ -1816,6 +1865,8 @@ function loadDashboardStats(){
       const n=(rows||[]).length;
       document.getElementById("dashPending").innerText=n;
       document.getElementById("dashInspectionCardCount").innerText=n;
+      const nb=document.getElementById("inspectionNotificationBadge");
+      if(nb){nb.innerText=n;nb.style.display=n?"flex":"none";}
       inspectionDone=true;finish();
     })
     .withFailureHandler(function(){
@@ -1824,9 +1875,107 @@ function loadDashboardStats(){
       hadError=true;inspectionDone=true;finish();
     })
     .getPendingInspectionsForUser(loggedInUser.userId,loggedInUser.username,loggedInUser.role);
+
+  updateDashboardDraftBadge();
+  const adminBadge=document.getElementById("adminNotificationBadge");
+  if(adminBadge)adminBadge.style.display="none";
+  if(hasAdministrationAccess()){
+    google.script.run
+      .withSuccessHandler(function(data){
+        const n=((data&&data.passwordResetRequests)||[]).filter(r=>String(r.status||"").toLowerCase()==="pending").length;
+        if(adminBadge){adminBadge.innerText=n;adminBadge.style.display=n?"flex":"none";}
+      })
+      .withFailureHandler(function(){if(adminBadge)adminBadge.style.display="none";})
+      .getAdministrationData(loggedInUser.userId,loggedInUser.username);
+  }
 }
 
 function resetSelect(id,t){document.getElementById(id).innerHTML='<option value="">'+t+'</option>'}
+
+const ACTIVITY_DRAFT_KEY="LCRG_OLC_ACTIVITY_DRAFT_V1";
+let draftAutosaveTimer=null,draftAutosaveBound=false;
+
+function updateNetworkStatus(){
+  const el=document.getElementById("networkStatusBadge");
+  if(el){const online=navigator.onLine;el.className="network-status "+(online?"online":"offline");el.innerText=online?"● Online":"● Offline — draft stays on this device";}
+}
+window.addEventListener("online",updateNetworkStatus);window.addEventListener("offline",updateNetworkStatus);
+
+function activityDraftFieldIds(){return ["project","tower","floor","locationType","apartment","specificLocation","trade","subTrade","activity","contractor","quantity","unit","workStatus","startDate","plannedCompletionDate","actualCompletionDate","todayQuantity","cumulativeQuantity","inspectionRequired","inspectionStatus","inspectionDate","inspector","inspectionRemarks","housekeepingStatus","housekeepingRemarks","supervisorRemarks","issueConstraint","actionRequired","workFrontAvailable","materialAvailable","drawingApprovalAvailable","delayCategory","siteLatitude","siteLongitude","siteGpsAccuracy","siteLocationCapturedAt"];}
+function getStoredActivityDraft(){try{const raw=localStorage.getItem(ACTIVITY_DRAFT_KEY);return raw?JSON.parse(raw):null}catch(e){return null}}
+function updateDashboardDraftBadge(){const badge=document.getElementById("draftNotificationBadge");if(!badge)return;const d=getStoredActivityDraft();const own=d&&loggedInUser&&String(d.userId||"")===String(loggedInUser.userId||"");badge.style.display=own?"flex":"none";}
+function saveActivityDraft(showMessage){
+  if(!loggedInUser)return;
+  const data={savedAt:new Date().toISOString(),userId:loggedInUser.userId,values:{}};
+  activityDraftFieldIds().forEach(id=>{const el=document.getElementById(id);if(el)data.values[id]=el.value;});
+  localStorage.setItem(ACTIVITY_DRAFT_KEY,JSON.stringify(data));
+  const status=document.getElementById("draftStatusText");if(status)status.innerText="Draft saved "+new Date(data.savedAt).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+  updateDashboardDraftBadge();
+  if(showMessage){const m=document.getElementById("activityMessage");if(m){m.className="success-box";m.innerText="Draft saved on this device.";}}
+}
+function clearActivityDraft(showMessage){
+  localStorage.removeItem(ACTIVITY_DRAFT_KEY);
+  const notice=document.getElementById("draftRestoreNotice");if(notice)notice.style.display="none";
+  const status=document.getElementById("draftStatusText");if(status)status.innerText="Auto-save ready";
+  updateDashboardDraftBadge();
+  if(showMessage){const m=document.getElementById("activityMessage");if(m){m.className="message";m.innerText="Saved draft cleared.";}}
+}
+function setupActivityDraftAutosave(){
+  updateNetworkStatus();
+  if(draftAutosaveBound)return;
+  draftAutosaveBound=true;
+  document.getElementById("activityPage").addEventListener("input",e=>{if(e.target.type!=="file"){clearTimeout(draftAutosaveTimer);draftAutosaveTimer=setTimeout(()=>saveActivityDraft(false),700);}});
+  document.getElementById("activityPage").addEventListener("change",e=>{if(e.target.type!=="file"){clearTimeout(draftAutosaveTimer);draftAutosaveTimer=setTimeout(()=>saveActivityDraft(false),700);}});
+}
+async function restoreActivityDraft(){
+  const draft=getStoredActivityDraft();if(!draft||!loggedInUser||String(draft.userId||"")!==String(loggedInUser.userId||""))return;
+  const v=draft.values||{};
+  if(v.project){document.getElementById("project").value=v.project;updateTowers();}
+  if(v.tower){document.getElementById("tower").value=v.tower;updateFloors();}
+  if(v.floor)document.getElementById("floor").value=v.floor;
+  if(v.trade){document.getElementById("trade").value=v.trade;updateSubTrades();}
+  if(v.subTrade){
+    document.getElementById("subTrade").value=v.subTrade;
+    await new Promise(resolve=>google.script.run.withSuccessHandler(list=>{resetSelect("activity","Select Activity");(list||[]).forEach(x=>addOption(document.getElementById("activity"),x));if(!(list||[]).length)addOption(document.getElementById("activity"),"Other / Not Listed");resolve();}).withFailureHandler(()=>resolve()).getActivitiesForSelection(v.trade,v.subTrade));
+  }
+  activityDraftFieldIds().forEach(id=>{if(["project","tower","floor","trade","subTrade","activity"].includes(id))return;const el=document.getElementById(id);if(el&&v[id]!==undefined)el.value=v[id];});
+  if(v.activity)document.getElementById("activity").value=v.activity;
+  updateProgressRequirements();updateInspectionRequirements();updatePhotoRequirements();updateGpsStatusFromFields();
+  const notice=document.getElementById("draftRestoreNotice");if(notice)notice.style.display="flex";
+  const status=document.getElementById("draftStatusText");if(status&&draft.savedAt)status.innerText="Restored draft from "+new Date(draft.savedAt).toLocaleString();
+}
+function copyLastActivity(){
+  const m=document.getElementById("activityMessage");
+  if(m){m.className="message";m.innerText="Loading your last submitted activity...";}
+  google.script.run.withSuccessHandler(async rows=>{
+    const r=(rows||[])[0];if(!r){if(m)m.innerText="No previous activity is available to copy.";return;}
+    document.getElementById("project").value=r.project||"";updateTowers();
+    document.getElementById("tower").value=r.tower||"";updateFloors();
+    document.getElementById("floor").value=r.floor||"";
+    document.getElementById("locationType").value=r.locationType||"";document.getElementById("apartment").value=r.apartment||"";document.getElementById("specificLocation").value=r.specificLocation||"";
+    document.getElementById("trade").value=r.trade||"";updateSubTrades();document.getElementById("subTrade").value=r.subTrade||"";
+    await new Promise(resolve=>google.script.run.withSuccessHandler(list=>{resetSelect("activity","Select Activity");(list||[]).forEach(x=>addOption(document.getElementById("activity"),x));if(!(list||[]).length)addOption(document.getElementById("activity"),"Other / Not Listed");resolve();}).withFailureHandler(()=>resolve()).getActivitiesForSelection(r.trade||"",r.subTrade||""));
+    document.getElementById("activity").value=r.activity||"";document.getElementById("contractor").value=r.contractor||"";document.getElementById("quantity").value=r.quantity||"";document.getElementById("unit").value=r.unit||"";
+    document.getElementById("startDate").value=isoDateFromReportDate(r.startDate);document.getElementById("plannedCompletionDate").value=isoDateFromReportDate(r.plannedCompletionDate);
+    ["workStatus","actualCompletionDate","todayQuantity","cumulativeQuantity","inspectionRequired","inspectionStatus","inspectionDate","inspector","inspectionRemarks","housekeepingStatus","housekeepingRemarks","supervisorRemarks","issueConstraint","actionRequired","workFrontAvailable","materialAvailable","drawingApprovalAvailable","delayCategory"].forEach(id=>document.getElementById(id).value="");
+    ["beforePhoto","progressPhotos","completionPhoto","inspectionPhoto"].forEach(id=>document.getElementById(id).value="");["beforePreview","progressPreview","completionPreview","inspectionPreview"].forEach(clearPreview);
+    updateProgressRequirements();updateInspectionRequirements();updatePhotoRequirements();saveActivityDraft(false);
+    if(m){m.className="success-box";m.innerText="Previous activity copied. Update Floor / Location and today's reporting details before submission.";}
+    document.getElementById("sectionLocation").scrollIntoView({behavior:"smooth",block:"start"});
+  }).withFailureHandler(e=>{if(m){m.className="message";m.innerText="Unable to copy previous activity: "+e.message;}}).getReportsForUser(loggedInUser.userId,loggedInUser.username,loggedInUser.role);
+}
+function captureSiteLocation(){
+  const status=document.getElementById("gpsStatus"),btn=document.getElementById("captureGpsButton");
+  if(!navigator.geolocation){status.innerText="GPS/location is not supported by this browser.";return;}
+  btn.disabled=true;status.innerText="Capturing site location...";
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const c=pos.coords;document.getElementById("siteLatitude").value=Number(c.latitude).toFixed(6);document.getElementById("siteLongitude").value=Number(c.longitude).toFixed(6);document.getElementById("siteGpsAccuracy").value=Math.round(c.accuracy||0);document.getElementById("siteLocationCapturedAt").value=new Date(pos.timestamp||Date.now()).toISOString();btn.disabled=false;updateGpsStatusFromFields();saveActivityDraft(false);
+  },err=>{btn.disabled=false;status.innerText="Location not captured: "+(err.message||"permission denied / unavailable")+". You can submit without GPS.";},{enableHighAccuracy:true,timeout:12000,maximumAge:30000});
+}
+function updateGpsStatusFromFields(){
+  const lat=value("siteLatitude"),lng=value("siteLongitude"),acc=value("siteGpsAccuracy"),stamp=value("siteLocationCapturedAt"),status=document.getElementById("gpsStatus");if(!status)return;
+  status.innerText=lat&&lng?"Captured: "+lat+", "+lng+(acc?" (±"+acc+" m)":"")+(stamp?" • "+new Date(stamp).toLocaleString():""):"Not captured. Submission time is recorded automatically.";
+}
 function openActivityForm(){
   hideAppPages();
   document.getElementById("activityPage").style.display="block";
@@ -1838,6 +1987,8 @@ function openActivityForm(){
     .withSuccessHandler(function(d){
       masterData=d;
       loadMasterDropdowns();
+      setupActivityDraftAutosave();
+      restoreActivityDraft();
     })
     .withFailureHandler(function(e){
       alert("Unable to load Project / Tower / Floor master data: "+e.message);
@@ -2057,15 +2208,52 @@ function validateActivityForm(){
 function validateCurrentStep(){return validateActivityForm()}
 function nextStep(){return false}
 function previousStep(){return false}
-function collectFormData(){return {supervisorName:loggedInUser.supervisorName,userId:loggedInUser.userId,username:loggedInUser.username,project:value("project"),tower:value("tower"),floor:value("floor"),locationType:value("locationType"),apartment:value("apartment"),specificLocation:value("specificLocation"),trade:value("trade"),subTrade:value("subTrade"),activity:value("activity"),contractor:value("contractor"),quantity:value("quantity"),unit:value("unit"),workStatus:value("workStatus"),startDate:value("startDate"),plannedCompletionDate:value("plannedCompletionDate"),actualCompletionDate:value("actualCompletionDate"),todayQuantity:value("todayQuantity"),cumulativeQuantity:value("cumulativeQuantity"),inspectionRequired:value("inspectionRequired"),inspectionStatus:value("inspectionStatus"),inspectionDate:value("inspectionDate"),inspector:value("inspector"),inspectionRemarks:value("inspectionRemarks"),housekeepingStatus:value("housekeepingStatus"),housekeepingRemarks:value("housekeepingRemarks"),supervisorRemarks:value("supervisorRemarks"),issueConstraint:value("issueConstraint"),actionRequired:value("actionRequired"),workFrontAvailable:value("workFrontAvailable"),materialAvailable:value("materialAvailable"),drawingApprovalAvailable:value("drawingApprovalAvailable"),delayCategory:value("delayCategory"),beforePhoto:"",progressPhotos:"",completionPhoto:"",inspectionPhoto:""}}
+function collectFormData(){return {supervisorName:loggedInUser.supervisorName,userId:loggedInUser.userId,username:loggedInUser.username,project:value("project"),tower:value("tower"),floor:value("floor"),locationType:value("locationType"),apartment:value("apartment"),specificLocation:value("specificLocation"),trade:value("trade"),subTrade:value("subTrade"),activity:value("activity"),contractor:value("contractor"),quantity:value("quantity"),unit:value("unit"),workStatus:value("workStatus"),startDate:value("startDate"),plannedCompletionDate:value("plannedCompletionDate"),actualCompletionDate:value("actualCompletionDate"),todayQuantity:value("todayQuantity"),cumulativeQuantity:value("cumulativeQuantity"),inspectionRequired:value("inspectionRequired"),inspectionStatus:value("inspectionStatus"),inspectionDate:value("inspectionDate"),inspector:value("inspector"),inspectionRemarks:value("inspectionRemarks"),housekeepingStatus:value("housekeepingStatus"),housekeepingRemarks:value("housekeepingRemarks"),supervisorRemarks:value("supervisorRemarks"),issueConstraint:value("issueConstraint"),actionRequired:value("actionRequired"),workFrontAvailable:value("workFrontAvailable"),materialAvailable:value("materialAvailable"),drawingApprovalAvailable:value("drawingApprovalAvailable"),delayCategory:value("delayCategory"),siteLatitude:value("siteLatitude"),siteLongitude:value("siteLongitude"),siteGpsAccuracy:value("siteGpsAccuracy"),siteLocationCapturedAt:value("siteLocationCapturedAt"),beforePhoto:"",progressPhotos:"",completionPhoto:"",inspectionPhoto:""}}
 
 function clearPreview(id){document.getElementById(id).innerHTML=""}
 function previewSinglePhoto(input,previewId){clearPreview(previewId);if(!input.files||!input.files[0])return;let img=document.createElement("img");img.className="photo-preview";img.src=URL.createObjectURL(input.files[0]);document.getElementById(previewId).appendChild(img)}
 function previewMultiplePhotos(input,previewId){clearPreview(previewId);Array.from(input.files||[]).forEach(f=>{let img=document.createElement("img");img.className="photo-preview";img.src=URL.createObjectURL(f);document.getElementById(previewId).appendChild(img)})}
-function fileToBase64(file){return new Promise((resolve,reject)=>{if(!file)return resolve(null);let r=new FileReader();r.onload=e=>resolve({base64:e.target.result.split(",")[1],mimeType:file.type,name:file.name});r.onerror=reject;r.readAsDataURL(file)})}
-async function collectPhotoData(){let a=[];for(const f of Array.from(document.getElementById("progressPhotos").files||[]))a.push(await fileToBase64(f));return {beforePhoto:await fileToBase64(document.getElementById("beforePhoto").files[0]),progressPhotos:a,completionPhoto:await fileToBase64(document.getElementById("completionPhoto").files[0]),inspectionPhoto:await fileToBase64(document.getElementById("inspectionPhoto").files[0])}}
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    if(!file)return reject(new Error("Required photo missing."));
+    const r=new FileReader();
+    r.onload=e=>resolve({base64:e.target.result.split(",")[1],mimeType:file.type,name:file.name});
+    r.onerror=reject;
+    r.readAsDataURL(file);
+  });
+}
+function compressImageFile(file,maxDimension=1600,quality=.78){
+  return new Promise((resolve,reject)=>{
+    if(!file)return reject(new Error("Required photo missing."));
+    if(!String(file.type||"").startsWith("image/")){fileToBase64(file).then(resolve).catch(reject);return;}
+    const img=new Image(),url=URL.createObjectURL(file);
+    img.onload=function(){
+      let w=img.naturalWidth||img.width,h=img.naturalHeight||img.height;
+      const scale=Math.min(1,maxDimension/Math.max(w,h)),cw=Math.max(1,Math.round(w*scale)),ch=Math.max(1,Math.round(h*scale));
+      const canvas=document.createElement("canvas");canvas.width=cw;canvas.height=ch;
+      canvas.getContext("2d").drawImage(img,0,0,cw,ch);
+      canvas.toBlob(function(blob){
+        URL.revokeObjectURL(url);
+        if(!blob){fileToBase64(file).then(resolve).catch(reject);return;}
+        const reader=new FileReader();
+        reader.onload=e=>resolve({base64:e.target.result.split(",")[1],mimeType:"image/jpeg",name:(file.name.replace(/\.[^.]+$/,"")||"photo")+"_compressed.jpg"});
+        reader.onerror=reject;
+        reader.readAsDataURL(blob);
+      },"image/jpeg",quality);
+    };
+    img.onerror=function(){URL.revokeObjectURL(url);fileToBase64(file).then(resolve).catch(reject);};
+    img.src=url;
+  });
+}
+async function collectPhotoData(){
+  const progress=[];
+  for(const f of Array.from(document.getElementById("progressPhotos").files||[]))progress.push(await compressImageFile(f));
+  const opt=async id=>{const f=document.getElementById(id).files[0];return f?await compressImageFile(f):null;};
+  return {beforePhoto:await opt("beforePhoto"),progressPhotos:progress,completionPhoto:await opt("completionPhoto"),inspectionPhoto:await opt("inspectionPhoto")};
+}
+
 function buildReview(){let d=collectFormData(),r=document.getElementById("reviewContainer");r.innerHTML="";["project","tower","floor","trade","subTrade","activity","contractor","quantity","unit","workStatus","inspector","inspectionStatus","housekeepingStatus","delayCategory"].forEach(k=>{let x=document.createElement("div");x.className="review-row";x.textContent=k+": "+d[k];r.appendChild(x)})}
-async function submitActivity(){if(!validateActivityForm())return;let m=document.getElementById("activityMessage"),b=document.getElementById("submitButton");b.disabled=true;m.className="message";m.innerText="Uploading photos and submitting activity... Please wait.";try{let payload={formData:collectFormData(),photos:await collectPhotoData()};google.script.run.withSuccessHandler(r=>{m.className="success-box";m.innerHTML="Activity submitted successfully.<br>Activity ID: <b>"+r.activityId+"</b>"+(r.activityFolderUrl?'<br><a href="'+r.activityFolderUrl+'" target="_blank">Open Activity Photo Folder</a>':'');b.disabled=false}).withFailureHandler(e=>{m.className="message";m.innerText="Submission failed: "+e.message;b.disabled=false}).saveActivityWithPhotos(payload)}catch(e){m.className="message";m.innerText=e.message;b.disabled=false}}
+async function submitActivity(){if(!validateActivityForm())return;let m=document.getElementById("activityMessage"),b=document.getElementById("submitButton");b.disabled=true;m.className="message";m.innerText="Uploading photos and submitting activity... Please wait.";try{let payload={formData:collectFormData(),photos:await collectPhotoData()};google.script.run.withSuccessHandler(r=>{m.className="success-box";m.innerHTML="Activity submitted successfully.<br>Activity ID: <b>"+r.activityId+"</b>"+(r.activityFolderUrl?'<br><a href="'+r.activityFolderUrl+'" target="_blank">Open Activity Photo Folder</a>':'');clearActivityDraft(false);b.disabled=false}).withFailureHandler(e=>{m.className="message";m.innerText="Submission failed: "+e.message;b.disabled=false}).saveActivityWithPhotos(payload)}catch(e){m.className="message";m.innerText=e.message;b.disabled=false}}
 
 function escapeHtml(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]})}
 function uniqueValues(arr,key){return [...new Set(arr.map(x=>String(x[key]||"").trim()).filter(Boolean))].sort()}
@@ -4023,7 +4211,7 @@ function saveOwnPasswordChange(){
 }
 
 function logout(){loggedInUser=null;if(window.LCRG_API&&LCRG_API.clearToken)LCRG_API.clearToken();location.reload()}
-window.onload=function(){let u=localStorage.getItem("rememberedUsername");if(u){document.getElementById("username").value=u;document.getElementById("rememberMe").checked=true}updateStepDisplay()}
+window.onload=function(){let u=localStorage.getItem("rememberedUsername");if(u){document.getElementById("username").value=u;document.getElementById("rememberMe").checked=true}updateStepDisplay();updateNetworkStatus();updateDashboardDraftBadge()}
 
 function parseReportDate(s){
   if(!s)return null;
