@@ -262,6 +262,172 @@
   .app-subtitle{font-size:11px}
   .logout-button,.back-button{padding:9px 12px;font-size:12px;flex:0 0 auto}
 }
+
+
+/* ================= FINAL MOBILE-FIRST UI / UX POLISH ================= */
+:root{
+  --brand:#0b3f88;
+  --brand-2:#1557a6;
+  --brand-soft:#eef5ff;
+  --surface:#ffffff;
+  --page:#f5f7fb;
+  --text:#172033;
+  --muted:#667085;
+  --line:#e4e9f1;
+  --radius:16px;
+  --shadow:0 8px 26px rgba(16,24,40,.07);
+}
+html{scroll-behavior:smooth;background:var(--page)}
+body{
+  background:var(--page);
+  color:var(--text);
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+button,input,select,textarea{font:inherit}
+button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid rgba(26,115,232,.18);outline-offset:1px
+}
+input,select,textarea{
+  min-height:46px;border:1px solid #d7dde7;border-radius:11px;padding:11px 13px;
+  color:var(--text);box-shadow:0 1px 2px rgba(16,24,40,.02);transition:.16s ease
+}
+input:focus,select:focus,textarea:focus{border-color:#6aa4ea;box-shadow:0 0 0 3px rgba(26,115,232,.10)}
+textarea{line-height:1.45}
+label{color:#344054;font-size:13px;margin-top:14px}
+
+/* Login */
+#loginPage{
+  background:radial-gradient(circle at 50% -10%,#dbeafe 0,#eef4fb 34%,#f7f9fc 68%,#f5f7fb 100%);
+  padding:max(22px,env(safe-area-inset-top)) 18px max(22px,env(safe-area-inset-bottom));
+}
+.login-card{
+  max-width:410px;border:1px solid rgba(255,255,255,.8);border-radius:24px;padding:34px 32px;
+  box-shadow:0 20px 55px rgba(11,63,136,.13);position:relative;overflow:hidden
+}
+.login-card:before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,var(--brand),#2d73bf)}
+.brand-logo{max-width:190px!important;width:68%!important;margin:2px auto 18px!important}
+.title{font-size:26px;letter-spacing:-.02em;color:#16243a}
+.subtitle{font-size:13px;line-height:1.45;margin:6px 0 25px;color:var(--muted)}
+.login-button{min-height:49px;border-radius:11px;background:linear-gradient(135deg,var(--brand-2),var(--brand));letter-spacing:.03em}
+.remember{display:flex;align-items:center;gap:8px;margin-top:14px}
+.remember input{width:18px;height:18px;min-height:auto;accent-color:var(--brand)}
+.remember label{margin:0;font-size:13px}
+.toggle-password{top:14px;font-size:13px;color:var(--brand)}
+
+/* Global app header */
+.header{
+  position:sticky;top:0;z-index:50;padding:12px max(18px,env(safe-area-inset-right)) 12px max(18px,env(safe-area-inset-left));
+  min-height:68px;border-bottom:1px solid rgba(228,233,241,.9);box-shadow:0 3px 14px rgba(16,24,40,.05)
+}
+.header-logo{width:94px!important;max-height:35px!important;object-fit:contain}
+.app-name{font-size:18px;line-height:1.15;letter-spacing:-.01em;color:#172b4d}
+.app-subtitle{font-size:11px;margin-top:3px;color:#7a8699}
+.logout-button,.back-button{min-height:40px;border-radius:10px;padding:9px 14px;cursor:pointer;box-shadow:0 2px 6px rgba(16,24,40,.08)}
+.back-button{background:#536273}.logout-button{background:#dc3f45}
+
+.container{max-width:1180px;padding:22px 22px 34px}
+.welcome-card,.form-card,.menu-card,.summary-kpi,.executive-kpi,.summary-panel,.executive-panel{
+  border:1px solid var(--line);box-shadow:var(--shadow)
+}
+.welcome-card{padding:20px 22px;margin-bottom:18px;border-radius:18px;background:linear-gradient(135deg,#fff 0,#f8fbff 100%)}
+.welcome-card h2{margin:0 0 5px;font-size:22px;color:#172b4d;letter-spacing:-.02em}
+#userRole{color:var(--muted);font-size:13px}
+
+/* Dashboard navigation */
+.menu-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.menu-card{
+  min-height:142px;padding:20px;border-radius:18px;border-left-width:0!important;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease;
+  background:linear-gradient(145deg,#fff,#fbfcfe)
+}
+.menu-card:after{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:#1a73e8}
+.menu-card.reports:after{background:#8b5cf6}.menu-card.inspection:after{background:#f59e0b}.menu-card.summary:after{background:#16a34a}.menu-card.executive:after{background:#0f766e}.menu-card.admin:after{background:#ef4444}
+.menu-card:hover{transform:translateY(-2px);box-shadow:0 13px 30px rgba(16,24,40,.11);border-color:#d7e2f0}
+.menu-card:active{transform:scale(.985)}
+.icon{font-size:32px;line-height:1;margin-bottom:5px}
+.menu-title{font-size:17px;margin:7px 0 2px;color:#1d2939}
+
+/* Forms */
+.form-card{border-radius:18px;padding:24px}
+.step-title{font-size:21px;color:#1d2939;letter-spacing:-.015em}
+.step-subtitle{font-size:13px;line-height:1.45}
+.progress-bar{gap:5px;margin-bottom:24px;position:sticky;top:78px;z-index:10;background:#fff;padding:8px 0}
+.progress-step{height:6px;background:#edf0f5}.progress-step.active{background:linear-gradient(90deg,#1a73e8,#0b3f88)}
+.form-grid{gap:11px 16px}
+.form-actions{padding-top:18px;border-top:1px solid #edf0f4;margin-top:26px;align-items:center}
+.form-actions button{min-height:44px;border-radius:10px;cursor:pointer}
+#previousButton{background:#eef1f5;color:#344054}
+.next-btn{background:linear-gradient(135deg,#1a73e8,#0b5ab8)}
+.submit-btn{background:linear-gradient(135deg,#21a366,#12824d)}
+.photo-preview{width:100px;height:100px;border-radius:12px}
+.review-row{padding:11px 7px;color:#344054}
+
+/* Data views */
+.reports-toolbar,.inspection-toolbar,.summary-filter-bar,.executive-filter-bar{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:12px}
+.table-wrap,.reports-table-wrap,.pending-table-wrap,.recent-table-wrap,.admin-table-wrap{border-radius:14px;box-shadow:0 3px 12px rgba(16,24,40,.04)}
+.reports-table th,.pending-table th,.recent-table th,.admin-table th,.executive-table th{background:#f5f7fa;color:#475467;font-weight:800}
+.reports-table tbody tr:hover,.pending-table tbody tr:hover,.recent-table tbody tr:hover,.admin-table tbody tr:hover{background:#fafcff}
+.status-badge,.summary-status-badge{background:#eef4ff;color:#1849a9;border:1px solid #d1e0ff}
+.view-btn,.recent-view-btn,.print-btn{background:var(--brand)}
+.reset-filter-btn{background:#667085}.inspect-btn{background:#e59a0b}
+.summary-chip,.reports-count{background:#eef4ff;color:#1849a9}
+
+/* KPI / management cards */
+.summary-cards,.executive-cards{gap:12px}
+.summary-kpi,.executive-kpi{border-radius:16px;padding:17px;background:linear-gradient(145deg,#fff,#fbfcff)}
+.summary-kpi .kpi-value,.executive-kpi-value{font-size:29px;color:#172b4d}
+.summary-panel,.executive-panel{border-radius:15px}
+.summary-panel-title,.executive-panel-title,.detail-section-title{background:#f7f9fc;color:#344054}
+.admin-tab{min-height:42px}.admin-tab.active{background:var(--brand)}
+
+/* Modal polish */
+.detail-card,.inspect-card,.admin-modal-card{border:1px solid rgba(255,255,255,.6);box-shadow:0 26px 70px rgba(16,24,40,.28)}
+.report-detail-top,.inspect-head,.admin-modal-head{background:#f7f9fc}
+.close-btn,.modal-close{background:#dc3f45}
+
+/* Mobile */
+@media(max-width:760px){
+  body{background:#f6f8fb}
+  .header{min-height:61px;padding-top:max(10px,env(safe-area-inset-top));gap:8px}
+  .header-brand{gap:8px}.header-logo{width:72px!important;max-height:28px!important}
+  .app-name{font-size:15px}.app-subtitle{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}
+  .logout-button,.back-button{min-height:38px;padding:8px 11px;font-size:12px}
+  .container{padding:14px 12px 92px}
+  .welcome-card{padding:16px;margin-bottom:12px;border-radius:15px}.welcome-card h2{font-size:19px}
+  .menu-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .menu-card{min-height:120px;padding:15px 13px;border-radius:15px}
+  .menu-card:after{width:4px}.icon{font-size:28px}.menu-title{font-size:15px;line-height:1.2}
+  .menu-card>div[style*="font-size:13px"]{font-size:11px!important;line-height:1.3;margin-top:4px}
+  .form-card{padding:16px 13px;border-radius:15px}
+  .step-title{font-size:19px}.step-subtitle{font-size:12px;margin-bottom:15px}
+  input,select,textarea{font-size:16px;min-height:47px;border-radius:10px}
+  label{font-size:12px;margin-top:11px}
+  .progress-bar{top:67px;margin:-4px 0 16px;padding:8px 0 10px}.progress-step{height:5px}
+  .form-actions{
+    position:fixed;left:0;right:0;bottom:0;z-index:80;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);
+    padding:10px 12px max(10px,env(safe-area-inset-bottom));margin:0;border-top:1px solid #e3e8ef;box-shadow:0 -7px 24px rgba(16,24,40,.09)
+  }
+  .form-actions button{flex:1;min-height:46px;padding:10px 12px}.next-btn,.submit-btn{margin-left:0}
+  .photo-preview{width:82px;height:82px}
+  .reports-toolbar,.inspection-toolbar,.summary-filter-bar,.executive-filter-bar{padding:10px;border-radius:12px}
+  .summary-cards,.executive-cards{gap:9px}.summary-kpi,.executive-kpi{padding:13px;border-radius:13px}
+  .summary-kpi .kpi-value,.executive-kpi-value{font-size:24px}
+  .summary-kpi .kpi-label,.executive-kpi-label{font-size:10px}
+  .summary-panel,.executive-panel{border-radius:13px}
+  .detail-modal,.inspect-modal,.admin-modal{overscroll-behavior:contain}
+  .report-detail-top,.report-detail-body,.detail-footer,.inspect-head,.inspect-body,.admin-modal-head,.admin-modal-body{padding-left:15px;padding-right:15px}
+  .detail-footer{position:sticky;bottom:0;z-index:5}
+  .summary-top-actions{justify-content:flex-end}.summary-top-actions .summary-nav-btn{display:none}
+  #dailySummaryPage .header .app-subtitle{display:none}
+}
+@media(max-width:390px){
+  .menu-card{min-height:112px;padding:13px 11px}.icon{font-size:26px}.menu-title{font-size:14px}
+  .header-logo{width:66px!important}.app-subtitle{max-width:145px}
+}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><h2 id="welcome">Welcome</h2><div id="userRole"></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div></div></div></div></div>
