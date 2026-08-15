@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html><head><base target="_top"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0b3f88">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="LCRG OLC">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#1f2937}input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;background:white}textarea{min-height:90px;resize:vertical}label{display:block;margin-top:15px;margin-bottom:6px;font-size:14px;font-weight:bold}#loginPage{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}.login-card{width:100%;max-width:380px;background:white;border-radius:16px;padding:32px;box-shadow:0 8px 25px rgba(0,0,0,.12)}.logo{text-align:center;font-size:42px}.title{text-align:center;font-weight:bold;font-size:24px}.subtitle{text-align:center;color:#6b7280;margin:5px 0 25px}.password-wrap{position:relative}.toggle-password{position:absolute;right:14px;top:13px;color:#1a73e8;cursor:pointer;font-weight:bold}.login-button{width:100%;margin-top:22px;padding:14px;border:0;border-radius:8px;background:#1a73e8;color:white;font-weight:bold;cursor:pointer;transition:transform .08s ease,box-shadow .15s ease,background .15s ease,opacity .15s ease}
+.login-button:hover{background:#1765cc;box-shadow:0 4px 12px rgba(26,115,232,.28)}
+.login-button:active{transform:translateY(1px) scale(.99);box-shadow:none}
+.login-button:disabled{cursor:not-allowed;opacity:.65}.remember input{width:auto}.remember label{display:inline;font-weight:normal}.message{text-align:center;margin-top:15px}#dashboardPage,#activityPage,#myReportsPage{display:none}.header{background:white;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.08)}.app-name{font-size:20px;font-weight:bold}.app-subtitle{color:#6b7280;font-size:12px}.logout-button,.back-button{border:0;padding:10px 16px;border-radius:8px;color:white;font-weight:bold}.logout-button{background:#ef4444}.back-button{background:#6b7280}.container{max-width:1100px;margin:auto;padding:25px}.welcome-card,.form-card,.menu-card{background:white;padding:25px;border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,.06)}.menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}.menu-card{min-height:150px;cursor:pointer}.primary{border-left:5px solid #1a73e8}.reports{border-left:5px solid #8b5cf6}.inspection{border-left:5px solid #f59e0b}.summary{border-left:5px solid #16a34a}.admin{border-left:5px solid #ef4444}.icon{font-size:30px}.menu-title{font-weight:bold;font-size:18px;margin:8px 0}.progress-bar{display:flex;gap:6px;margin-bottom:28px}.progress-step{flex:1;height:7px;background:#e5e7eb;border-radius:20px}.progress-step.active{background:#1a73e8}.step{display:none}.step.active{display:block}.step-title{font-size:21px;font-weight:bold}.step-subtitle{color:#6b7280;margin:4px 0 20px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.full-width{grid-column:1/-1}.form-actions{display:flex;margin-top:25px;gap:10px}.form-actions button{padding:12px 22px;border:0;border-radius:8px;font-weight:bold}.next-btn,.submit-btn{margin-left:auto;color:white}.next-btn{background:#1a73e8}.submit-btn{background:#16a34a}.review-row{padding:10px;border-bottom:1px solid #eee}.photo-preview-wrap{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.photo-preview{width:92px;height:92px;object-fit:cover;border-radius:8px;border:1px solid #d1d5db;background:#f9fafb}.upload-note{font-size:12px;color:#6b7280;margin-top:6px}.success-box{margin-top:14px;padding:12px;border-radius:8px;background:#ecfdf5;color:#166534;font-weight:bold}
+.reports-toolbar{display:grid;grid-template-columns:1.2fr repeat(4,1fr);gap:10px;margin:18px 0}.reports-toolbar input,.reports-toolbar select{margin:0}.reports-summary{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}.summary-chip{background:#eef2ff;color:#3730a3;padding:8px 12px;border-radius:999px;font-size:13px;font-weight:bold}.table-wrap{overflow:auto;background:white;border-radius:12px;border:1px solid #e5e7eb}.reports-table{width:100%;border-collapse:collapse;min-width:980px}.reports-table th,.reports-table td{padding:12px 10px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;vertical-align:top}.reports-table th{background:#f8fafc;position:sticky;top:0;z-index:1}.status-badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:12px;font-weight:bold;background:#f3f4f6}.view-btn{border:0;background:#1a73e8;color:white;padding:8px 11px;border-radius:7px;font-weight:bold;cursor:pointer}.empty-state{padding:35px;text-align:center;color:#6b7280}.reports-loading{padding:25px;text-align:center;color:#6b7280}.detail-modal{display:none;position:fixed;inset:0;background:rgba(17,24,39,.55);z-index:999;padding:20px;overflow:auto}.detail-card{max-width:900px;margin:20px auto;background:white;border-radius:14px;padding:22px;box-shadow:0 18px 50px rgba(0,0,0,.25)}.detail-header{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}.close-btn{border:0;background:#ef4444;color:white;border-radius:8px;padding:9px 12px;font-weight:bold;cursor:pointer}.detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px;margin-top:16px}.detail-item{padding:10px;border-bottom:1px solid #eee}.detail-item strong{display:block;color:#6b7280;font-size:12px;margin-bottom:4px}.photo-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.photo-link{display:inline-block;padding:8px 10px;border-radius:7px;background:#eef2ff;color:#1d4ed8;text-decoration:none;font-size:13px;font-weight:bold}
+@media(max-width:650px){.form-grid{grid-template-columns:1fr}.full-width{grid-column:auto}.container{padding:15px}.reports-toolbar{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}}
+
+/* My Reports - Activity Detail upgrade */
+.detail-modal{padding:0;background:rgba(17,24,39,.62)}
+.detail-card{max-width:1050px;margin:28px auto;padding:0;overflow:hidden;border-radius:16px}
+.report-detail-top{padding:22px 24px;background:#f8fafc;border-bottom:1px solid #e5e7eb}
+.report-detail-title-row{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}
+.report-id{font-size:24px;font-weight:800;color:#111827}
+.report-path{margin-top:6px;color:#64748b;font-size:14px}
+.report-detail-actions{display:flex;gap:8px;flex-wrap:wrap}
+.detail-action-btn{border:0;border-radius:8px;padding:10px 14px;font-weight:bold;cursor:pointer}
+.print-btn{background:#1a73e8;color:#fff}
+.close-btn{background:#ef4444;color:#fff}
+.report-detail-body{padding:22px 24px}
+.detail-section{margin-bottom:20px;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden;background:#fff}
+.detail-section-title{padding:12px 15px;background:#f8fafc;border-bottom:1px solid #e5e7eb;font-weight:800;font-size:15px}
+.detail-section-body{padding:4px 12px 12px}
+.detail-grid{margin-top:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 14px}
+.detail-item{min-height:66px;padding:12px 6px}
+.detail-item strong{font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+.long-text{padding:13px 6px;line-height:1.5;white-space:pre-wrap}
+.photo-category{padding:13px 6px;border-bottom:1px solid #eef2f7}
+.photo-category:last-child{border-bottom:0}
+.photo-category-title{font-size:13px;font-weight:800;margin-bottom:8px}
+.photo-links{margin-top:0}
+.photo-link{background:#eff6ff;color:#1d4ed8}
+.back-report-btn{background:#6b7280;color:white}
+.detail-footer{display:flex;justify-content:space-between;gap:10px;padding:16px 24px;border-top:1px solid #e5e7eb;background:#f8fafc}
+@media(max-width:760px){
+  .detail-card{margin:0;min-height:100vh;border-radius:0}
+  .report-detail-title-row{flex-direction:column}
+  .detail-grid{grid-template-columns:1fr}
+  .report-detail-actions{width:100%}
+  .report-detail-actions button{flex:1}
+}
+@media print{
+  body *{visibility:hidden!important}
+  #reportDetailModal,#reportDetailModal *{visibility:visible!important}
+  #reportDetailModal{position:absolute!important;inset:0!important;background:white!important;display:block!important;overflow:visible!important}
+  .detail-card{box-shadow:none!important;margin:0!important;max-width:none!important;border-radius:0!important}
+  .report-detail-actions,.detail-footer{display:none!important}
+  .detail-section{break-inside:avoid}
+}
+
+
+/* My Reports polish */
+.reports-toolbar{display:grid;grid-template-columns:1.3fr repeat(4,1fr) auto;gap:10px;align-items:center;margin-bottom:14px}
+.reports-toolbar input,.reports-toolbar select{min-width:0}
+.reset-filter-btn{border:0;background:#64748b;color:#fff;border-radius:8px;padding:12px 14px;font-weight:bold;cursor:pointer;white-space:nowrap}
+.reports-table-wrap{overflow-x:auto;border:1px solid #e5e7eb;border-radius:12px}
+.reports-table{width:100%;border-collapse:collapse;min-width:980px}
+.reports-table th,.reports-table td{padding:11px 10px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top}
+.reports-table th{background:#f8fafc;font-size:12px;color:#475569;white-space:nowrap}
+.reports-table td{font-size:13px}
+.reports-table td:nth-child(1),.reports-table th:nth-child(1){white-space:nowrap;min-width:120px}
+.reports-table td:nth-child(2),.reports-table th:nth-child(2){white-space:nowrap;min-width:115px}
+.reports-table td:nth-child(3),.reports-table th:nth-child(3){min-width:160px}
+.reports-table td:nth-child(4),.reports-table th:nth-child(4){white-space:nowrap;min-width:95px}
+.reports-table td:nth-child(5),.reports-table th:nth-child(5){white-space:nowrap;min-width:95px}
+.reports-table td:nth-child(6),.reports-table th:nth-child(6){min-width:130px}
+.reports-table td:nth-child(7),.reports-table th:nth-child(7){min-width:110px}
+.reports-count{display:inline-block;background:#eef2ff;color:#3730a3;border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px;margin:4px 0 14px}
+.filter-dates{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:900px){
+  .reports-toolbar{grid-template-columns:1fr 1fr}
+  .reports-toolbar .search-wide{grid-column:1/-1}
+  .reports-toolbar .reset-filter-btn{grid-column:1/-1}
+}
+@media(max-width:600px){
+  .reports-toolbar{grid-template-columns:1fr}
+  .reports-toolbar .search-wide,.reports-toolbar .reset-filter-btn{grid-column:auto}
+  .filter-dates{grid-template-columns:1fr}
+}
+
+
+/* Pending Inspections */
+#pendingInspectionsPage{display:none}
+.inspection-toolbar{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:10px;margin-bottom:14px}
+.inspection-summary-row{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 16px}
+.inspection-chip{display:inline-block;padding:7px 12px;border-radius:999px;background:#fff7ed;color:#9a3412;font-size:13px;font-weight:800}
+.pending-table-wrap{overflow-x:auto;border:1px solid #e5e7eb;border-radius:12px}
+.pending-table{width:100%;border-collapse:collapse;min-width:940px}
+.pending-table th,.pending-table td{padding:11px 10px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top}
+.pending-table th{background:#f8fafc;font-size:12px;color:#475569;white-space:nowrap}
+.pending-table td{font-size:13px}
+.pending-badge{display:inline-block;background:#fff7ed;color:#9a3412;border-radius:999px;padding:5px 9px;font-weight:800;font-size:12px;white-space:nowrap}
+.inspect-btn{border:0;background:#f59e0b;color:white;border-radius:7px;padding:8px 12px;font-weight:bold;cursor:pointer;white-space:nowrap}
+.inspect-modal{display:none;position:fixed;z-index:1000;inset:0;background:rgba(17,24,39,.62);overflow:auto;padding:20px}
+.inspect-card{max-width:980px;margin:20px auto;background:white;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);overflow:hidden}
+.inspect-head{padding:20px 22px;background:#f8fafc;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:15px;align-items:flex-start}
+.inspect-title{font-size:23px;font-weight:800}
+.inspect-path{color:#64748b;font-size:13px;margin-top:5px}
+.inspect-body{padding:20px 22px}
+.inspect-info{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 14px;border:1px solid #e5e7eb;border-radius:12px;padding:8px 12px;margin-bottom:18px}
+.inspect-info-item{padding:10px 5px;border-bottom:1px solid #eef2f7}
+.inspect-info-item strong{display:block;font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.inspect-photo-links{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 18px}
+.inspect-photo-links a{display:inline-block;text-decoration:none;background:#eff6ff;color:#1d4ed8;border-radius:8px;padding:9px 11px;font-weight:700;font-size:13px}
+.decision-panel{border:1px solid #e5e7eb;border-radius:12px;padding:16px;background:#fcfcfd}
+.decision-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.decision-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
+.decision-save{border:0;background:#16a34a;color:white;padding:11px 16px;border-radius:8px;font-weight:bold;cursor:pointer}
+.modal-close{border:0;background:#ef4444;color:white;padding:10px 14px;border-radius:8px;font-weight:bold;cursor:pointer}
+.inspection-message{margin-top:12px;font-weight:700}
+@media(max-width:760px){
+  .inspection-toolbar{grid-template-columns:1fr}
+  .inspect-modal{padding:0}
+  .inspect-card{margin:0;min-height:100vh;border-radius:0}
+  .inspect-info,.decision-grid{grid-template-columns:1fr}
+  .inspect-head{flex-direction:column}
+}
+
+
+/* Daily Summary */
+#dailySummaryPage{display:none}
+.summary-filter-bar{display:grid;grid-template-columns:1fr repeat(6,1fr) auto;gap:10px;margin-bottom:18px}
+.summary-cards{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));gap:12px;margin-bottom:18px}
+.summary-kpi{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px}
+.summary-kpi .kpi-label{font-size:12px;color:#64748b;font-weight:700}
+.summary-kpi .kpi-value{font-size:27px;font-weight:800;margin-top:5px;color:#111827}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.summary-panel{border:1px solid #e5e7eb;border-radius:12px;background:#fff;overflow:hidden}
+.summary-panel-title{padding:12px 14px;background:#f8fafc;border-bottom:1px solid #e5e7eb;font-weight:800}
+.summary-panel-body{padding:12px 14px}
+.summary-list{width:100%;border-collapse:collapse}
+.summary-list td{padding:8px 4px;border-bottom:1px solid #eef2f7;font-size:13px}
+.summary-list td:last-child{text-align:right;font-weight:800}
+.status-pills{display:flex;gap:8px;flex-wrap:wrap}
+.status-pill{padding:7px 10px;border-radius:999px;background:#f1f5f9;font-size:12px;font-weight:800}
+.recent-table-wrap{overflow-x:auto;border:1px solid #e5e7eb;border-radius:12px}
+.recent-table{width:100%;border-collapse:collapse;min-width:900px}
+.recent-table th,.recent-table td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px}
+.recent-table th{background:#f8fafc;color:#475569;white-space:nowrap}
+.summary-empty{padding:25px;text-align:center;color:#64748b}
+@media(max-width:1100px){
+  .summary-cards{grid-template-columns:repeat(3,1fr)}
+  .summary-filter-bar{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:760px){
+  .summary-cards{grid-template-columns:repeat(2,1fr)}
+  .summary-grid{grid-template-columns:1fr}
+  .summary-filter-bar{grid-template-columns:1fr}
+}
+
+
+/* Daily Summary V2 */
+.summary-top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.summary-action-btn{border:0;border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer}
+.summary-print-btn{background:#1a73e8;color:#fff}
+.summary-nav-btn{background:#e2e8f0;color:#334155}
+.kpi-sub{font-size:11px;color:#94a3b8;margin-top:4px}
+.summary-kpi.clickable{cursor:pointer;transition:.15s}
+.summary-kpi.clickable:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.summary-status-badge{display:inline-block;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:800;white-space:nowrap;background:#f1f5f9}
+.summary-warning{background:#fff7ed;color:#9a3412;padding:10px 12px;border-radius:10px;margin-bottom:14px;font-size:13px}
+.quantity-summary{display:flex;gap:8px;flex-wrap:wrap}
+.quantity-chip{background:#eef2ff;color:#3730a3;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:800}
+.recent-view-btn{border:0;background:#1a73e8;color:white;border-radius:7px;padding:7px 10px;font-weight:800;cursor:pointer}
+.summary-filter-bar select:disabled{background:#f1f5f9;color:#94a3b8}
+.summary-panel.full-span{grid-column:1/-1}
+@media print{
+  #dailySummaryPage .header button,
+  #dailySummaryPage .summary-filter-bar,
+  #dailySummaryPage .summary-top-actions{display:none!important}
+  #dailySummaryPage{display:block!important}
+  #dailySummaryPage .form-card{box-shadow:none!important}
+}
+
+
+/* Administration V1 */
+#administrationPage{display:none}
+.admin-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.admin-tab{border:0;background:#e2e8f0;color:#334155;border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer}
+.admin-tab.active{background:#1a73e8;color:white}
+.admin-section{display:none}
+.admin-section.active{display:block}
+.admin-toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.admin-search{max-width:360px}
+.admin-primary-btn{border:0;background:#16a34a;color:white;padding:11px 15px;border-radius:8px;font-weight:800;cursor:pointer}
+.admin-table-wrap{overflow-x:auto;border:1px solid #e5e7eb;border-radius:12px}
+.admin-table{width:100%;border-collapse:collapse;min-width:920px}
+.admin-table th,.admin-table td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:middle;font-size:13px}
+.admin-table th{background:#f8fafc;color:#475569;white-space:nowrap}
+.admin-badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800}
+.admin-badge.active{background:#dcfce7;color:#166534}
+.admin-badge.inactive{background:#fee2e2;color:#991b1b}
+.admin-small-btn{border:0;border-radius:7px;padding:7px 9px;font-weight:800;cursor:pointer;margin:2px}
+.admin-edit-btn{background:#1a73e8;color:white}
+.admin-status-btn{background:#f59e0b;color:white}
+.admin-reset-btn{background:#7c3aed;color:white}
+.admin-modal{display:none;position:fixed;z-index:1200;inset:0;background:rgba(17,24,39,.62);overflow:auto;padding:20px}
+.admin-modal-card{max-width:650px;margin:35px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.admin-modal-head{padding:18px 20px;background:#f8fafc;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.admin-modal-title{font-size:20px;font-weight:800}
+.admin-modal-body{padding:20px}
+.admin-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.admin-message{margin-top:12px;font-weight:700}
+.master-preview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.master-preview-card{border:1px solid #e5e7eb;border-radius:12px;overflow:hidden}
+.master-preview-title{padding:12px 14px;background:#f8fafc;font-weight:800;border-bottom:1px solid #e5e7eb}
+.master-preview-body{padding:12px 14px}
+@media(max-width:700px){
+  .admin-form-grid,.master-preview-grid{grid-template-columns:1fr}
+  .admin-modal{padding:0}
+  .admin-modal-card{margin:0;min-height:100vh;border-radius:0}
+}
+
+
+/* Executive Report */
+#executiveReportPage{display:none}
+.executive{border-left:5px solid #0f766e}
+.executive-filter-bar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) auto;gap:10px;margin-bottom:18px}
+.executive-cards{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));gap:12px;margin-bottom:18px}
+.executive-kpi{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px}
+.executive-kpi-label{font-size:12px;color:#64748b;font-weight:700}
+.executive-kpi-value{font-size:27px;font-weight:800;margin-top:5px;color:#111827}
+.executive-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.executive-panel{background:#fff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden}
+.executive-panel-title{background:#f8fafc;border-bottom:1px solid #e5e7eb;padding:12px 14px;font-weight:800}
+.executive-panel-body{padding:12px 14px}
+.executive-table{width:100%;border-collapse:collapse}
+.executive-table th,.executive-table td{padding:9px 8px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:13px;vertical-align:top}
+.executive-table th{background:#f8fafc;color:#475569;white-space:nowrap}
+.executive-note{font-size:12px;color:#64748b;margin-top:8px}
+@media(max-width:900px){
+  .executive-filter-bar{grid-template-columns:1fr 1fr}
+  .executive-cards{grid-template-columns:repeat(2,1fr)}
+  .executive-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .executive-filter-bar{grid-template-columns:1fr}
+}
+
+
+/* UNISON Branding */
+.brand-logo{display:block;max-width:180px;width:62%;height:auto;margin:0 auto 14px;object-fit:contain}
+.header-brand{display:flex;align-items:center;gap:12px;min-width:0}
+.header-logo{width:92px;max-height:34px;object-fit:contain;flex:0 0 auto}
+.header-brand-text{min-width:0}
+@media(max-width:650px){
+  .brand-logo{max-width:160px;width:58%;margin-bottom:12px}
+  .header{padding:12px 14px;gap:10px}
+  .header-brand{gap:9px;min-width:0}
+  .header-logo{width:72px;max-height:28px}
+  .app-name{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .app-subtitle{font-size:11px}
+  .logout-button,.back-button{padding:9px 12px;font-size:12px;flex:0 0 auto}
+}
+</style></head><body>
+<div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
+<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><h2 id="welcome">Welcome</h2><div id="userRole"></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div></div></div></div></div>
+
+
+
+<div id="administrationPage">
+  <div class="header">
+    <div>
+      <div class="app-name">⚙️ Administration</div>
+      <div class="app-subtitle">User management and system master data</div>
+    </div>
+    <button class="back-button" onclick="showDashboard()">Back</button>
+  </div>
+  <div class="container">
+    <div class="form-card">
+      <div class="admin-tabs">
+        <button id="adminUsersTab" class="admin-tab active" onclick="showAdminSection('users')">👥 Users</button>
+        <button id="adminMasterTab" class="admin-tab" onclick="showAdminSection('master')">🗂️ Master Data</button>
+        <button id="adminActivitiesTab" class="admin-tab" onclick="showAdminSection('activities')">🧩 Activities</button>
+      </div>
+
+      <div id="adminUsersSection" class="admin-section active">
+        <div class="admin-toolbar">
+          <div>
+            <div class="step-title">User Management</div>
+            <div class="step-subtitle">Create users, change roles/status, and reset passwords.</div>
+          </div>
+          <button class="admin-primary-btn" onclick="openCreateUserModal()">+ Add User</button>
+        </div>
+        <input id="adminUserSearch" class="admin-search" placeholder="Search name, employee ID, username or role..." oninput="renderAdminUsers()" style="margin-bottom:14px">
+        <div id="adminUsersContainer" class="reports-loading">Loading users...</div>
+      </div>
+
+      <div id="adminMasterSection" class="admin-section">
+        <div class="step-title">Master Data Overview</div>
+        <div class="step-subtitle">Current active configuration used by reporting forms. Editing will be enabled in Administration V2.</div>
+        <div id="adminMasterContainer" class="master-preview-grid"></div>
+      </div>
+
+      <div id="adminActivitiesSection" class="admin-section">
+        <div class="admin-toolbar">
+          <div>
+            <div class="step-title">Activity Master</div>
+            <div class="step-subtitle">Maintain dependent dropdown values for Trade → Sub-Trade → Activity.</div>
+          </div>
+          <button class="admin-primary-btn" onclick="openActivityMasterModal()">+ Add Activity</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:10px;margin-bottom:14px">
+          <input id="adminActivitySearch" placeholder="Search activity..." oninput="renderAdminActivities()">
+          <select id="adminActivityTradeFilter" onchange="renderAdminActivities()"><option value="">All Trades</option></select>
+          <select id="adminActivitySubTradeFilter" onchange="renderAdminActivities()"><option value="">All Sub-Trades</option></select>
+        </div>
+        <div id="adminActivitiesContainer" class="reports-loading">Loading activities...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="adminUserModal" class="admin-modal" onclick="closeAdminUserModal(event)">
+  <div class="admin-modal-card" onclick="event.stopPropagation()">
+    <div class="admin-modal-head">
+      <div id="adminUserModalTitle" class="admin-modal-title">Add User</div>
+      <button class="modal-close" onclick="closeAdminUserModal()">Close</button>
+    </div>
+    <div class="admin-modal-body">
+      <div class="admin-form-grid">
+        <div>
+          <label>Supervisor / Employee Name *</label>
+          <input id="adminSupervisorName">
+        </div>
+        <div>
+          <label>Employee ID *</label>
+          <input id="adminEmployeeId">
+        </div>
+        <div>
+          <label>Username *</label>
+          <input id="adminUsername">
+        </div>
+        <div>
+          <label>Role *</label>
+          <select id="adminRole">
+            <option value="">Select Role</option>
+            <option>CEO</option>
+            <option>Project Manager</option>
+            <option>Construction Manager</option>
+            <option>Planning Engineer</option>
+            <option>MEP Manager</option>
+            <option>Admin</option>
+            <option>Supervisor</option>
+            <option>Engineer</option>
+            <option>Inspector</option>
+            <option>Viewer</option>
+          </select>
+        </div>
+        <div id="adminPasswordGroup" class="full-width">
+          <label>Initial Password *</label>
+          <input id="adminPassword" type="password">
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:18px">
+        <button id="adminSaveUserButton" class="admin-primary-btn" onclick="saveAdminUser()">Save User</button>
+      </div>
+      <div id="adminUserMessage" class="admin-message"></div>
+    </div>
+  </div>
+</div>
+
+
+<div id="activityMasterModal" class="admin-modal" onclick="closeActivityMasterModal(event)">
+  <div class="admin-modal-card" onclick="event.stopPropagation()">
+    <div class="admin-modal-head">
+      <div id="activityMasterModalTitle" class="admin-modal-title">Add Activity</div>
+      <button class="modal-close" onclick="closeActivityMasterModal()">Close</button>
+    </div>
+    <div class="admin-modal-body">
+      <div class="admin-form-grid">
+        <div>
+          <label>Trade *</label>
+          <select id="activityMasterTrade" onchange="populateActivityMasterSubTrades()"><option value="">Select Trade</option></select>
+        </div>
+        <div>
+          <label>Sub-Trade *</label>
+          <select id="activityMasterSubTrade"><option value="">Select Sub-Trade</option></select>
+        </div>
+        <div class="full-width">
+          <label>Activity *</label>
+          <input id="activityMasterName" placeholder="e.g. Brickwork">
+        </div>
+        <div>
+          <label>Status *</label>
+          <select id="activityMasterStatus">
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:18px">
+        <button id="activityMasterSaveButton" class="admin-primary-btn" onclick="saveActivityMaster()">Save Activity</button>
+      </div>
+      <div id="activityMasterMessage" class="admin-message"></div>
+    </div>
+  </div>
+</div>
+
+<div id="adminPasswordModal" class="admin-modal" onclick="closeAdminPasswordModal(event)">
+  <div class="admin-modal-card" style="max-width:500px" onclick="event.stopPropagation()">
+    <div class="admin-modal-head">
+      <div class="admin-modal-title">Reset Password</div>
+      <button class="modal-close" onclick="closeAdminPasswordModal()">Close</button>
+    </div>
+    <div class="admin-modal-body">
+      <div id="adminPasswordUserLabel" style="font-weight:800;margin-bottom:12px"></div>
+      <label>New Password *</label>
+      <input id="adminNewPassword" type="password">
+      <label>Confirm Password *</label>
+      <input id="adminConfirmPassword" type="password">
+      <div style="display:flex;justify-content:flex-end;margin-top:18px">
+        <button id="adminResetPasswordButton" class="admin-primary-btn" onclick="saveAdminPasswordReset()">Reset Password</button>
+      </div>
+      <div id="adminPasswordMessage" class="admin-message"></div>
+    </div>
+  </div>
+</div>
+
+
+<div id="executiveReportPage">
+  <div class="header">
+    <div>
+      <div class="app-name">📈 Executive Report</div>
+      <div class="app-subtitle">CEO / Project Manager high-level monitoring</div>
+    </div>
+    <button class="back-button" onclick="showDashboard()">Back</button>
+  </div>
+  <div class="container">
+    <div class="form-card">
+      <div class="executive-filter-bar">
+        <div>
+          <label>From Date</label>
+          <input id="execFromDate" type="date">
+        </div>
+        <div>
+          <label>To Date</label>
+          <input id="execToDate" type="date">
+        </div>
+        <div>
+          <label>Project</label>
+          <select id="execProject" onchange="renderExecutiveReport()"><option value="">All Projects</option></select>
+        </div>
+        <div>
+          <label>Work Status</label>
+          <select id="execStatus" onchange="renderExecutiveReport()">
+            <option value="">All Statuses</option>
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Completed</option>
+            <option>Hold</option>
+            <option>Delayed</option>
+          </select>
+        </div>
+        <button class="admin-primary-btn" style="align-self:end" onclick="loadExecutiveReport()">Apply</button>
+      </div>
+
+      <div class="executive-cards">
+        <div class="executive-kpi"><div class="executive-kpi-label">TOTAL ACTIVITIES</div><div id="execTotal" class="executive-kpi-value">0</div></div>
+        <div class="executive-kpi"><div class="executive-kpi-label">COMPLETED</div><div id="execCompleted" class="executive-kpi-value">0</div></div>
+        <div class="executive-kpi"><div class="executive-kpi-label">IN PROGRESS</div><div id="execProgress" class="executive-kpi-value">0</div></div>
+        <div class="executive-kpi"><div class="executive-kpi-label">ON HOLD / DELAYED</div><div id="execHold" class="executive-kpi-value">0</div></div>
+        <div class="executive-kpi"><div class="executive-kpi-label">PENDING INSPECTIONS</div><div id="execPending" class="executive-kpi-value">0</div></div>
+        <div class="executive-kpi"><div class="executive-kpi-label">CONSTRAINTS</div><div id="execConstraints" class="executive-kpi-value">0</div></div>
+      </div>
+
+      <div class="executive-grid">
+        <div class="executive-panel">
+          <div class="executive-panel-title">Activities by Project</div>
+          <div id="execProjects" class="executive-panel-body"></div>
+        </div>
+        <div class="executive-panel">
+          <div class="executive-panel-title">Work Status</div>
+          <div id="execStatuses" class="executive-panel-body"></div>
+        </div>
+        <div class="executive-panel">
+          <div class="executive-panel-title">Activities by Trade</div>
+          <div id="execTrades" class="executive-panel-body"></div>
+        </div>
+        <div class="executive-panel">
+          <div class="executive-panel-title">Activities by Contractor</div>
+          <div id="execContractors" class="executive-panel-body"></div>
+        </div>
+      </div>
+
+      <div class="executive-panel">
+        <div class="executive-panel-title">Latest Critical / Constraint Items</div>
+        <div id="execCritical" class="executive-panel-body"></div>
+      </div>
+      <div class="executive-note">Executive Report is visible only to CEO and Project Manager accounts.</div>
+    </div>
+  </div>
+</div>
+
+<div id="dailySummaryPage">
+  <div class="header">
+    <div>
+      <div class="app-name">📊 Daily Summary</div>
+      <div class="app-subtitle">Management overview of reported site activities</div>
+    </div>
+    <div class="summary-top-actions">
+      <button class="summary-action-btn summary-nav-btn" onclick="changeSummaryDate(-1)">◀ Previous Day</button>
+      <button class="summary-action-btn summary-nav-btn" onclick="setSummaryToday()">Today</button>
+      <button class="summary-action-btn summary-nav-btn" onclick="changeSummaryDate(1)">Next Day ▶</button>
+      <button class="summary-action-btn summary-print-btn" onclick="printDailySummary()">🖨️ Print / PDF</button>
+      <button class="back-button" onclick="showDashboard()">Back</button>
+    </div>
+  </div>
+  <div class="container">
+    <div class="form-card">
+      <div class="summary-filter-bar">
+        <input id="summaryDate" type="date" onchange="loadDailySummary()">
+        <select id="summaryProject" onchange="updateSummaryDependentFilters();renderDailySummaryFromCache()"><option value="">All Projects</option></select>
+        <select id="summaryTower" onchange="updateSummaryFloorFilter();renderDailySummaryFromCache()"><option value="">All Towers</option></select>
+        <select id="summaryFloor" onchange="renderDailySummaryFromCache()"><option value="">All Floors</option></select>
+        <select id="summaryTrade" onchange="renderDailySummaryFromCache()"><option value="">All Trades</option></select>
+        <select id="summaryWorkStatusFilter" onchange="renderDailySummaryFromCache()">
+          <option value="">All Work Status</option>
+          <option>Not Started</option>
+          <option>In Progress</option>
+          <option>Completed</option>
+          <option>Hold</option>
+        </select>
+        <input id="summaryContractor" placeholder="Contractor" oninput="renderDailySummaryFromCache()">
+        <button class="reset-filter-btn" onclick="resetSummaryFilters()">Reset</button>
+      </div>
+
+      <div class="summary-cards">
+        <div class="summary-kpi clickable" onclick="scrollToRecentSummary()"><div class="kpi-label">Total Activities</div><div id="kpiActivities" class="kpi-value">0</div><div class="kpi-sub">Click to view activities</div></div>
+        <div class="summary-kpi"><div class="kpi-label">In Progress</div><div id="kpiInProgress" class="kpi-value">0</div></div>
+        <div class="summary-kpi"><div class="kpi-label">Completed</div><div id="kpiCompleted" class="kpi-value">0</div></div>
+        <div class="summary-kpi clickable" onclick="openPendingInspections()"><div class="kpi-label">Pending Inspections</div><div id="kpiPending" class="kpi-value">0</div><div class="kpi-sub">Open inspection queue</div></div>
+        <div class="summary-kpi"><div class="kpi-label">Rectification</div><div id="kpiRectification" class="kpi-value">0</div></div>
+        <div class="summary-kpi"><div class="kpi-label">Constraints</div><div id="kpiConstraints" class="kpi-value">0</div></div>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-panel">
+          <div class="summary-panel-title">Activities by Project</div>
+          <div id="summaryByProject" class="summary-panel-body"></div>
+        </div>
+        <div class="summary-panel">
+          <div class="summary-panel-title">Activities by Tower</div>
+          <div id="summaryByTower" class="summary-panel-body"></div>
+        </div>
+        <div class="summary-panel">
+          <div class="summary-panel-title">Work Status</div>
+          <div id="summaryWorkStatus" class="summary-panel-body"></div>
+        </div>
+        <div class="summary-panel">
+          <div class="summary-panel-title">Inspection Status</div>
+          <div id="summaryInspectionStatus" class="summary-panel-body"></div>
+        </div>
+        <div class="summary-panel">
+          <div class="summary-panel-title">Delay / Constraint Categories</div>
+          <div id="summaryConstraints" class="summary-panel-body"></div>
+        </div>
+        <div class="summary-panel">
+          <div class="summary-panel-title">Housekeeping Status</div>
+          <div id="summaryHousekeeping" class="summary-panel-body"></div>
+        </div>
+        <div class="summary-panel">
+          <div class="summary-panel-title">Reported Quantity by Unit</div>
+          <div id="summaryQuantities" class="summary-panel-body"></div>
+        </div>
+        <div class="summary-panel">
+          <div class="summary-panel-title">Activities by Supervisor</div>
+          <div id="summarySupervisors" class="summary-panel-body"></div>
+        </div>
+      </div>
+
+      <div id="summaryRecentPanel" class="summary-panel">
+        <div class="summary-panel-title">Recent Activities</div>
+        <div id="summaryRecent" class="summary-panel-body"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="pendingInspectionsPage">
+  <div class="header">
+    <div>
+      <div class="app-name">🔍 Pending Inspections</div>
+      <div class="app-subtitle">Review and decide requested site inspections</div>
+    </div>
+    <button class="back-button" onclick="showDashboard()">Back</button>
+  </div>
+  <div class="container">
+    <div class="form-card">
+      <div class="step-title">Inspection Queue</div>
+      <div class="step-subtitle">Activities with Inspection Status = Requested. Open an item to approve, reject, or require rectification.</div>
+      <div class="inspection-toolbar">
+        <input id="inspectionSearch" placeholder="Search Activity ID, activity, contractor..." oninput="applyInspectionFilters()">
+        <select id="inspectionProjectFilter" onchange="applyInspectionFilters()"><option value="">All Projects</option></select>
+        <select id="inspectionTowerFilter" onchange="applyInspectionFilters()"><option value="">All Towers</option></select>
+        <select id="inspectionFloorFilter" onchange="applyInspectionFilters()"><option value="">All Floors</option></select>
+      </div>
+      <div class="inspection-summary-row"><span id="pendingInspectionCount" class="inspection-chip">0 Pending</span></div>
+      <div id="pendingInspectionsContainer" class="reports-loading">Loading pending inspections...</div>
+    </div>
+  </div>
+</div>
+
+<div id="inspectionDecisionModal" class="inspect-modal" onclick="closeInspectionDecision(event)">
+  <div class="inspect-card" onclick="event.stopPropagation()">
+    <div class="inspect-head">
+      <div>
+        <div id="inspectionDecisionTitle" class="inspect-title">Inspection</div>
+        <div id="inspectionDecisionPath" class="inspect-path"></div>
+      </div>
+      <button class="modal-close" onclick="closeInspectionDecision()">Close</button>
+    </div>
+    <div class="inspect-body">
+      <div id="inspectionDecisionInfo"></div>
+      <div class="decision-panel">
+        <div class="step-title" style="font-size:18px">Inspection Decision</div>
+        <div class="decision-grid">
+          <div>
+            <label>Decision *</label>
+            <select id="inspectionDecisionStatus">
+              <option value="">Select Decision</option>
+              <option>Approved</option>
+              <option>Rejected</option>
+              <option>Rectification Required</option>
+            </select>
+          </div>
+          <div>
+            <label>Inspection Date *</label>
+            <input id="inspectionDecisionDate" type="date">
+          </div>
+          <div class="full-width">
+            <label>Inspector / Engineer *</label>
+            <input id="inspectionDecisionInspector">
+          </div>
+          <div class="full-width">
+            <label>Inspection Remarks *</label>
+            <textarea id="inspectionDecisionRemarks" placeholder="Enter inspection findings / remarks"></textarea>
+          </div>
+        </div>
+        <div class="decision-actions">
+          <button id="inspectionSaveButton" class="decision-save" onclick="saveInspectionDecision()">Save Inspection Decision</button>
+        </div>
+        <div id="inspectionDecisionMessage" class="inspection-message"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="myReportsPage"><div class="header"><div><div class="app-name">📋 My Reports</div><div class="app-subtitle">Submitted site activities</div></div><button class="back-button" onclick="showDashboard()">Back</button></div><div class="container"><div class="form-card"><div class="step-title">My Activity Reports</div><div class="step-subtitle">Search and filter your submitted reports. Click View for full details and photo evidence.</div><div class="reports-toolbar"><input id="reportSearch" class="search-wide" placeholder="Search Activity ID, activity, contractor, trade..." oninput="applyReportFilters()"><select id="reportProject" onchange="applyReportFilters()"><option value="">All Projects</option></select><select id="reportTower" onchange="applyReportFilters()"><option value="">All Towers</option></select><select id="reportFloor" onchange="applyReportFilters()"><option value="">All Floors</option></select><select id="reportStatus" onchange="applyReportFilters()"><option value="">All Work Status</option><option>Not Started</option><option>In Progress</option><option>Completed</option><option>Hold</option></select></div><div class="reports-summary"><span id="reportCount" class="summary-chip">0 Reports</span></div><div id="reportsContainer" class="reports-loading">Loading reports...</div></div></div></div>
+<div id="reportDetailModal" class="detail-modal" onclick="closeReportDetail(event)">
+  <div class="detail-card" onclick="event.stopPropagation()">
+    <div class="report-detail-top">
+      <div class="report-detail-title-row">
+        <div>
+          <div id="detailTitle" class="report-id">Activity Details</div>
+          <div id="detailSubtitle" class="report-path"></div>
+        </div>
+        <div class="report-detail-actions">
+          <button class="detail-action-btn print-btn" onclick="printCurrentReport()">🖨️ Print Report</button>
+          <button class="detail-action-btn close-btn" onclick="closeReportDetail()">Close</button>
+        </div>
+      </div>
+    </div>
+    <div id="detailContent" class="report-detail-body"></div>
+    <div class="detail-footer">
+      <button class="detail-action-btn back-report-btn" onclick="closeReportDetail()">← Back to My Reports</button>
+      <button class="detail-action-btn print-btn" onclick="printCurrentReport()">🖨️ Print / Save PDF</button>
+    </div>
+  </div>
+</div>
+<div id="activityPage"><div class="header"><div><div class="app-name">📝 New Site Activity</div><div class="app-subtitle">All fields are mandatory</div></div><button class="back-button" onclick="showDashboard()">Back</button></div><div class="container"><div class="form-card"><div class="progress-bar"><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div></div>
+<div class="step"><div class="step-title">1. Location</div><div class="form-grid"><div><label>Project *</label><select id="project" onchange="updateTowers()"><option value="">Select Project</option></select></div><div><label>Tower / Block *</label><select id="tower" onchange="updateFloors()"><option value="">Select Tower</option></select></div><div><label>Floor *</label><select id="floor"><option value="">Select Floor</option></select></div><div><label>Location Type *</label><select id="locationType"><option value="">Select</option><option>Apartment</option><option>Lobby</option><option>Corridor</option><option>Staircase</option><option>Common Area</option><option>Roof</option><option>Basement</option><option>External</option><option>Other</option></select></div><div><label>Apartment / Room No. *</label><input id="apartment"></div><div><label>Specific Location *</label><input id="specificLocation"></div></div></div>
+<div class="step"><div class="step-title">2. Work Details</div><div class="form-grid"><div><label>Trade *</label><select id="trade" onchange="updateSubTrades()"><option value="">Select Trade</option></select></div><div><label>Sub-Trade *</label><select id="subTrade" onchange="updateActivities()"><option value="">Select Sub-Trade</option></select></div><div><label>Activity *</label><select id="activity"><option value="">Select Activity</option></select></div><div><label>Contractor *</label><input id="contractor"></div><div><label>Quantity *</label><input id="quantity" type="number" step="any"></div><div><label>Unit *</label><select id="unit"><option value="">Select Unit</option></select></div></div></div>
+<div class="step"><div class="step-title">3. Progress Details</div><div class="form-grid"><div><label>Work Status *</label><select id="workStatus"><option value="">Select</option><option>Not Started</option><option>In Progress</option><option>Completed</option><option>Hold</option></select></div><div><label>Start Date *</label><input id="startDate" type="date"></div><div><label>Planned Completion Date *</label><input id="plannedCompletionDate" type="date"></div><div><label>Actual Completion Date <span style="color:#6b7280;font-weight:normal">(required only when Completed)</span></label><input id="actualCompletionDate" type="date"></div><div><label>Today's Quantity *</label><input id="todayQuantity" type="number"></div><div><label>Cumulative Quantity *</label><input id="cumulativeQuantity" type="number"></div></div></div>
+<div class="step"><div class="step-title">4. Inspection</div><div class="form-grid"><div><label>Inspection Required *</label><select id="inspectionRequired"><option value="">Select</option><option>Yes</option><option>No</option></select></div><div><label>Inspection Status *</label><select id="inspectionStatus"><option value="">Select</option><option>Not Requested</option><option>Requested</option><option>Approved</option><option>Rejected</option><option>Rectification Required</option></select></div><div><label>Inspection Date *</label><input id="inspectionDate" type="date"></div><div><label>Inspector / Engineer *</label><input id="inspector"></div><div class="full-width"><label>Inspection Remarks *</label><textarea id="inspectionRemarks"></textarea></div></div></div>
+<div class="step"><div class="step-title">5. Housekeeping</div><div class="form-grid"><div><label>Housekeeping Status *</label><select id="housekeepingStatus"><option value="">Select</option><option>Done</option><option>Pending</option><option>Not Applicable</option></select></div><div class="full-width"><label>Housekeeping Remarks *</label><textarea id="housekeepingRemarks"></textarea></div></div></div>
+<div class="step"><div class="step-title">6. Photos</div><div class="step-subtitle">Photos will be stored in Google Drive by Project → Tower → Upload Date → Floor → Activity ID.</div><div class="form-grid"><div><label>Before Work Photo *</label><input id="beforePhoto" type="file" accept="image/*" capture="environment" onchange="previewSinglePhoto(this,'beforePreview')"><div id="beforePreview" class="photo-preview-wrap"></div></div><div><label>Progress Photos *</label><input id="progressPhotos" type="file" accept="image/*" multiple onchange="previewMultiplePhotos(this,'progressPreview')"><div class="upload-note">You can select multiple progress photos.</div><div id="progressPreview" class="photo-preview-wrap"></div></div><div><label>Completion Photo *</label><input id="completionPhoto" type="file" accept="image/*" capture="environment" onchange="previewSinglePhoto(this,'completionPreview')"><div id="completionPreview" class="photo-preview-wrap"></div></div><div><label>Inspection Photo *</label><input id="inspectionPhoto" type="file" accept="image/*" capture="environment" onchange="previewSinglePhoto(this,'inspectionPreview')"><div id="inspectionPreview" class="photo-preview-wrap"></div></div></div></div>
+<div class="step"><div class="step-title">7. Constraints & Remarks</div><div class="form-grid"><div class="full-width"><label>Supervisor Remarks *</label><textarea id="supervisorRemarks"></textarea></div><div class="full-width"><label>Issue / Constraint *</label><textarea id="issueConstraint"></textarea></div><div class="full-width"><label>Action Required *</label><textarea id="actionRequired"></textarea></div><div><label>Work Front Available *</label><select id="workFrontAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select></div><div><label>Material Available *</label><select id="materialAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select></div><div><label>Drawing / Approval Available *</label><select id="drawingApprovalAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select></div><div><label>Delay / Constraint Category *</label><select id="delayCategory"><option value="">Select Category</option></select></div></div></div>
+<div class="step"><div class="step-title">8. Review & Submit</div><div id="reviewContainer"></div></div>
+<div class="form-actions"><button id="previousButton" onclick="previousStep()">Previous</button><button id="nextButton" class="next-btn" onclick="nextStep()">Next</button><button id="submitButton" class="submit-btn" onclick="submitActivity()" style="display:none">Submit Activity</button></div><div id="activityMessage" class="message"></div></div></div></div>
+<script src="app-config.js"></script>
+<script src="api-shim.js"></script>
+<script>
+let loggedInUser=null,masterData=null,currentStep=0,myReportsData=[];
+
+function value(id){return document.getElementById(id).value.trim()}
+function togglePassword(){let p=document.getElementById("password"),t=document.getElementById("passwordToggle");p.type=p.type==="password"?"text":"password";t.innerText=p.type==="password"?"Show":"Hide"}
+
+function normalizeRole(role){
+  return String(role||"").trim().toLowerCase();
+}
+
+function hasFullAccess(){
+  if(!loggedInUser)return false;
+  return [
+    "admin",
+    "ceo",
+    "project manager",
+    "construction manager",
+    "planning engineer",
+    "mep manager"
+  ].includes(normalizeRole(loggedInUser.role));
+}
+
+function hasExecutiveAccess(){
+  if(!loggedInUser)return false;
+  return ["ceo","project manager"].includes(normalizeRole(loggedInUser.role));
+}
+
+function hasAdministrationAccess(){
+  if(!loggedInUser)return false;
+  return ["admin","project manager"].includes(normalizeRole(loggedInUser.role));
+}
+
+function applyRoleAccess(){
+  const adminCard=document.getElementById("adminCard");
+  const executiveCard=document.getElementById("executiveReportCard");
+  if(adminCard)adminCard.style.display=hasAdministrationAccess()?"block":"none";
+  if(executiveCard)executiveCard.style.display=hasExecutiveAccess()?"block":"none";
+
+  const reportTitle=document.querySelector("#myReportsPage .step-title");
+  const reportSubtitle=document.querySelector("#myReportsPage .step-subtitle");
+  if(reportTitle)reportTitle.innerText=hasFullAccess()?"Activity Reports":"My Activity Reports";
+  if(reportSubtitle)reportSubtitle.innerText=hasFullAccess()
+    ?"Search and filter all submitted reports. Click View for full details and photo evidence."
+    :"Search and filter your submitted reports. Click View for full details and photo evidence.";
+}
+
+function hideAppPages(){
+  ["loginPage","dashboardPage","activityPage","myReportsPage","pendingInspectionsPage","dailySummaryPage","administrationPage","executiveReportPage"].forEach(function(id){
+    const el=document.getElementById(id);
+    if(el)el.style.display="none";
+  });
+}
+
+function login(){
+  const u=value("username");
+  const p=document.getElementById("password").value;
+  const m=document.getElementById("message");
+  const b=document.getElementById("loginButton");
+
+  if(!u||!p){
+    m.style.color="#dc2626";
+    m.innerText="Username and password are required.";
+    return;
+  }
+
+  b.disabled=true;
+  b.innerText="LOGGING IN...";
+  m.style.color="#64748b";
+  m.innerText="Checking login details...";
+
+  google.script.run
+    .withSuccessHandler(function(r){
+      b.disabled=false;
+      b.innerText="LOGIN";
+      if(r.success){
+        loggedInUser=r.user;
+        if(document.getElementById("rememberMe").checked){
+          localStorage.setItem("rememberedUsername",u);
+        }else{
+          localStorage.removeItem("rememberedUsername");
+        }
+        m.innerText="";
+        showDashboard();
+      }else{
+        m.style.color="#dc2626";
+        m.innerText=r.message;
+      }
+    })
+    .withFailureHandler(function(e){
+      b.disabled=false;
+      b.innerText="LOGIN";
+      m.style.color="#dc2626";
+      m.innerText="Login error: "+e.message;
+    })
+    .loginUser(u,p);
+}
+
+function showDashboard(){
+  if(!loggedInUser){
+    hideAppPages();
+    document.getElementById("loginPage").style.display="flex";
+    return;
+  }
+  hideAppPages();
+  document.getElementById("dashboardPage").style.display="block";
+  document.getElementById("welcome").innerText="Welcome, "+loggedInUser.supervisorName;
+  document.getElementById("userRole").innerText="Role: "+loggedInUser.role+" | Employee ID: "+loggedInUser.employeeId;
+  applyRoleAccess();
+}
+function addOption(s,v){if(!v)return;let o=document.createElement("option");o.value=v;o.textContent=v;s.appendChild(o)}
+function resetSelect(id,t){document.getElementById(id).innerHTML='<option value="">'+t+'</option>'}
+function openActivityForm(){
+  hideAppPages();
+  document.getElementById("activityPage").style.display="block";
+  currentStep=0;
+  updateStepDisplay();
+
+  google.script.run
+    .withSuccessHandler(function(d){
+      masterData=d;
+      loadMasterDropdowns();
+    })
+    .withFailureHandler(function(e){
+      alert("Unable to load Project / Tower / Floor master data: "+e.message);
+      document.getElementById("activityMessage").innerText="Master data loading failed: "+e.message;
+    })
+    .getMasterData();
+}
+function loadMasterDropdowns(){
+  resetSelect("project","Select Project");
+  resetSelect("trade","Select Trade");
+  resetSelect("unit","Select Unit");
+  resetSelect("delayCategory","Select Category");
+  resetSelect("activity","Select Activity");
+
+  masterData.projects.forEach(i=>addOption(document.getElementById("project"),i["Project Name"]));
+  [...new Set(masterData.trades.map(i=>i["Trade"]))].forEach(v=>addOption(document.getElementById("trade"),v));
+  masterData.units.forEach(i=>addOption(document.getElementById("unit"),i["Unit"]));
+  masterData.delayCategories.forEach(i=>addOption(document.getElementById("delayCategory"),i["Delay / Constraint Category"]));
+}
+function updateTowers(){let p=value("project");resetSelect("tower","Select Tower");resetSelect("floor","Select Floor");[...new Set(masterData.towers.filter(i=>i["Project"]===p).map(i=>i["Tower / Block"]))].forEach(v=>addOption(document.getElementById("tower"),v))}
+function updateFloors(){let t=value("tower"),p=value("project");resetSelect("floor","Select Floor");[...new Set(masterData.floors.filter(i=>i["Tower / Block"]===t&&(!i["Project"]||i["Project"]===p)).map(i=>i["Floor"]))].forEach(v=>addOption(document.getElementById("floor"),v))}
+function updateSubTrades(){
+  let t=value("trade");
+  resetSelect("subTrade","Select Sub-Trade");
+  resetSelect("activity","Select Activity");
+  [...new Set(masterData.trades.filter(i=>i["Trade"]===t).map(i=>i["Sub-Trade"]))].forEach(v=>addOption(document.getElementById("subTrade"),v));
+}
+
+function updateActivities(){
+  const trade=value("trade");
+  const subTrade=value("subTrade");
+  resetSelect("activity","Loading Activities...");
+
+  if(!trade||!subTrade){
+    resetSelect("activity","Select Activity");
+    return;
+  }
+
+  google.script.run
+    .withSuccessHandler(function(list){
+      resetSelect("activity","Select Activity");
+      (list||[]).forEach(function(v){addOption(document.getElementById("activity"),v)});
+      if(!(list||[]).length){
+        addOption(document.getElementById("activity"),"Other / Not Listed");
+      }
+    })
+    .withFailureHandler(function(e){
+      resetSelect("activity","Select Activity");
+      alert("Unable to load Activities: "+e.message);
+    })
+    .getActivitiesForSelection(trade,subTrade);
+}
+function updateStepDisplay(){document.querySelectorAll(".step").forEach((s,i)=>s.classList.toggle("active",i===currentStep));document.querySelectorAll(".progress-step").forEach((s,i)=>s.classList.toggle("active",i<=currentStep));document.getElementById("previousButton").style.visibility=currentStep===0?"hidden":"visible";document.getElementById("nextButton").style.display=currentStep===7?"none":"block";document.getElementById("submitButton").style.display=currentStep===7?"block":"none"}
+function validateCurrentStep(){
+  const stepEl=document.querySelectorAll(".step")[currentStep];
+  for(const f of stepEl.querySelectorAll("input,select,textarea")){
+    if(f.id==="actualCompletionDate" && value("workStatus")!=="Completed") continue;
+    if(f.type==="file"){
+      if(!f.files.length)return false;
+    }else if(!String(f.value).trim()){
+      return false;
+    }
+  }
+  if(currentStep===2){
+    const status=value("workStatus");
+    const actual=value("actualCompletionDate");
+    if(status==="Completed" && !actual){
+      alert("Actual Completion Date is required when Work Status is Completed.");
+      return false;
+    }
+    if(actual){
+      const selected=new Date(actual+"T00:00:00");
+      const today=new Date(); today.setHours(0,0,0,0);
+      if(selected>today){
+        alert("Actual Completion Date cannot be in the future.");
+        return false;
+      }
+    }
+  }
+  return true;
+}
+function nextStep(){if(!validateCurrentStep()){alert("Please complete all mandatory fields.");return}if(currentStep<7)currentStep++;updateStepDisplay();if(currentStep===7)buildReview()}
+function previousStep(){if(currentStep>0)currentStep--;updateStepDisplay()}
+function collectFormData(){return {supervisorName:loggedInUser.supervisorName,userId:loggedInUser.userId,username:loggedInUser.username,project:value("project"),tower:value("tower"),floor:value("floor"),locationType:value("locationType"),apartment:value("apartment"),specificLocation:value("specificLocation"),trade:value("trade"),subTrade:value("subTrade"),activity:value("activity"),contractor:value("contractor"),quantity:value("quantity"),unit:value("unit"),workStatus:value("workStatus"),startDate:value("startDate"),plannedCompletionDate:value("plannedCompletionDate"),actualCompletionDate:value("actualCompletionDate"),todayQuantity:value("todayQuantity"),cumulativeQuantity:value("cumulativeQuantity"),inspectionRequired:value("inspectionRequired"),inspectionStatus:value("inspectionStatus"),inspectionDate:value("inspectionDate"),inspector:value("inspector"),inspectionRemarks:value("inspectionRemarks"),housekeepingStatus:value("housekeepingStatus"),housekeepingRemarks:value("housekeepingRemarks"),supervisorRemarks:value("supervisorRemarks"),issueConstraint:value("issueConstraint"),actionRequired:value("actionRequired"),workFrontAvailable:value("workFrontAvailable"),materialAvailable:value("materialAvailable"),drawingApprovalAvailable:value("drawingApprovalAvailable"),delayCategory:value("delayCategory"),beforePhoto:"",progressPhotos:"",completionPhoto:"",inspectionPhoto:""}}
+
+function clearPreview(id){document.getElementById(id).innerHTML=""}
+function previewSinglePhoto(input,previewId){clearPreview(previewId);if(!input.files||!input.files[0])return;let img=document.createElement("img");img.className="photo-preview";img.src=URL.createObjectURL(input.files[0]);document.getElementById(previewId).appendChild(img)}
+function previewMultiplePhotos(input,previewId){clearPreview(previewId);Array.from(input.files||[]).forEach(f=>{let img=document.createElement("img");img.className="photo-preview";img.src=URL.createObjectURL(f);document.getElementById(previewId).appendChild(img)})}
+function fileToBase64(file){return new Promise((resolve,reject)=>{if(!file)return reject(new Error("Required photo missing."));let r=new FileReader();r.onload=e=>resolve({base64:e.target.result.split(",")[1],mimeType:file.type,name:file.name});r.onerror=reject;r.readAsDataURL(file)})}
+async function collectPhotoData(){let a=[];for(const f of Array.from(document.getElementById("progressPhotos").files))a.push(await fileToBase64(f));return {beforePhoto:await fileToBase64(document.getElementById("beforePhoto").files[0]),progressPhotos:a,completionPhoto:await fileToBase64(document.getElementById("completionPhoto").files[0]),inspectionPhoto:await fileToBase64(document.getElementById("inspectionPhoto").files[0])}}
+function buildReview(){let d=collectFormData(),r=document.getElementById("reviewContainer");r.innerHTML="";["project","tower","floor","trade","subTrade","activity","contractor","quantity","unit","workStatus","inspector","inspectionStatus","housekeepingStatus","delayCategory"].forEach(k=>{let x=document.createElement("div");x.className="review-row";x.textContent=k+": "+d[k];r.appendChild(x)})}
+async function submitActivity(){let m=document.getElementById("activityMessage"),b=document.getElementById("submitButton");b.disabled=true;m.className="message";m.innerText="Uploading photos and submitting activity... Please wait.";try{let payload={formData:collectFormData(),photos:await collectPhotoData()};google.script.run.withSuccessHandler(r=>{m.className="success-box";m.innerHTML="Activity submitted successfully.<br>Activity ID: <b>"+r.activityId+"</b>"+(r.activityFolderUrl?'<br><a href="'+r.activityFolderUrl+'" target="_blank">Open Activity Photo Folder</a>':'');b.disabled=false}).withFailureHandler(e=>{m.className="message";m.innerText="Submission failed: "+e.message;b.disabled=false}).saveActivityWithPhotos(payload)}catch(e){m.className="message";m.innerText=e.message;b.disabled=false}}
+
+function escapeHtml(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]})}
+function uniqueValues(arr,key){return [...new Set(arr.map(x=>String(x[key]||"").trim()).filter(Boolean))].sort()}
+function fillReportFilter(id,values,label){let s=document.getElementById(id),current=s.value;s.innerHTML='<option value="">'+label+'</option>';values.forEach(v=>addOption(s,v));if(values.includes(current))s.value=current}
+function openMyReports(){
+  hideAppPages();
+  document.getElementById("myReportsPage").style.display="block";
+  document.getElementById("reportsContainer").className="reports-loading";
+  document.getElementById("reportsContainer").innerText="Loading reports...";
+
+  google.script.run
+    .withSuccessHandler(function(rows){
+      myReportsData=rows||[];
+      fillReportFilter("reportProject",uniqueValues(myReportsData,"project"),"All Projects");
+      fillReportFilter("reportTower",uniqueValues(myReportsData,"tower"),"All Towers");
+      fillReportFilter("reportFloor",uniqueValues(myReportsData,"floor"),"All Floors");
+      applyReportFilters();
+    })
+    .withFailureHandler(function(e){
+      document.getElementById("reportsContainer").className="empty-state";
+      document.getElementById("reportsContainer").innerText="Unable to load reports: "+e.message;
+    })
+    .getReportsForUser(loggedInUser.userId,loggedInUser.username,loggedInUser.role);
+}
+function applyReportFilters(){let q=(document.getElementById("reportSearch").value||"").toLowerCase(),p=document.getElementById("reportProject").value,t=document.getElementById("reportTower").value,f=document.getElementById("reportFloor").value,s=document.getElementById("reportStatus").value;let rows=myReportsData.filter(r=>{let text=[r.activityId,r.activity,r.contractor,r.trade,r.subTrade].join(" ").toLowerCase();return(!q||text.includes(q))&&(!p||r.project===p)&&(!t||r.tower===t)&&(!f||r.floor===f)&&(!s||r.workStatus===s)});document.getElementById("reportCount").innerText=rows.length+" Report"+(rows.length===1?"":"s");renderReports(rows)}
+function renderReports(rows){let c=document.getElementById("reportsContainer");if(!rows.length){c.className="empty-state";c.innerHTML="No reports found for the selected filters.";return}c.className="table-wrap";let h='<table class="reports-table"><thead><tr><th>Activity ID</th><th>Date</th><th>Project</th><th>Tower</th><th>Floor</th><th>Activity</th><th>Contractor</th><th>Status</th><th>Inspection</th><th></th></tr></thead><tbody>';rows.forEach(r=>{h+='<tr><td><b>'+escapeHtml(r.activityId)+'</b></td><td>'+escapeHtml(r.timestamp)+'</td><td>'+escapeHtml(r.project)+'</td><td>'+escapeHtml(r.tower)+'</td><td>'+escapeHtml(r.floor)+'</td><td>'+escapeHtml(r.activity)+'</td><td>'+escapeHtml(r.contractor)+'</td><td><span class="status-badge">'+escapeHtml(r.workStatus)+'</span></td><td>'+escapeHtml(r.inspectionStatus)+'</td><td><button class="view-btn" onclick="viewReportDetail(\''+escapeHtml(r.activityId)+'\')">View</button></td></tr>'});h+='</tbody></table>';c.innerHTML=h}
+function detailItem(label,value){return '<div class="detail-item"><strong>'+escapeHtml(label)+'</strong><div>'+escapeHtml(value||"-")+'</div></div>'}
+function longDetail(label,value){return '<div class="long-text"><strong style="display:block;color:#6b7280;font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">'+escapeHtml(label)+'</strong>'+escapeHtml(value||"-")+'</div>'}
+function photoLink(url,label){return url?'<a class="photo-link" href="'+escapeHtml(url)+'" target="_blank" rel="noopener">'+escapeHtml(label)+'</a>':''}
+function detailSection(title,content){return '<section class="detail-section"><div class="detail-section-title">'+escapeHtml(title)+'</div><div class="detail-section-body">'+content+'</div></section>'}
+function photoCategory(title,links){return '<div class="photo-category"><div class="photo-category-title">'+escapeHtml(title)+'</div><div class="photo-links">'+(links||'<span style="color:#6b7280">No photo available</span>')+'</div></div>'}
+
+function viewReportDetail(id){
+  let r=myReportsData.find(x=>x.activityId===id);
+  if(!r)return;
+
+  document.getElementById("detailTitle").innerText=r.activityId;
+  document.getElementById("detailSubtitle").innerText=r.timestamp+" • "+r.project+" • "+r.tower+" • "+r.floor;
+
+  let h="";
+
+  h+=detailSection("📍 Location & Activity",
+    '<div class="detail-grid">'+
+      detailItem("Project",r.project)+
+      detailItem("Tower / Block",r.tower)+
+      detailItem("Floor",r.floor)+
+      detailItem("Location Type",r.locationType)+
+      detailItem("Apartment / Room",r.apartment)+
+      detailItem("Specific Location",r.specificLocation)+
+      detailItem("Trade",r.trade)+
+      detailItem("Sub-Trade",r.subTrade)+
+      detailItem("Activity",r.activity)+
+      detailItem("Contractor",r.contractor)+
+      detailItem("Supervisor",r.supervisorName)+
+      detailItem("Submitted",r.timestamp)+
+    '</div>'
+  );
+
+  h+=detailSection("📈 Progress",
+    '<div class="detail-grid">'+
+      detailItem("Quantity",String(r.quantity||"-")+(r.unit?" "+r.unit:""))+
+      detailItem("Today's Quantity",r.todayQuantity)+
+      detailItem("Cumulative Quantity",r.cumulativeQuantity)+
+      detailItem("Work Status",r.workStatus)+
+      detailItem("Start Date",r.startDate)+
+      detailItem("Planned Completion",r.plannedCompletionDate)+
+      detailItem("Actual Completion",r.actualCompletionDate)+
+    '</div>'
+  );
+
+  h+=detailSection("🔍 Inspection & Housekeeping",
+    '<div class="detail-grid">'+
+      detailItem("Inspection Required",r.inspectionRequired)+
+      detailItem("Inspection Status",r.inspectionStatus)+
+      detailItem("Inspection Date",r.inspectionDate)+
+      detailItem("Inspector / Engineer",r.inspector)+
+      detailItem("Housekeeping Status",r.housekeepingStatus)+
+    '</div>'+
+    longDetail("Inspection Remarks",r.inspectionRemarks)+
+    longDetail("Housekeeping Remarks",r.housekeepingRemarks)
+  );
+
+  h+=detailSection("⚠️ Constraints & Required Actions",
+    '<div class="detail-grid">'+
+      detailItem("Work Front Available",r.workFrontAvailable)+
+      detailItem("Material Available",r.materialAvailable)+
+      detailItem("Drawing / Approval Available",r.drawingApprovalAvailable)+
+      detailItem("Delay / Constraint Category",r.delayCategory)+
+    '</div>'+
+    longDetail("Supervisor Remarks",r.supervisorRemarks)+
+    longDetail("Issue / Constraint",r.issueConstraint)+
+    longDetail("Action Required",r.actionRequired)
+  );
+
+  const beforeLinks=photoLink(r.beforePhoto,"Open Before Photo");
+  const progressLinks=(r.progressPhotos||[]).map((u,i)=>photoLink(u,"Open Progress Photo "+(i+1))).join("");
+  const completionLinks=photoLink(r.completionPhoto,"Open Completion Photo");
+  const inspectionLinks=photoLink(r.inspectionPhoto,"Open Inspection Photo");
+
+  h+=detailSection("📷 Photo Evidence",
+    photoCategory("Before Work",beforeLinks)+
+    photoCategory("Progress / During Work",progressLinks)+
+    photoCategory("Completion",completionLinks)+
+    photoCategory("Inspection",inspectionLinks)
+  );
+
+  document.getElementById("detailContent").innerHTML=h;
+  document.getElementById("reportDetailModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+
+function closeReportDetail(e){
+  if(e&&e.target!==document.getElementById("reportDetailModal"))return;
+  document.getElementById("reportDetailModal").style.display="none";
+  document.body.style.overflow="";
+}
+
+function printCurrentReport(){window.print()}
+
+
+let pendingInspectionData=[];
+let currentInspectionActivityId="";
+
+function openPendingInspections(){
+  hideAppPages();
+  document.getElementById("pendingInspectionsPage").style.display="block";
+  const c=document.getElementById("pendingInspectionsContainer");
+  c.className="reports-loading";
+  c.innerText="Loading pending inspections...";
+  google.script.run
+    .withSuccessHandler(function(rows){
+      pendingInspectionData=rows||[];
+      fillReportFilter("inspectionProjectFilter",uniqueValues(pendingInspectionData,"project"),"All Projects");
+      fillReportFilter("inspectionTowerFilter",uniqueValues(pendingInspectionData,"tower"),"All Towers");
+      fillReportFilter("inspectionFloorFilter",uniqueValues(pendingInspectionData,"floor"),"All Floors");
+      applyInspectionFilters();
+    })
+    .withFailureHandler(function(e){
+      c.className="empty-state";
+      c.innerText="Unable to load pending inspections: "+e.message;
+    })
+    .getPendingInspectionsForUser(loggedInUser.userId,loggedInUser.username,loggedInUser.role);
+}
+
+function applyInspectionFilters(){
+  const q=(document.getElementById("inspectionSearch").value||"").toLowerCase().trim();
+  const p=document.getElementById("inspectionProjectFilter").value;
+  const t=document.getElementById("inspectionTowerFilter").value;
+  const f=document.getElementById("inspectionFloorFilter").value;
+  const rows=pendingInspectionData.filter(r=>{
+    const text=[r.activityId,r.activity,r.contractor,r.trade,r.subTrade,r.supervisorName].join(" ").toLowerCase();
+    return (!q||text.includes(q))&&(!p||r.project===p)&&(!t||r.tower===t)&&(!f||r.floor===f);
+  });
+  document.getElementById("pendingInspectionCount").innerText=rows.length+" Pending";
+  renderPendingInspections(rows);
+}
+
+function renderPendingInspections(rows){
+  const c=document.getElementById("pendingInspectionsContainer");
+  if(!rows.length){
+    c.className="empty-state";
+    c.innerHTML="No pending inspections found.";
+    return;
+  }
+  c.className="pending-table-wrap";
+  let h='<table class="pending-table"><thead><tr>'+
+    '<th>Activity ID</th><th>Date</th><th>Project</th><th>Tower</th><th>Floor</th>'+
+    '<th>Activity</th><th>Contractor</th><th>Supervisor</th><th>Status</th><th></th>'+
+    '</tr></thead><tbody>';
+  rows.forEach(r=>{
+    h+='<tr>'+
+      '<td><b>'+escapeHtml(r.activityId)+'</b></td>'+
+      '<td>'+escapeHtml(r.timestamp)+'</td>'+
+      '<td>'+escapeHtml(r.project)+'</td>'+
+      '<td>'+escapeHtml(r.tower)+'</td>'+
+      '<td>'+escapeHtml(r.floor)+'</td>'+
+      '<td>'+escapeHtml(r.activity)+'</td>'+
+      '<td>'+escapeHtml(r.contractor)+'</td>'+
+      '<td>'+escapeHtml(r.supervisorName)+'</td>'+
+      '<td><span class="pending-badge">Requested</span></td>'+
+      '<td><button class="inspect-btn" onclick="openInspectionDecision(\''+escapeHtml(r.activityId)+'\')">Inspect</button></td>'+
+      '</tr>';
+  });
+  h+='</tbody></table>';
+  c.innerHTML=h;
+}
+
+function inspectionInfoItem(label,val){
+  return '<div class="inspect-info-item"><strong>'+escapeHtml(label)+'</strong>'+escapeHtml(val||"-")+'</div>';
+}
+
+function openInspectionDecision(id){
+  const r=pendingInspectionData.find(x=>x.activityId===id);
+  if(!r)return;
+  currentInspectionActivityId=id;
+  document.getElementById("inspectionDecisionTitle").innerText=id;
+  document.getElementById("inspectionDecisionPath").innerText=r.project+" • "+r.tower+" • "+r.floor+" • "+r.activity;
+
+  let info='<div class="inspect-info">'+
+    inspectionInfoItem("Project",r.project)+
+    inspectionInfoItem("Tower / Block",r.tower)+
+    inspectionInfoItem("Floor",r.floor)+
+    inspectionInfoItem("Activity",r.activity)+
+    inspectionInfoItem("Trade / Sub-Trade",(r.trade||"")+" / "+(r.subTrade||""))+
+    inspectionInfoItem("Contractor",r.contractor)+
+    inspectionInfoItem("Work Status",r.workStatus)+
+    inspectionInfoItem("Supervisor",r.supervisorName)+
+    inspectionInfoItem("Requested Inspector",r.inspector)+
+    inspectionInfoItem("Current Remarks",r.inspectionRemarks)+
+    inspectionInfoItem("Quantity",String(r.quantity||"-")+(r.unit?" "+r.unit:""))+
+    inspectionInfoItem("Specific Location",r.specificLocation)+
+    '</div>';
+
+  let photoLinks='<div class="inspect-photo-links">';
+  if(r.beforePhoto)photoLinks+='<a href="'+escapeHtml(r.beforePhoto)+'" target="_blank">Before Photo</a>';
+  (r.progressPhotos||[]).forEach((u,i)=>{photoLinks+='<a href="'+escapeHtml(u)+'" target="_blank">Progress '+(i+1)+'</a>'});
+  if(r.completionPhoto)photoLinks+='<a href="'+escapeHtml(r.completionPhoto)+'" target="_blank">Completion Photo</a>';
+  if(r.inspectionPhoto)photoLinks+='<a href="'+escapeHtml(r.inspectionPhoto)+'" target="_blank">Inspection Photo</a>';
+  photoLinks+='</div>';
+
+  document.getElementById("inspectionDecisionInfo").innerHTML=info+'<div style="font-weight:800;margin:6px 0">📷 Photo Evidence</div>'+photoLinks;
+
+  document.getElementById("inspectionDecisionStatus").value="";
+  document.getElementById("inspectionDecisionInspector").value=(loggedInUser&&loggedInUser.supervisorName)||"";
+  document.getElementById("inspectionDecisionRemarks").value="";
+  document.getElementById("inspectionDecisionMessage").innerText="";
+  document.getElementById("inspectionDecisionDate").value=new Date().toISOString().slice(0,10);
+
+  document.getElementById("inspectionDecisionModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+
+function closeInspectionDecision(e){
+  if(e&&e.target!==document.getElementById("inspectionDecisionModal"))return;
+  document.getElementById("inspectionDecisionModal").style.display="none";
+  document.body.style.overflow="";
+  currentInspectionActivityId="";
+}
+
+function saveInspectionDecision(){
+  const status=value("inspectionDecisionStatus");
+  const date=value("inspectionDecisionDate");
+  const inspector=value("inspectionDecisionInspector");
+  const remarks=value("inspectionDecisionRemarks");
+  const msg=document.getElementById("inspectionDecisionMessage");
+  const btn=document.getElementById("inspectionSaveButton");
+
+  if(!currentInspectionActivityId||!status||!date||!inspector||!remarks){
+    msg.style.color="#dc2626";
+    msg.innerText="Please complete Decision, Inspection Date, Inspector and Remarks.";
+    return;
+  }
+
+  btn.disabled=true;
+  msg.style.color="#475569";
+  msg.innerText="Saving inspection decision...";
+
+  google.script.run
+    .withSuccessHandler(function(r){
+      msg.style.color="#16a34a";
+      msg.innerText="Inspection updated successfully: "+r.status;
+      btn.disabled=false;
+      pendingInspectionData=pendingInspectionData.filter(x=>x.activityId!==currentInspectionActivityId);
+      applyInspectionFilters();
+      setTimeout(closeInspectionDecision,700);
+    })
+    .withFailureHandler(function(e){
+      msg.style.color="#dc2626";
+      msg.innerText="Unable to save: "+e.message;
+      btn.disabled=false;
+    })
+    .updateInspectionDecision({
+      activityId:currentInspectionActivityId,
+      inspectionStatus:status,
+      inspectionDate:date,
+      inspector:inspector,
+      inspectionRemarks:remarks,
+      updatedByUserId:loggedInUser&&loggedInUser.userId||"",
+      updatedByUsername:loggedInUser&&loggedInUser.username||""
+    });
+}
+
+
+
+let dailySummaryCache=[];
+
+function openDailySummary(){
+  hideAppPages();
+  document.getElementById("dailySummaryPage").style.display="block";
+
+  if(!document.getElementById("summaryDate").value){
+    document.getElementById("summaryDate").value=new Date().toISOString().slice(0,10);
+  }
+  loadDailySummary();
+}
+
+function loadDailySummary(){
+  const d=document.getElementById("summaryDate").value;
+  google.script.run
+    .withSuccessHandler(function(rows){
+      dailySummaryCache=rows||[];
+      fillReportFilter("summaryProject", uniqueValues(dailySummaryCache,"project"), "All Projects");
+      fillReportFilter("summaryTrade", uniqueValues(dailySummaryCache,"trade"), "All Trades");
+      updateSummaryDependentFilters();
+      renderDailySummaryFromCache();
+    })
+    .withFailureHandler(function(e){
+      document.getElementById("summaryRecent").innerHTML='<div class="summary-empty">Unable to load summary: '+escapeHtml(e.message)+'</div>';
+    })
+    .getDailySummaryRowsForUser(
+      d,
+      loggedInUser.userId,
+      loggedInUser.username,
+      loggedInUser.role
+    );
+}
+
+function resetSummaryFilters(){
+  ["summaryProject","summaryTower","summaryFloor","summaryTrade","summaryWorkStatusFilter","summaryContractor"].forEach(id=>{
+    const el=document.getElementById(id); if(el)el.value="";
+  });
+  updateSummaryDependentFilters();
+  renderDailySummaryFromCache();
+}
+
+function renderDailySummaryFromCache(){
+  const p=document.getElementById("summaryProject").value;
+  const t=document.getElementById("summaryTower").value;
+  const f=document.getElementById("summaryFloor").value;
+  const tr=document.getElementById("summaryTrade").value;
+  const ws=document.getElementById("summaryWorkStatusFilter").value;
+  const c=(document.getElementById("summaryContractor").value||"").toLowerCase().trim();
+
+  const rows=dailySummaryCache.filter(r=>
+    (!p||r.project===p)&&
+    (!t||r.tower===t)&&
+    (!f||r.floor===f)&&
+    (!tr||r.trade===tr)&&
+    (!ws||r.workStatus===ws)&&
+    (!c||String(r.contractor||"").toLowerCase().includes(c))
+  );
+
+  const countBy=(key)=>{
+    const o={};
+    rows.forEach(r=>{const v=String(r[key]||"Unspecified").trim()||"Unspecified";o[v]=(o[v]||0)+1});
+    return o;
+  };
+
+  document.getElementById("kpiActivities").innerText=rows.length;
+  document.getElementById("kpiInProgress").innerText=rows.filter(r=>r.workStatus==="In Progress").length;
+  document.getElementById("kpiCompleted").innerText=rows.filter(r=>r.workStatus==="Completed").length;
+  document.getElementById("kpiPending").innerText=rows.filter(r=>r.inspectionStatus==="Requested").length;
+  document.getElementById("kpiRectification").innerText=rows.filter(r=>r.inspectionStatus==="Rectification Required").length;
+  document.getElementById("kpiConstraints").innerText=rows.filter(r=>String(r.delayCategory||"").trim()).length;
+
+  renderSummaryTable("summaryByProject",countBy("project"));
+  renderSummaryTable("summaryByTower",countBy("tower"));
+  renderSummaryTable("summaryWorkStatus",countBy("workStatus"));
+  renderSummaryTable("summaryInspectionStatus",countBy("inspectionStatus"));
+  renderSummaryTable("summaryConstraints",countBy("delayCategory"));
+  renderSummaryTable("summaryHousekeeping",countBy("housekeepingStatus"));
+  renderSummaryTable("summarySupervisors",countBy("supervisorName"));
+  renderQuantitySummary(rows);
+  renderRecentSummary(rows);
+}
+
+
+function updateSummaryDependentFilters(){
+  const p=document.getElementById("summaryProject").value;
+  const currentTower=document.getElementById("summaryTower").value;
+  const rows=p?dailySummaryCache.filter(r=>r.project===p):dailySummaryCache;
+  fillReportFilter("summaryTower",uniqueValues(rows,"tower"),"All Towers");
+  if(uniqueValues(rows,"tower").includes(currentTower))document.getElementById("summaryTower").value=currentTower;
+  updateSummaryFloorFilter();
+}
+
+function updateSummaryFloorFilter(){
+  const p=document.getElementById("summaryProject").value;
+  const t=document.getElementById("summaryTower").value;
+  const currentFloor=document.getElementById("summaryFloor").value;
+  let rows=dailySummaryCache;
+  if(p)rows=rows.filter(r=>r.project===p);
+  if(t)rows=rows.filter(r=>r.tower===t);
+  fillReportFilter("summaryFloor",uniqueValues(rows,"floor"),"All Floors");
+  if(uniqueValues(rows,"floor").includes(currentFloor))document.getElementById("summaryFloor").value=currentFloor;
+}
+
+function renderQuantitySummary(rows){
+  const totals={};
+  rows.forEach(r=>{
+    const unit=String(r.unit||"Unspecified").trim()||"Unspecified";
+    const qty=Number(r.todayQuantity);
+    if(!isNaN(qty))totals[unit]=(totals[unit]||0)+qty;
+  });
+  const el=document.getElementById("summaryQuantities");
+  const entries=Object.entries(totals);
+  if(!entries.length){el.innerHTML='<div class="summary-empty">No quantity data</div>';return;}
+  el.innerHTML='<div class="quantity-summary">'+entries.map(([u,v])=>'<span class="quantity-chip">'+escapeHtml(u)+': '+escapeHtml(String(v))+'</span>').join("")+'</div>';
+}
+
+function changeSummaryDate(days){
+  const el=document.getElementById("summaryDate");
+  const base=el.value?new Date(el.value+"T00:00:00"):new Date();
+  base.setDate(base.getDate()+days);
+  const y=base.getFullYear(),m=String(base.getMonth()+1).padStart(2,"0"),d=String(base.getDate()).padStart(2,"0");
+  el.value=y+"-"+m+"-"+d;
+  loadDailySummary();
+}
+
+function setSummaryToday(){
+  const n=new Date();
+  document.getElementById("summaryDate").value=n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0");
+  loadDailySummary();
+}
+
+function printDailySummary(){window.print()}
+function scrollToRecentSummary(){document.getElementById("summaryRecentPanel").scrollIntoView({behavior:"smooth"})}
+
+function openSummaryReport(id){
+  google.script.run
+    .withSuccessHandler(function(rows){
+      myReportsData=rows||[];
+      viewReportDetail(id);
+    })
+    .withFailureHandler(function(e){alert("Unable to open report: "+e.message)})
+    .getReportsForUser(loggedInUser.userId,loggedInUser.username,loggedInUser.role);
+}
+
+function renderSummaryTable(id,obj){
+  const el=document.getElementById(id);
+  const entries=Object.entries(obj).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length){el.innerHTML='<div class="summary-empty">No data</div>';return;}
+  let h='<table class="summary-list">';
+  entries.forEach(([k,v])=>h+='<tr><td>'+escapeHtml(k)+'</td><td>'+v+'</td></tr>');
+  h+='</table>';
+  el.innerHTML=h;
+}
+
+function renderRecentSummary(rows){
+  const el=document.getElementById("summaryRecent");
+  if(!rows.length){el.innerHTML='<div class="summary-empty">No activities for selected date / filters.</div>';return;}
+  const recent=rows.slice().sort((a,b)=>b.timestampMs-a.timestampMs).slice(0,20);
+  let h='<div class="recent-table-wrap"><table class="recent-table"><thead><tr>'+
+    '<th>Activity ID</th><th>Time</th><th>Project</th><th>Tower</th><th>Floor</th><th>Activity</th><th>Contractor</th><th>Work Status</th><th>Inspection</th><th></th>'+
+    '</tr></thead><tbody>';
+  recent.forEach(r=>{
+    h+='<tr>'+
+      '<td><b>'+escapeHtml(r.activityId)+'</b></td>'+
+      '<td>'+escapeHtml(r.timestamp)+'</td>'+
+      '<td>'+escapeHtml(r.project)+'</td>'+
+      '<td>'+escapeHtml(r.tower)+'</td>'+
+      '<td>'+escapeHtml(r.floor)+'</td>'+
+      '<td>'+escapeHtml(r.activity)+'</td>'+
+      '<td>'+escapeHtml(r.contractor)+'</td>'+
+      '<td><span class="summary-status-badge">'+escapeHtml(r.workStatus)+'</span></td>'+
+      '<td><span class="summary-status-badge">'+escapeHtml(r.inspectionStatus)+'</span></td>'+
+      '<td><button class="recent-view-btn" onclick="openSummaryReport(\''+escapeHtml(r.activityId)+'\')">View</button></td>'+
+      '</tr>';
+  });
+  h+='</tbody></table></div>';
+  el.innerHTML=h;
+}
+
+
+
+/* ===================== EXECUTIVE REPORT ===================== */
+let executiveRows=[];
+
+function openExecutiveReport(){
+  if(!hasExecutiveAccess()){
+    alert("Executive Report is available to CEO and Project Manager only.");
+    return;
+  }
+
+  hideAppPages();
+  document.getElementById("executiveReportPage").style.display="block";
+
+  const today=new Date();
+  const to=today.getFullYear()+"-"+String(today.getMonth()+1).padStart(2,"0")+"-"+String(today.getDate()).padStart(2,"0");
+  const fromDate=new Date(today);
+  fromDate.setDate(fromDate.getDate()-6);
+  const from=fromDate.getFullYear()+"-"+String(fromDate.getMonth()+1).padStart(2,"0")+"-"+String(fromDate.getDate()).padStart(2,"0");
+
+  if(!document.getElementById("execFromDate").value)document.getElementById("execFromDate").value=from;
+  if(!document.getElementById("execToDate").value)document.getElementById("execToDate").value=to;
+
+  loadExecutiveReport();
+}
+
+function executiveCountBy(rows,key){
+  const map={};
+  rows.forEach(function(r){
+    const v=String(r[key]||"Not Specified").trim()||"Not Specified";
+    map[v]=(map[v]||0)+1;
+  });
+  return map;
+}
+
+function simpleExecTable(map){
+  const entries=Object.keys(map).sort(function(a,b){return map[b]-map[a]});
+  if(!entries.length)return '<div class="empty-state">No data.</div>';
+
+  let h='<table class="executive-table"><thead><tr><th>Item</th><th>Count</th></tr></thead><tbody>';
+  entries.forEach(function(k){
+    h+='<tr><td>'+escapeHtml(k)+'</td><td><b>'+map[k]+'</b></td></tr>';
+  });
+  return h+'</tbody></table>';
+}
+
+function loadExecutiveReport(){
+  if(!hasExecutiveAccess())return;
+
+  const from=document.getElementById("execFromDate").value;
+  const to=document.getElementById("execToDate").value;
+
+  if(!from||!to){
+    alert("Please select From Date and To Date.");
+    return;
+  }
+
+  document.getElementById("execCritical").innerHTML='<div class="reports-loading">Loading executive report...</div>';
+
+  google.script.run
+    .withSuccessHandler(function(rows){
+      executiveRows=rows||[];
+
+      const project=document.getElementById("execProject");
+      const currentProject=project.value;
+      fillReportFilter("execProject",uniqueValues(executiveRows,"project"),"All Projects");
+      if(currentProject && uniqueValues(executiveRows,"project").includes(currentProject)){
+        project.value=currentProject;
+      }
+
+      renderExecutiveReport();
+    })
+    .withFailureHandler(function(e){
+      document.getElementById("execCritical").innerHTML=
+        '<div class="empty-state">Unable to load executive report: '+escapeHtml(e.message)+'</div>';
+    })
+    .getExecutiveReportRows(
+      from,
+      to,
+      loggedInUser.userId,
+      loggedInUser.username,
+      loggedInUser.role
+    );
+}
+
+function renderExecutiveReport(){
+  const p=document.getElementById("execProject").value;
+  const s=document.getElementById("execStatus").value;
+
+  const rows=executiveRows.filter(function(r){
+    return (!p||r.project===p)&&(!s||r.workStatus===s);
+  });
+
+  const completed=rows.filter(function(r){return normalizeRole(r.workStatus)==="completed"}).length;
+  const progress=rows.filter(function(r){return normalizeRole(r.workStatus)==="in progress"}).length;
+  const hold=rows.filter(function(r){
+    const x=normalizeRole(r.workStatus);
+    return x==="hold"||x==="on hold"||x==="delayed";
+  }).length;
+  const pending=rows.filter(function(r){return normalizeRole(r.inspectionStatus)==="requested"}).length;
+  const constraints=rows.filter(function(r){
+    const issue=String(r.issueConstraint||"").trim();
+    const category=String(r.delayCategory||"").trim();
+    return (issue && normalizeRole(issue)!=="none" && normalizeRole(issue)!=="n/a") ||
+           (category && normalizeRole(category)!=="none" && normalizeRole(category)!=="n/a");
+  }).length;
+
+  document.getElementById("execTotal").innerText=rows.length;
+  document.getElementById("execCompleted").innerText=completed;
+  document.getElementById("execProgress").innerText=progress;
+  document.getElementById("execHold").innerText=hold;
+  document.getElementById("execPending").innerText=pending;
+  document.getElementById("execConstraints").innerText=constraints;
+
+  document.getElementById("execProjects").innerHTML=simpleExecTable(executiveCountBy(rows,"project"));
+  document.getElementById("execStatuses").innerHTML=simpleExecTable(executiveCountBy(rows,"workStatus"));
+  document.getElementById("execTrades").innerHTML=simpleExecTable(executiveCountBy(rows,"trade"));
+  document.getElementById("execContractors").innerHTML=simpleExecTable(executiveCountBy(rows,"contractor"));
+
+  const critical=rows
+    .filter(function(r){
+      return String(r.issueConstraint||"").trim() ||
+             String(r.actionRequired||"").trim() ||
+             String(r.delayCategory||"").trim();
+    })
+    .sort(function(a,b){return (b.timestampMs||0)-(a.timestampMs||0)})
+    .slice(0,20);
+
+  if(!critical.length){
+    document.getElementById("execCritical").innerHTML='<div class="empty-state">No critical items in the selected period.</div>';
+    return;
+  }
+
+  let h='<div style="overflow-x:auto"><table class="executive-table"><thead><tr>'+
+    '<th>Date</th><th>Project / Location</th><th>Activity</th><th>Constraint</th><th>Action Required</th><th>Submitted By</th>'+
+    '</tr></thead><tbody>';
+
+  critical.forEach(function(r){
+    h+='<tr>'+
+      '<td>'+escapeHtml(r.timestamp)+'</td>'+
+      '<td>'+escapeHtml([r.project,r.tower,r.floor].filter(Boolean).join(" / "))+'</td>'+
+      '<td>'+escapeHtml(r.activity)+'</td>'+
+      '<td>'+escapeHtml(r.issueConstraint||r.delayCategory||"-")+'</td>'+
+      '<td>'+escapeHtml(r.actionRequired||"-")+'</td>'+
+      '<td>'+escapeHtml(r.supervisorName||"-")+'</td>'+
+      '</tr>';
+  });
+
+  document.getElementById("execCritical").innerHTML=h+'</tbody></table></div>';
+}
+
+
+let adminUsersData=[];
+let adminMasterData=null;
+let adminEditUserId="";
+let adminPasswordUserId="";
+
+function openAdministration(){
+  if(!loggedInUser || !hasAdministrationAccess()){
+    alert("You do not have permission to access Administration.");
+    return;
+  }
+  hideAppPages();
+  document.getElementById("administrationPage").style.display="block";
+  showAdminSection("users");
+  loadAdministrationData();
+}
+
+function showAdminSection(section){
+  document.getElementById("adminUsersSection").classList.toggle("active",section==="users");
+  document.getElementById("adminMasterSection").classList.toggle("active",section==="master");
+  document.getElementById("adminActivitiesSection").classList.toggle("active",section==="activities");
+
+  document.getElementById("adminUsersTab").classList.toggle("active",section==="users");
+  document.getElementById("adminMasterTab").classList.toggle("active",section==="master");
+  document.getElementById("adminActivitiesTab").classList.toggle("active",section==="activities");
+}
+
+function loadAdministrationData(){
+  document.getElementById("adminUsersContainer").innerText="Loading users...";
+  google.script.run
+    .withSuccessHandler(function(data){
+      adminUsersData=data.users||[];
+      adminMasterData=data.masterData||{};
+      renderAdminUsers();
+      renderAdminMasterData();
+      fillReportFilter("adminActivityTradeFilter",uniqueValues(adminMasterData.trades||[],"Trade"),"All Trades");
+      fillReportFilter("adminActivitySubTradeFilter",uniqueValues(adminMasterData.trades||[],"Sub-Trade"),"All Sub-Trades");
+      renderAdminActivities();
+    })
+    .withFailureHandler(function(e){
+      document.getElementById("adminUsersContainer").innerHTML='<div class="empty-state">Unable to load administration data: '+escapeHtml(e.message)+'</div>';
+    })
+    .getAdministrationData(loggedInUser.userId,loggedInUser.username);
+}
+
+function renderAdminUsers(){
+  const c=document.getElementById("adminUsersContainer");
+  const q=(document.getElementById("adminUserSearch").value||"").toLowerCase().trim();
+  const rows=adminUsersData.filter(u=>{
+    const s=[u.supervisorName,u.employeeId,u.username,u.role,u.status].join(" ").toLowerCase();
+    return !q||s.includes(q);
+  });
+
+  if(!rows.length){c.innerHTML='<div class="empty-state">No users found.</div>';return;}
+  let h='<div class="admin-table-wrap"><table class="admin-table"><thead><tr>'+
+    '<th>User ID</th><th>Name</th><th>Employee ID</th><th>Username</th><th>Role</th><th>Status</th><th>Created</th><th>Last Login</th><th>Actions</th>'+
+    '</tr></thead><tbody>';
+  rows.forEach(u=>{
+    const statusClass=String(u.status).toLowerCase()==="active"?"active":"inactive";
+    const nextStatus=statusClass==="active"?"Inactive":"Active";
+    h+='<tr>'+
+      '<td><b>'+escapeHtml(u.userId)+'</b></td>'+
+      '<td>'+escapeHtml(u.supervisorName)+'</td>'+
+      '<td>'+escapeHtml(u.employeeId)+'</td>'+
+      '<td>'+escapeHtml(u.username)+'</td>'+
+      '<td>'+escapeHtml(u.role)+'</td>'+
+      '<td><span class="admin-badge '+statusClass+'">'+escapeHtml(u.status)+'</span></td>'+
+      '<td>'+escapeHtml(u.createdAt)+'</td>'+
+      '<td>'+escapeHtml(u.lastLogin||"-")+'</td>'+
+      '<td>'+
+        '<button class="admin-small-btn admin-edit-btn" onclick="openEditUserModal(\''+escapeHtml(u.userId)+'\')">Edit</button>'+
+        '<button class="admin-small-btn admin-status-btn" onclick="changeAdminUserStatus(\''+escapeHtml(u.userId)+'\',\''+nextStatus+'\')">'+(nextStatus==="Inactive"?"Deactivate":"Activate")+'</button>'+
+        '<button class="admin-small-btn admin-reset-btn" onclick="openAdminPasswordModal(\''+escapeHtml(u.userId)+'\')">Reset Password</button>'+
+      '</td>'+
+    '</tr>';
+  });
+  h+='</tbody></table></div>';
+  c.innerHTML=h;
+}
+
+function renderAdminMasterData(){
+  const c=document.getElementById("adminMasterContainer");
+  const md=adminMasterData||{};
+  const cards=[
+    ["Projects",md.projects||[],"Project Name"],
+    ["Towers / Blocks",md.towers||[],"Tower / Block"],
+    ["Floors",md.floors||[],"Floor"],
+    ["Trades / Sub-Trades",md.trades||[],"Trade"],
+    ["Units",md.units||[],"Unit"],
+    ["Delay Categories",md.delayCategories||[],"Delay / Constraint Category"],
+    ["Activities",md.activities||[],"Activity"]
+  ];
+  c.innerHTML=cards.map(([title,rows,key])=>{
+    const unique=[...new Set(rows.map(r=>String(r[key]||"").trim()).filter(Boolean))];
+    return '<div class="master-preview-card"><div class="master-preview-title">'+escapeHtml(title)+' <span style="float:right;color:#64748b">'+rows.length+'</span></div>'+
+      '<div class="master-preview-body">'+(unique.length?unique.slice(0,12).map(x=>'<div style="padding:5px 0;border-bottom:1px solid #eef2f7">'+escapeHtml(x)+'</div>').join(""):'<span style="color:#64748b">No active data</span>')+
+      (unique.length>12?'<div style="padding-top:8px;color:#64748b">+'+(unique.length-12)+' more</div>':'')+'</div></div>';
+  }).join("");
+}
+
+
+let adminEditActivityRow="";
+
+function renderAdminActivities(){
+  const c=document.getElementById("adminActivitiesContainer");
+  const rows=(adminMasterData&&adminMasterData.activities)||[];
+  const q=(document.getElementById("adminActivitySearch").value||"").toLowerCase().trim();
+  const tr=document.getElementById("adminActivityTradeFilter").value||"";
+  const st=document.getElementById("adminActivitySubTradeFilter").value||"";
+
+  const filtered=rows.filter(r=>{
+    const txt=[r["Trade"],r["Sub-Trade"],r["Activity"],r["Status"]].join(" ").toLowerCase();
+    return (!q||txt.includes(q))&&(!tr||r["Trade"]===tr)&&(!st||r["Sub-Trade"]===st);
+  });
+
+  if(!filtered.length){
+    c.innerHTML='<div class="empty-state">No activities found.</div>';
+    return;
+  }
+
+  let h='<div class="admin-table-wrap"><table class="admin-table"><thead><tr>'+
+    '<th>Trade</th><th>Sub-Trade</th><th>Activity</th><th>Status</th><th>Actions</th>'+
+    '</tr></thead><tbody>';
+
+  filtered.forEach(r=>{
+    const key=[r["Trade"],r["Sub-Trade"],r["Activity"]].join("|||");
+    const statusClass=String(r["Status"]||"Active").toLowerCase()==="active"?"active":"inactive";
+    h+='<tr>'+
+      '<td>'+escapeHtml(r["Trade"])+'</td>'+
+      '<td>'+escapeHtml(r["Sub-Trade"])+'</td>'+
+      '<td><b>'+escapeHtml(r["Activity"])+'</b></td>'+
+      '<td><span class="admin-badge '+statusClass+'">'+escapeHtml(r["Status"]||"Active")+'</span></td>'+
+      '<td><button class="admin-small-btn admin-edit-btn" onclick="openEditActivityMasterModal(\''+escapeHtml(key)+'\')">Edit</button></td>'+
+      '</tr>';
+  });
+
+  h+='</tbody></table></div>';
+  c.innerHTML=h;
+}
+
+function openActivityMasterModal(){
+  adminEditActivityRow="";
+  document.getElementById("activityMasterModalTitle").innerText="Add Activity";
+  fillReportFilter("activityMasterTrade",uniqueValues((adminMasterData&&adminMasterData.trades)||[],"Trade"),"Select Trade");
+  resetSelect("activityMasterSubTrade","Select Sub-Trade");
+  document.getElementById("activityMasterName").value="";
+  document.getElementById("activityMasterStatus").value="Active";
+  document.getElementById("activityMasterMessage").innerText="";
+  document.getElementById("activityMasterModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+
+function populateActivityMasterSubTrades(){
+  const tr=value("activityMasterTrade");
+  const rows=(adminMasterData&&adminMasterData.trades)||[];
+  const vals=[...new Set(rows.filter(r=>r["Trade"]===tr).map(r=>r["Sub-Trade"]).filter(Boolean))];
+  fillReportFilter("activityMasterSubTrade",vals,"Select Sub-Trade");
+}
+
+function openEditActivityMasterModal(key){
+  const [tr,st,act]=String(key).split("|||");
+  const r=((adminMasterData&&adminMasterData.activities)||[]).find(x=>x["Trade"]===tr&&x["Sub-Trade"]===st&&x["Activity"]===act);
+  if(!r)return;
+
+  adminEditActivityRow=key;
+  document.getElementById("activityMasterModalTitle").innerText="Edit Activity";
+  fillReportFilter("activityMasterTrade",uniqueValues((adminMasterData&&adminMasterData.trades)||[],"Trade"),"Select Trade");
+  document.getElementById("activityMasterTrade").value=tr;
+  populateActivityMasterSubTrades();
+  document.getElementById("activityMasterSubTrade").value=st;
+  document.getElementById("activityMasterName").value=act;
+  document.getElementById("activityMasterStatus").value=r["Status"]||"Active";
+  document.getElementById("activityMasterMessage").innerText="";
+  document.getElementById("activityMasterModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+
+function closeActivityMasterModal(e){
+  if(e&&e.target!==document.getElementById("activityMasterModal"))return;
+  document.getElementById("activityMasterModal").style.display="none";
+  document.body.style.overflow="";
+}
+
+function saveActivityMaster(){
+  const payload={
+    actorUserId:loggedInUser.userId,
+    actorUsername:loggedInUser.username,
+    originalKey:adminEditActivityRow,
+    trade:value("activityMasterTrade"),
+    subTrade:value("activityMasterSubTrade"),
+    activity:value("activityMasterName"),
+    status:value("activityMasterStatus")
+  };
+
+  const msg=document.getElementById("activityMasterMessage");
+  if(!payload.trade||!payload.subTrade||!payload.activity||!payload.status){
+    msg.style.color="#dc2626";
+    msg.innerText="Please complete all mandatory fields.";
+    return;
+  }
+
+  const btn=document.getElementById("activityMasterSaveButton");
+  btn.disabled=true;
+  msg.style.color="#475569";
+  msg.innerText="Saving activity...";
+
+  google.script.run
+    .withSuccessHandler(function(r){
+      msg.style.color="#16a34a";
+      msg.innerText=r.message||"Activity saved successfully.";
+      btn.disabled=false;
+      loadAdministrationData();
+      google.script.run.withSuccessHandler(function(d){masterData=d}).getMasterData();
+      setTimeout(closeActivityMasterModal,700);
+    })
+    .withFailureHandler(function(e){
+      msg.style.color="#dc2626";
+      msg.innerText=e.message;
+      btn.disabled=false;
+    })
+    .adminSaveActivityMaster(payload);
+}
+
+
+function openCreateUserModal(){
+  adminEditUserId="";
+  document.getElementById("adminUserModalTitle").innerText="Add User";
+  ["adminSupervisorName","adminEmployeeId","adminUsername","adminPassword"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("adminRole").value="";
+  document.getElementById("adminUsername").disabled=false;
+  document.getElementById("adminPasswordGroup").style.display="block";
+  document.getElementById("adminUserMessage").innerText="";
+  document.getElementById("adminUserModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+
+function openEditUserModal(userId){
+  const u=adminUsersData.find(x=>x.userId===userId);
+  if(!u)return;
+  adminEditUserId=userId;
+  document.getElementById("adminUserModalTitle").innerText="Edit User";
+  document.getElementById("adminSupervisorName").value=u.supervisorName||"";
+  document.getElementById("adminEmployeeId").value=u.employeeId||"";
+  document.getElementById("adminUsername").value=u.username||"";
+  document.getElementById("adminUsername").disabled=true;
+  document.getElementById("adminRole").value=u.role||"";
+  document.getElementById("adminPasswordGroup").style.display="none";
+  document.getElementById("adminUserMessage").innerText="";
+  document.getElementById("adminUserModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+
+function closeAdminUserModal(e){
+  if(e&&e.target!==document.getElementById("adminUserModal"))return;
+  document.getElementById("adminUserModal").style.display="none";
+  document.body.style.overflow="";
+}
+
+function saveAdminUser(){
+  const payload={
+    actorUserId:loggedInUser.userId,
+    actorUsername:loggedInUser.username,
+    userId:adminEditUserId,
+    supervisorName:value("adminSupervisorName"),
+    employeeId:value("adminEmployeeId"),
+    username:value("adminUsername"),
+    role:value("adminRole"),
+    password:document.getElementById("adminPassword").value
+  };
+  const msg=document.getElementById("adminUserMessage");
+  if(!payload.supervisorName||!payload.employeeId||!payload.username||!payload.role||(!adminEditUserId&&!payload.password)){
+    msg.style.color="#dc2626";msg.innerText="Please complete all mandatory fields.";return;
+  }
+  const btn=document.getElementById("adminSaveUserButton");
+  btn.disabled=true;msg.style.color="#475569";msg.innerText="Saving user...";
+  const runner=adminEditUserId?"adminUpdateUser":"adminCreateUser";
+  google.script.run
+    .withSuccessHandler(function(r){
+      msg.style.color="#16a34a";msg.innerText=r.message||"Saved successfully.";
+      btn.disabled=false;loadAdministrationData();setTimeout(closeAdminUserModal,700);
+    })
+    .withFailureHandler(function(e){
+      msg.style.color="#dc2626";msg.innerText=e.message;btn.disabled=false;
+    })[runner](payload);
+}
+
+function changeAdminUserStatus(userId,status){
+  const u=adminUsersData.find(x=>x.userId===userId);
+  if(!u)return;
+  if(!confirm((status==="Inactive"?"Deactivate ":"Activate ")+u.supervisorName+"?"))return;
+  google.script.run
+    .withSuccessHandler(function(){loadAdministrationData()})
+    .withFailureHandler(function(e){alert(e.message)})
+    .adminSetUserStatus({
+      actorUserId:loggedInUser.userId,
+      actorUsername:loggedInUser.username,
+      userId:userId,
+      status:status
+    });
+}
+
+function openAdminPasswordModal(userId){
+  const u=adminUsersData.find(x=>x.userId===userId);
+  if(!u)return;
+  adminPasswordUserId=userId;
+  document.getElementById("adminPasswordUserLabel").innerText=u.supervisorName+" ("+u.username+")";
+  document.getElementById("adminNewPassword").value="";
+  document.getElementById("adminConfirmPassword").value="";
+  document.getElementById("adminPasswordMessage").innerText="";
+  document.getElementById("adminPasswordModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+
+function closeAdminPasswordModal(e){
+  if(e&&e.target!==document.getElementById("adminPasswordModal"))return;
+  document.getElementById("adminPasswordModal").style.display="none";
+  document.body.style.overflow="";
+  adminPasswordUserId="";
+}
+
+function saveAdminPasswordReset(){
+  const p=document.getElementById("adminNewPassword").value;
+  const c=document.getElementById("adminConfirmPassword").value;
+  const msg=document.getElementById("adminPasswordMessage");
+  if(!p||p.length<6){msg.style.color="#dc2626";msg.innerText="Password must be at least 6 characters.";return;}
+  if(p!==c){msg.style.color="#dc2626";msg.innerText="Passwords do not match.";return;}
+  const btn=document.getElementById("adminResetPasswordButton");
+  btn.disabled=true;msg.style.color="#475569";msg.innerText="Resetting password...";
+  google.script.run
+    .withSuccessHandler(function(r){
+      msg.style.color="#16a34a";msg.innerText=r.message||"Password reset successfully.";
+      btn.disabled=false;setTimeout(closeAdminPasswordModal,700);
+    })
+    .withFailureHandler(function(e){msg.style.color="#dc2626";msg.innerText=e.message;btn.disabled=false})
+    .adminResetUserPassword({
+      actorUserId:loggedInUser.userId,
+      actorUsername:loggedInUser.username,
+      userId:adminPasswordUserId,
+      newPassword:p
+    });
+}
+
+function logout(){loggedInUser=null;if(window.LCRG_API&&LCRG_API.clearToken)LCRG_API.clearToken();location.reload()}
+window.onload=function(){let u=localStorage.getItem("rememberedUsername");if(u){document.getElementById("username").value=u;document.getElementById("rememberMe").checked=true}updateStepDisplay()}
+
+function parseReportDate(s){
+  if(!s)return null;
+  const m=String(s).match(/(\d{1,2})-([A-Za-z]{3})-(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);
+  if(!m)return null;
+  const months={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+  return new Date(Number(m[3]),months[m[2]],Number(m[1]),Number(m[4]||0),Number(m[5]||0));
+}
+function resetMyReportFilters(){
+  ["reportSearch","reportProjectFilter","reportTowerFilter","reportFloorFilter","reportStatusFilter","reportFromDate","reportToDate"].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value="";
+  });
+  if(typeof filterMyReports==="function")filterMyReports();
+}
+
+</script><script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("./service-worker.js").catch(function(err) {
+      console.warn("Service worker registration failed:", err);
+    });
+  });
+}
+</script>
+</body></html>
