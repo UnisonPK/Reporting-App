@@ -690,6 +690,19 @@ label{color:#344054;font-size:13px;margin-top:14px}
   .master-record-list{grid-template-columns:1fr}
 }
 
+
+/* ===== Report Correction Workflow V1 ===== */
+.edit-report-btn{background:#7c3aed;color:#fff}
+.report-edit-card{max-width:820px}
+.edit-lock-note{background:#f8fafc;border:1px solid #e2e8f0;color:#475569;border-radius:10px;padding:10px 12px;font-size:12px;margin-bottom:14px}
+.edit-audit-note{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:10px;padding:10px 12px;font-size:12px;margin-top:14px}
+.optional-note{font-weight:400;color:#64748b}
+.report-edit-history{margin-top:12px;padding:10px 12px;border-radius:9px;background:#f8fafc;border:1px solid #e5e7eb;font-size:12px;color:#475569}
+@media(max-width:700px){
+  .report-edit-card{margin:0;min-height:100vh;border-radius:0}
+  .report-detail-actions .edit-report-btn{flex:1}
+}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
@@ -1276,15 +1289,120 @@ label{color:#344054;font-size:13px;margin-top:14px}
           <div id="detailSubtitle" class="report-path"></div>
         </div>
         <div class="report-detail-actions">
-          <button class="detail-action-btn print-btn" onclick="printCurrentReport()">🖨️ Print Report</button>
+          <button id="detailEditButton" class="detail-action-btn edit-report-btn" onclick="openReportEditModal()">✏️ Edit / Correct</button><button class="detail-action-btn print-btn" onclick="printCurrentReport()">🖨️ Print Report</button>
           <button class="detail-action-btn close-btn" onclick="closeReportDetail()">Close</button>
         </div>
       </div>
     </div>
     <div id="detailContent" class="report-detail-body"></div>
     <div class="detail-footer">
-      <button class="detail-action-btn back-report-btn" onclick="closeReportDetail()">← Back to My Reports</button>
+      <button class="detail-action-btn back-report-btn" onclick="closeReportDetail()">← Back to My Reports</button><button id="detailEditFooterButton" class="detail-action-btn edit-report-btn" onclick="openReportEditModal()">✏️ Edit / Correct</button>
       <button class="detail-action-btn print-btn" onclick="printCurrentReport()">🖨️ Print / Save PDF</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="reportEditModal" class="admin-modal" onclick="closeReportEditModal(event)">
+  <div class="admin-modal-card report-edit-card" onclick="event.stopPropagation()">
+    <div class="admin-modal-head">
+      <div>
+        <div class="admin-modal-title">Edit / Correct Activity Report</div>
+        <div id="reportEditId" class="app-subtitle"></div>
+      </div>
+      <button class="modal-close" onclick="closeReportEditModal()">Close</button>
+    </div>
+    <div class="admin-modal-body">
+      <div class="edit-lock-note">Location, activity classification, submitter and photo evidence remain locked to preserve the original report record.</div>
+
+      <div class="admin-form-grid">
+        <div>
+          <label>Contractor *</label>
+          <input id="editContractor">
+        </div>
+        <div>
+          <label>Work Status *</label>
+          <select id="editWorkStatus" onchange="updateEditCompletionRequirement()">
+            <option value="">Select</option>
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Completed</option>
+            <option>Hold</option>
+          </select>
+        </div>
+        <div>
+          <label>Start Date *</label>
+          <input id="editStartDate" type="date">
+        </div>
+        <div>
+          <label>Planned Completion Date *</label>
+          <input id="editPlannedCompletionDate" type="date">
+        </div>
+        <div>
+          <label>Actual Completion Date <span id="editActualReq" class="optional-note">(only when Completed)</span></label>
+          <input id="editActualCompletionDate" type="date">
+        </div>
+        <div>
+          <label>Today's Quantity *</label>
+          <input id="editTodayQuantity" type="number" step="any" inputmode="decimal">
+        </div>
+        <div>
+          <label>Cumulative Quantity *</label>
+          <input id="editCumulativeQuantity" type="number" step="any" inputmode="decimal">
+        </div>
+        <div>
+          <label>Housekeeping Status *</label>
+          <select id="editHousekeepingStatus">
+            <option value="">Select</option>
+            <option>Done</option>
+            <option>Pending</option>
+            <option>Not Applicable</option>
+          </select>
+        </div>
+        <div class="full-width">
+          <label>Housekeeping Remarks *</label>
+          <textarea id="editHousekeepingRemarks"></textarea>
+        </div>
+        <div class="full-width">
+          <label>Supervisor Remarks *</label>
+          <textarea id="editSupervisorRemarks"></textarea>
+        </div>
+        <div class="full-width">
+          <label>Issue / Constraint *</label>
+          <textarea id="editIssueConstraint"></textarea>
+        </div>
+        <div class="full-width">
+          <label>Action Required *</label>
+          <textarea id="editActionRequired"></textarea>
+        </div>
+        <div>
+          <label>Work Front Available *</label>
+          <select id="editWorkFrontAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select>
+        </div>
+        <div>
+          <label>Material Available *</label>
+          <select id="editMaterialAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select>
+        </div>
+        <div>
+          <label>Drawing / Approval Available *</label>
+          <select id="editDrawingApprovalAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select>
+        </div>
+        <div>
+          <label>Delay / Constraint Category *</label>
+          <select id="editDelayCategory"><option value="">Select Category</option></select>
+        </div>
+        <div class="full-width">
+          <label>Reason for Correction *</label>
+          <textarea id="editReason" placeholder="Briefly explain why this submitted report is being corrected."></textarea>
+        </div>
+      </div>
+
+      <div class="edit-audit-note">Every correction is recorded with editor, date/time and correction reason.</div>
+
+      <div class="decision-actions">
+        <button id="saveReportEditButton" class="decision-save" onclick="saveReportCorrection()">Save Correction</button>
+      </div>
+      <div id="reportEditMessage" class="admin-message"></div>
     </div>
   </div>
 </div>
@@ -1437,7 +1555,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 <script src="app-config.js"></script>
 <script src="api-shim.js"></script>
 <script>
-let loggedInUser=null,masterData=null,currentStep=0,myReportsData=[];
+let loggedInUser=null,masterData=null,currentStep=0,myReportsData=[],currentReportActivityId="";
 
 function value(id){return document.getElementById(id).value.trim()}
 function togglePassword(){let p=document.getElementById("password"),t=document.getElementById("passwordToggle");p.type=p.type==="password"?"text":"password";t.innerText=p.type==="password"?"Show":"Hide"}
@@ -1927,6 +2045,13 @@ function photoCategory(title,links){return '<div class="photo-category"><div cla
 function viewReportDetail(id){
   let r=myReportsData.find(x=>x.activityId===id);
   if(!r)return;
+  currentReportActivityId=id;
+
+  const canEdit=hasFullAccess() || (loggedInUser && String(r.userId||"")===String(loggedInUser.userId||""));
+  const editBtn=document.getElementById("detailEditButton");
+  const editFooterBtn=document.getElementById("detailEditFooterButton");
+  if(editBtn)editBtn.style.display=canEdit?"inline-block":"none";
+  if(editFooterBtn)editFooterBtn.style.display=canEdit?"inline-block":"none";
 
   document.getElementById("detailTitle").innerText=r.activityId;
   document.getElementById("detailSubtitle").innerText=r.timestamp+" • "+r.project+" • "+r.tower+" • "+r.floor;
@@ -1998,6 +2123,16 @@ function viewReportDetail(id){
     photoCategory("Inspection",inspectionLinks)
   );
 
+  if(r.lastEditedAt||r.lastEditedBy||r.lastEditReason){
+    h+=detailSection("📝 Correction Audit",
+      '<div class="detail-grid">'+
+        detailItem("Last Edited At",r.lastEditedAt||"-")+
+        detailItem("Last Edited By",r.lastEditedBy||"-")+
+      '</div>'+
+      longDetail("Correction Reason",r.lastEditReason||"-")
+    );
+  }
+
   document.getElementById("detailContent").innerHTML=h;
   document.getElementById("reportDetailModal").style.display="block";
   document.body.style.overflow="hidden";
@@ -2010,6 +2145,144 @@ function closeReportDetail(e){
 }
 
 function printCurrentReport(){window.print()}
+
+
+function isoDateFromReportDate(s){
+  if(!s)return "";
+  const d=parseReportDate(s);
+  if(!d||isNaN(d.getTime()))return "";
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,"0"),day=String(d.getDate()).padStart(2,"0");
+  return y+"-"+m+"-"+day;
+}
+
+function openReportEditModal(){
+  const r=myReportsData.find(x=>x.activityId===currentReportActivityId);
+  if(!r)return;
+
+  const canEdit=hasFullAccess() || (loggedInUser && String(r.userId||"")===String(loggedInUser.userId||""));
+  if(!canEdit){
+    alert("You do not have permission to edit this report.");
+    return;
+  }
+
+  document.getElementById("reportEditId").innerText=r.activityId+" • "+[r.project,r.tower,r.floor,r.activity].filter(Boolean).join(" • ");
+  document.getElementById("editContractor").value=r.contractor||"";
+  document.getElementById("editWorkStatus").value=r.workStatus||"";
+  document.getElementById("editStartDate").value=isoDateFromReportDate(r.startDate);
+  document.getElementById("editPlannedCompletionDate").value=isoDateFromReportDate(r.plannedCompletionDate);
+  document.getElementById("editActualCompletionDate").value=isoDateFromReportDate(r.actualCompletionDate);
+  document.getElementById("editTodayQuantity").value=r.todayQuantity||"";
+  document.getElementById("editCumulativeQuantity").value=r.cumulativeQuantity||"";
+  document.getElementById("editHousekeepingStatus").value=r.housekeepingStatus||"";
+  document.getElementById("editHousekeepingRemarks").value=r.housekeepingRemarks||"";
+  document.getElementById("editSupervisorRemarks").value=r.supervisorRemarks||"";
+  document.getElementById("editIssueConstraint").value=r.issueConstraint||"";
+  document.getElementById("editActionRequired").value=r.actionRequired||"";
+  document.getElementById("editWorkFrontAvailable").value=r.workFrontAvailable||"";
+  document.getElementById("editMaterialAvailable").value=r.materialAvailable||"";
+  document.getElementById("editDrawingApprovalAvailable").value=r.drawingApprovalAvailable||"";
+
+  const dc=document.getElementById("editDelayCategory");
+  dc.innerHTML='<option value="">Select Category</option>';
+  const cats=(masterData&&masterData.delayCategories)||[];
+  cats.forEach(x=>addOption(dc,x["Delay / Constraint Category"]));
+  if(r.delayCategory && !Array.from(dc.options).some(o=>o.value===r.delayCategory))addOption(dc,r.delayCategory);
+  dc.value=r.delayCategory||"";
+
+  document.getElementById("editReason").value="";
+  document.getElementById("reportEditMessage").innerText="";
+  updateEditCompletionRequirement();
+  document.getElementById("reportEditModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+
+function updateEditCompletionRequirement(){
+  const completed=document.getElementById("editWorkStatus").value==="Completed";
+  const actual=document.getElementById("editActualCompletionDate");
+  actual.disabled=!completed;
+  if(!completed)actual.value="";
+  document.getElementById("editActualReq").innerText=completed?"*":"(only when Completed)";
+}
+
+function closeReportEditModal(e){
+  if(e&&e.target!==document.getElementById("reportEditModal"))return;
+  document.getElementById("reportEditModal").style.display="none";
+  document.body.style.overflow="";
+}
+
+function saveReportCorrection(){
+  const msg=document.getElementById("reportEditMessage");
+  const btn=document.getElementById("saveReportEditButton");
+
+  const payload={
+    activityId:currentReportActivityId,
+    contractor:value("editContractor"),
+    workStatus:value("editWorkStatus"),
+    startDate:value("editStartDate"),
+    plannedCompletionDate:value("editPlannedCompletionDate"),
+    actualCompletionDate:value("editActualCompletionDate"),
+    todayQuantity:value("editTodayQuantity"),
+    cumulativeQuantity:value("editCumulativeQuantity"),
+    housekeepingStatus:value("editHousekeepingStatus"),
+    housekeepingRemarks:value("editHousekeepingRemarks"),
+    supervisorRemarks:value("editSupervisorRemarks"),
+    issueConstraint:value("editIssueConstraint"),
+    actionRequired:value("editActionRequired"),
+    workFrontAvailable:value("editWorkFrontAvailable"),
+    materialAvailable:value("editMaterialAvailable"),
+    drawingApprovalAvailable:value("editDrawingApprovalAvailable"),
+    delayCategory:value("editDelayCategory"),
+    editReason:value("editReason")
+  };
+
+  const required=["activityId","contractor","workStatus","startDate","plannedCompletionDate","todayQuantity","cumulativeQuantity","housekeepingStatus","housekeepingRemarks","supervisorRemarks","issueConstraint","actionRequired","workFrontAvailable","materialAvailable","drawingApprovalAvailable","delayCategory","editReason"];
+  for(const k of required){
+    if(!String(payload[k]||"").trim()){
+      msg.style.color="#dc2626";
+      msg.innerText="Please complete all mandatory correction fields.";
+      return;
+    }
+  }
+
+  if(payload.workStatus==="Completed"&&!payload.actualCompletionDate){
+    msg.style.color="#dc2626";
+    msg.innerText="Actual Completion Date is required when Work Status is Completed.";
+    return;
+  }
+
+  const tq=Number(payload.todayQuantity),cq=Number(payload.cumulativeQuantity);
+  if(!isNaN(tq)&&!isNaN(cq)&&tq>cq){
+    msg.style.color="#dc2626";
+    msg.innerText="Today's Quantity cannot be greater than Cumulative Quantity.";
+    return;
+  }
+
+  btn.disabled=true;
+  msg.style.color="#475569";
+  msg.innerText="Saving correction...";
+
+  google.script.run
+    .withSuccessHandler(function(r){
+      btn.disabled=false;
+      msg.style.color="#16a34a";
+      msg.innerText=r.message||"Report corrected successfully.";
+
+      google.script.run
+        .withSuccessHandler(function(rows){
+          myReportsData=rows||[];
+          closeReportEditModal();
+          applyReportFilters();
+          viewReportDetail(currentReportActivityId);
+        })
+        .getReportsForUser(loggedInUser.userId,loggedInUser.username,loggedInUser.role);
+    })
+    .withFailureHandler(function(e){
+      btn.disabled=false;
+      msg.style.color="#dc2626";
+      msg.innerText=e.message;
+    })
+    .updateActivityReport(payload);
+}
 
 
 let pendingInspectionData=[];
