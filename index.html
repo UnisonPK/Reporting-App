@@ -672,6 +672,24 @@ label{color:#344054;font-size:13px;margin-top:14px}
   #executiveReportPage .form-card{box-shadow:none!important}
 }
 
+
+/* ===== Administration V2 ===== */
+.master-type-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.master-type-tab{border:0;background:#e2e8f0;color:#334155;padding:9px 12px;border-radius:8px;font-weight:800;cursor:pointer}
+.master-type-tab.active{background:#0b3f88;color:#fff}
+.master-record-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.master-record-card{border:1px solid #e5e7eb;border-radius:11px;padding:12px;background:#fff;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.master-record-main{min-width:0}
+.master-record-title{font-weight:800;font-size:13px;color:#111827}
+.master-record-meta{font-size:11px;color:#64748b;margin-top:3px;word-break:break-word}
+.master-record-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.master-record-actions button{border:0;border-radius:7px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}
+.master-edit{background:#1a73e8;color:#fff}
+.master-toggle{background:#f59e0b;color:#fff}
+@media(max-width:700px){
+  .master-record-list{grid-template-columns:1fr}
+}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
@@ -707,9 +725,25 @@ label{color:#344054;font-size:13px;margin-top:14px}
       </div>
 
       <div id="adminMasterSection" class="admin-section">
-        <div class="step-title">Master Data Overview</div>
-        <div class="step-subtitle">Current active configuration used by reporting forms. Editing will be enabled in Administration V2.</div>
-        <div id="adminMasterContainer" class="master-preview-grid"></div>
+        <div class="admin-toolbar">
+          <div>
+            <div class="step-title">Master Data Management</div>
+            <div class="step-subtitle">Maintain Projects, Towers, Floors, Trades, Units and Delay Categories used throughout the app.</div>
+          </div>
+          <button class="admin-primary-btn" onclick="openMasterDataModal()">+ Add Master Data</button>
+        </div>
+
+        <div class="master-type-tabs">
+          <button class="master-type-tab active" data-type="Projects" onclick="selectMasterType('Projects',this)">Projects</button>
+          <button class="master-type-tab" data-type="Towers" onclick="selectMasterType('Towers',this)">Towers</button>
+          <button class="master-type-tab" data-type="Floors" onclick="selectMasterType('Floors',this)">Floors</button>
+          <button class="master-type-tab" data-type="Trades" onclick="selectMasterType('Trades',this)">Trades</button>
+          <button class="master-type-tab" data-type="Units" onclick="selectMasterType('Units',this)">Units</button>
+          <button class="master-type-tab" data-type="Delay_Categories" onclick="selectMasterType('Delay_Categories',this)">Delay Categories</button>
+        </div>
+
+        <input id="adminMasterSearch" class="admin-search" placeholder="Search selected master data..." oninput="renderAdminMasterData()" style="margin-bottom:14px">
+        <div id="adminMasterContainer" class="reports-loading">Loading master data...</div>
       </div>
 
       <div id="adminActivitiesSection" class="admin-section">
@@ -813,6 +847,36 @@ label{color:#344054;font-size:13px;margin-top:14px}
         <button id="activityMasterSaveButton" class="admin-primary-btn" onclick="saveActivityMaster()">Save Activity</button>
       </div>
       <div id="activityMasterMessage" class="admin-message"></div>
+    </div>
+  </div>
+</div>
+
+
+<div id="masterDataModal" class="admin-modal" onclick="closeMasterDataModal(event)">
+  <div class="admin-modal-card" onclick="event.stopPropagation()">
+    <div class="admin-modal-head">
+      <div id="masterDataModalTitle" class="admin-modal-title">Add Master Data</div>
+      <button class="modal-close" onclick="closeMasterDataModal()">Close</button>
+    </div>
+    <div class="admin-modal-body">
+      <div class="admin-form-grid">
+        <div class="full-width">
+          <label>Master Type *</label>
+          <select id="masterDataType" onchange="buildMasterDataFields()">
+            <option value="Projects">Projects</option>
+            <option value="Towers">Towers</option>
+            <option value="Floors">Floors</option>
+            <option value="Trades">Trades</option>
+            <option value="Units">Units</option>
+            <option value="Delay_Categories">Delay Categories</option>
+          </select>
+        </div>
+      </div>
+      <div id="masterDataFields" class="admin-form-grid"></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:18px">
+        <button id="masterDataSaveButton" class="admin-primary-btn" onclick="saveMasterDataRecord()">Save</button>
+      </div>
+      <div id="masterDataMessage" class="admin-message"></div>
     </div>
   </div>
 </div>
@@ -2970,24 +3034,237 @@ function renderAdminUsers(){
   c.innerHTML=h;
 }
 
+let currentMasterType="Projects";
+let adminEditMasterKey="";
+
+function selectMasterType(type,btn){
+  currentMasterType=type;
+  document.querySelectorAll(".master-type-tab").forEach(x=>x.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  renderAdminMasterData();
+}
+
+function getMasterRowsByType(type){
+  const md=adminMasterData||{};
+  if(type==="Projects")return md.projects||[];
+  if(type==="Towers")return md.towers||[];
+  if(type==="Floors")return md.floors||[];
+  if(type==="Trades")return md.trades||[];
+  if(type==="Units")return md.units||[];
+  if(type==="Delay_Categories")return md.delayCategories||[];
+  return [];
+}
+
+function masterRecordLabel(type,r){
+  if(type==="Projects")return r["Project Name"]||"";
+  if(type==="Towers")return r["Tower / Block"]||"";
+  if(type==="Floors")return r["Floor"]||"";
+  if(type==="Trades")return [r["Trade"],r["Sub-Trade"]].filter(Boolean).join(" / ");
+  if(type==="Units")return r["Unit"]||"";
+  if(type==="Delay_Categories")return r["Delay / Constraint Category"]||"";
+  return "";
+}
+
+function masterRecordMeta(type,r){
+  if(type==="Projects")return "ID: "+(r["Project ID"]||"-");
+  if(type==="Towers")return "Project: "+(r["Project"]||"-")+" • ID: "+(r["Tower ID"]||"-");
+  if(type==="Floors")return "Tower: "+(r["Tower / Block"]||"-")+" • ID: "+(r["Floor ID"]||"-");
+  if(type==="Trades")return "Status: "+(r["Status"]||"Active");
+  if(type==="Units")return "Status: "+(r["Status"]||"Active");
+  if(type==="Delay_Categories")return "Status: "+(r["Status"]||"Active");
+  return "";
+}
+
+function masterRecordKey(type,r){
+  if(type==="Projects")return r["Project ID"]||r["Project Name"]||"";
+  if(type==="Towers")return r["Tower ID"]||[r["Project"],r["Tower / Block"]].join("|||");
+  if(type==="Floors")return r["Floor ID"]||[r["Tower / Block"],r["Floor"]].join("|||");
+  if(type==="Trades")return [r["Trade"],r["Sub-Trade"]].join("|||");
+  if(type==="Units")return r["Unit"]||"";
+  if(type==="Delay_Categories")return r["Delay / Constraint Category"]||"";
+  return "";
+}
+
 function renderAdminMasterData(){
   const c=document.getElementById("adminMasterContainer");
-  const md=adminMasterData||{};
-  const cards=[
-    ["Projects",md.projects||[],"Project Name"],
-    ["Towers / Blocks",md.towers||[],"Tower / Block"],
-    ["Floors",md.floors||[],"Floor"],
-    ["Trades / Sub-Trades",md.trades||[],"Trade"],
-    ["Units",md.units||[],"Unit"],
-    ["Delay Categories",md.delayCategories||[],"Delay / Constraint Category"],
-    ["Activities",md.activities||[],"Activity"]
-  ];
-  c.innerHTML=cards.map(([title,rows,key])=>{
-    const unique=[...new Set(rows.map(r=>String(r[key]||"").trim()).filter(Boolean))];
-    return '<div class="master-preview-card"><div class="master-preview-title">'+escapeHtml(title)+' <span style="float:right;color:#64748b">'+rows.length+'</span></div>'+
-      '<div class="master-preview-body">'+(unique.length?unique.slice(0,12).map(x=>'<div style="padding:5px 0;border-bottom:1px solid #eef2f7">'+escapeHtml(x)+'</div>').join(""):'<span style="color:#64748b">No active data</span>')+
-      (unique.length>12?'<div style="padding-top:8px;color:#64748b">+'+(unique.length-12)+' more</div>':'')+'</div></div>';
-  }).join("");
+  if(!c)return;
+  const q=(document.getElementById("adminMasterSearch")?.value||"").toLowerCase().trim();
+  const rows=getMasterRowsByType(currentMasterType).filter(r=>{
+    const txt=Object.values(r).join(" ").toLowerCase();
+    return !q||txt.includes(q);
+  });
+
+  if(!rows.length){
+    c.className="empty-state";
+    c.innerHTML="No records found.";
+    return;
+  }
+
+  c.className="";
+  c.innerHTML='<div class="master-record-list">'+rows.map(r=>{
+    const status=String(r["Status"]||"Active");
+    const active=status.toLowerCase()==="active";
+    const key=masterRecordKey(currentMasterType,r);
+    return '<div class="master-record-card">'+
+      '<div class="master-record-main"><div class="master-record-title">'+escapeHtml(masterRecordLabel(currentMasterType,r))+'</div>'+
+      '<div class="master-record-meta">'+escapeHtml(masterRecordMeta(currentMasterType,r))+'</div>'+
+      '<div style="margin-top:6px"><span class="admin-badge '+(active?'active':'inactive')+'">'+escapeHtml(status)+'</span></div></div>'+
+      '<div class="master-record-actions">'+
+      '<button class="master-edit" onclick="openEditMasterDataModal(\''+escapeHtml(key)+'\')">Edit</button>'+
+      '<button class="master-toggle" onclick="toggleMasterDataStatus(\''+escapeHtml(key)+'\',\''+(active?'Inactive':'Active')+'\')">'+(active?'Deactivate':'Activate')+'</button>'+
+      '</div></div>';
+  }).join("")+'</div>';
+}
+
+function openMasterDataModal(){
+  adminEditMasterKey="";
+  document.getElementById("masterDataModalTitle").innerText="Add Master Data";
+  document.getElementById("masterDataType").disabled=false;
+  document.getElementById("masterDataType").value=currentMasterType;
+  document.getElementById("masterDataMessage").innerText="";
+  buildMasterDataFields();
+  document.getElementById("masterDataModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+
+function buildMasterDataFields(record){
+  const type=document.getElementById("masterDataType").value;
+  const wrap=document.getElementById("masterDataFields");
+  const status=record&&record["Status"]||"Active";
+  let h="";
+
+  if(type==="Projects"){
+    h+='<div><label>Project ID *</label><input id="masterField1" value="'+escapeHtml(record&&record["Project ID"]||"")+'"></div>';
+    h+='<div><label>Project Name *</label><input id="masterField2" value="'+escapeHtml(record&&record["Project Name"]||"")+'"></div>';
+  }else if(type==="Towers"){
+    h+='<div><label>Tower ID *</label><input id="masterField1" value="'+escapeHtml(record&&record["Tower ID"]||"")+'"></div>';
+    h+='<div><label>Project *</label><select id="masterField2"></select></div>';
+    h+='<div class="full-width"><label>Tower / Block *</label><input id="masterField3" value="'+escapeHtml(record&&record["Tower / Block"]||"")+'"></div>';
+  }else if(type==="Floors"){
+    h+='<div><label>Floor ID *</label><input id="masterField1" value="'+escapeHtml(record&&record["Floor ID"]||"")+'"></div>';
+    h+='<div><label>Tower / Block *</label><select id="masterField2"></select></div>';
+    h+='<div class="full-width"><label>Floor *</label><input id="masterField3" value="'+escapeHtml(record&&record["Floor"]||"")+'"></div>';
+  }else if(type==="Trades"){
+    h+='<div><label>Trade *</label><input id="masterField1" value="'+escapeHtml(record&&record["Trade"]||"")+'"></div>';
+    h+='<div><label>Sub-Trade *</label><input id="masterField2" value="'+escapeHtml(record&&record["Sub-Trade"]||"")+'"></div>';
+  }else if(type==="Units"){
+    h+='<div class="full-width"><label>Unit *</label><input id="masterField1" value="'+escapeHtml(record&&record["Unit"]||"")+'"></div>';
+  }else if(type==="Delay_Categories"){
+    h+='<div class="full-width"><label>Delay / Constraint Category *</label><input id="masterField1" value="'+escapeHtml(record&&record["Delay / Constraint Category"]||"")+'"></div>';
+  }
+
+  h+='<div><label>Status *</label><select id="masterStatus"><option>Active</option><option>Inactive</option></select></div>';
+  wrap.innerHTML=h;
+  document.getElementById("masterStatus").value=status;
+
+  if(type==="Towers"){
+    const s=document.getElementById("masterField2");
+    s.innerHTML='<option value="">Select Project</option>';
+    (adminMasterData.projects||[]).forEach(r=>addOption(s,r["Project Name"]));
+    if(record)s.value=record["Project"]||"";
+  }
+  if(type==="Floors"){
+    const s=document.getElementById("masterField2");
+    s.innerHTML='<option value="">Select Tower</option>';
+    (adminMasterData.towers||[]).forEach(r=>addOption(s,r["Tower / Block"]));
+    if(record)s.value=record["Tower / Block"]||"";
+  }
+}
+
+function openEditMasterDataModal(key){
+  const rows=getMasterRowsByType(currentMasterType);
+  const record=rows.find(r=>masterRecordKey(currentMasterType,r)===key);
+  if(!record)return;
+  adminEditMasterKey=key;
+  document.getElementById("masterDataModalTitle").innerText="Edit Master Data";
+  document.getElementById("masterDataType").value=currentMasterType;
+  document.getElementById("masterDataType").disabled=true;
+  document.getElementById("masterDataMessage").innerText="";
+  buildMasterDataFields(record);
+  document.getElementById("masterDataModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+
+function closeMasterDataModal(e){
+  if(e&&e.target!==document.getElementById("masterDataModal"))return;
+  document.getElementById("masterDataModal").style.display="none";
+  document.body.style.overflow="";
+}
+
+function getMasterDataPayload(){
+  const type=document.getElementById("masterDataType").value;
+  const payload={
+    actorUserId:loggedInUser.userId,
+    actorUsername:loggedInUser.username,
+    type:type,
+    originalKey:adminEditMasterKey,
+    status:value("masterStatus")
+  };
+
+  if(type==="Projects"){
+    payload.projectId=value("masterField1");
+    payload.projectName=value("masterField2");
+  }else if(type==="Towers"){
+    payload.towerId=value("masterField1");
+    payload.project=value("masterField2");
+    payload.tower=value("masterField3");
+  }else if(type==="Floors"){
+    payload.floorId=value("masterField1");
+    payload.tower=value("masterField2");
+    payload.floor=value("masterField3");
+  }else if(type==="Trades"){
+    payload.trade=value("masterField1");
+    payload.subTrade=value("masterField2");
+  }else if(type==="Units"){
+    payload.unit=value("masterField1");
+  }else if(type==="Delay_Categories"){
+    payload.delayCategory=value("masterField1");
+  }
+  return payload;
+}
+
+function saveMasterDataRecord(){
+  const payload=getMasterDataPayload();
+  const msg=document.getElementById("masterDataMessage");
+  const btn=document.getElementById("masterDataSaveButton");
+  btn.disabled=true;
+  msg.style.color="#475569";
+  msg.innerText="Saving master data...";
+
+  google.script.run
+    .withSuccessHandler(function(r){
+      btn.disabled=false;
+      msg.style.color="#16a34a";
+      msg.innerText=r.message||"Saved successfully.";
+      currentMasterType=payload.type;
+      loadAdministrationData();
+      google.script.run.withSuccessHandler(function(d){masterData=d}).getMasterData();
+      setTimeout(closeMasterDataModal,650);
+    })
+    .withFailureHandler(function(e){
+      btn.disabled=false;
+      msg.style.color="#dc2626";
+      msg.innerText=e.message;
+    })
+    .adminSaveMasterData(payload);
+}
+
+function toggleMasterDataStatus(key,status){
+  if(!confirm((status==="Inactive"?"Deactivate":"Activate")+" this record?"))return;
+
+  google.script.run
+    .withSuccessHandler(function(){
+      loadAdministrationData();
+      google.script.run.withSuccessHandler(function(d){masterData=d}).getMasterData();
+    })
+    .withFailureHandler(function(e){alert(e.message)})
+    .adminSetMasterDataStatus({
+      actorUserId:loggedInUser.userId,
+      actorUsername:loggedInUser.username,
+      type:currentMasterType,
+      key:key,
+      status:status
+    });
 }
 
 
