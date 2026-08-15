@@ -625,6 +625,53 @@ label{color:#344054;font-size:13px;margin-top:14px}
   .quantity-activity-mobile{display:block}
 }
 
+
+/* ===== Executive Report V2 ===== */
+.executive-v2-title-row{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}
+.executive-cards-v2 .executive-kpi{display:flex;gap:12px;align-items:center;min-height:108px}
+.exec-kpi-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:#f8fafc;font-size:21px;flex:0 0 auto}
+.exec-kpi-total{border-top:4px solid #2563eb}
+.exec-kpi-completed{border-top:4px solid #16a34a}
+.exec-kpi-progress{border-top:4px solid #f59e0b}
+.exec-kpi-hold{border-top:4px solid #ea580c}
+.exec-kpi-pending{border-top:4px solid #7c3aed}
+.exec-kpi-constraint{border-top:4px solid #dc2626}
+.executive-progress-strip{border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px;background:#fff;margin-bottom:18px}
+#execCompletionPercent{font-size:16px;font-weight:800;color:#166534}
+.executive-grid-v2{grid-template-columns:1fr 1fr}
+.executive-management-grid{grid-template-columns:1.2fr .8fr}
+.exec-summary-table{width:100%;border-collapse:collapse}
+.exec-summary-table td{padding:8px 4px;border-bottom:1px solid #eef2f7;font-size:13px}
+.exec-summary-table td:last-child{text-align:right;font-weight:800}
+.exec-bar-cell{width:38%;padding-left:10px!important}
+.exec-mini-track{height:7px;background:#eef2f7;border-radius:999px;overflow:hidden}
+.exec-mini-fill{height:100%;background:#0f766e;border-radius:999px}
+.exec-quantity-table{width:100%;border-collapse:collapse;min-width:540px}
+.exec-quantity-table th,.exec-quantity-table td{padding:9px 8px;border-bottom:1px solid #eef2f7;text-align:left;font-size:12px}
+.exec-quantity-table th{background:#f8fafc;color:#64748b;white-space:nowrap}
+.exec-quantity-table td:last-child{font-weight:800;color:#0b3f88;white-space:nowrap}
+.exec-critical-list{display:flex;flex-direction:column;gap:8px}
+.exec-critical-item{border:1px solid #e5e7eb;border-left:4px solid #dc2626;border-radius:10px;padding:11px 12px;background:#fff}
+.exec-critical-item.warning{border-left-color:#f59e0b}
+.exec-critical-title{font-size:13px;font-weight:800;color:#111827}
+.exec-critical-meta{font-size:11px;color:#64748b;margin-top:4px}
+.exec-critical-action{font-size:12px;color:#334155;margin-top:5px}
+.executive-critical-panel{margin-top:16px}
+@media(max-width:900px){
+  .executive-management-grid,.executive-grid-v2{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .executive-v2-title-row{flex-direction:column}
+  .executive-cards-v2 .executive-kpi{min-height:96px}
+}
+@media print{
+  #executiveReportPage .header button,
+  #executiveReportPage .executive-filter-bar,
+  #executiveReportPage .summary-top-actions{display:none!important}
+  #executiveReportPage{display:block!important}
+  #executiveReportPage .form-card{box-shadow:none!important}
+}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
@@ -791,16 +838,29 @@ label{color:#344054;font-size:13px;margin-top:14px}
 </div>
 
 
+
 <div id="executiveReportPage">
   <div class="header">
     <div>
       <div class="app-name">📈 Executive Report</div>
-      <div class="app-subtitle">CEO / Project Manager high-level monitoring</div>
+      <div class="app-subtitle">CEO / Project Manager decision-focused management view</div>
     </div>
-    <button class="back-button" onclick="showDashboard()">Back</button>
+    <div class="summary-top-actions">
+      <button class="summary-action-btn summary-print-btn" onclick="printExecutiveReport()">🖨️ Print / PDF</button>
+      <button class="back-button" onclick="showDashboard()">Back</button>
+    </div>
   </div>
+
   <div class="container">
     <div class="form-card">
+      <div class="executive-v2-title-row">
+        <div>
+          <div class="step-title">Management Performance Snapshot</div>
+          <div class="step-subtitle">High-level activity, quantity, inspection, contractor and constraint monitoring.</div>
+        </div>
+        <div id="execPeriodLabel" class="summary-date-label"></div>
+      </div>
+
       <div class="executive-filter-bar">
         <div>
           <label>From Date</label>
@@ -828,43 +888,62 @@ label{color:#344054;font-size:13px;margin-top:14px}
         <button class="admin-primary-btn" style="align-self:end" onclick="loadExecutiveReport()">Apply</button>
       </div>
 
-      <div class="executive-cards">
-        <div class="executive-kpi"><div class="executive-kpi-label">TOTAL ACTIVITIES</div><div id="execTotal" class="executive-kpi-value">0</div></div>
-        <div class="executive-kpi"><div class="executive-kpi-label">COMPLETED</div><div id="execCompleted" class="executive-kpi-value">0</div></div>
-        <div class="executive-kpi"><div class="executive-kpi-label">IN PROGRESS</div><div id="execProgress" class="executive-kpi-value">0</div></div>
-        <div class="executive-kpi"><div class="executive-kpi-label">ON HOLD / DELAYED</div><div id="execHold" class="executive-kpi-value">0</div></div>
-        <div class="executive-kpi"><div class="executive-kpi-label">PENDING INSPECTIONS</div><div id="execPending" class="executive-kpi-value">0</div></div>
-        <div class="executive-kpi"><div class="executive-kpi-label">CONSTRAINTS</div><div id="execConstraints" class="executive-kpi-value">0</div></div>
+      <div class="executive-cards executive-cards-v2">
+        <div class="executive-kpi exec-kpi-total"><div class="exec-kpi-icon">📝</div><div><div class="executive-kpi-label">TOTAL ACTIVITIES</div><div id="execTotal" class="executive-kpi-value">0</div></div></div>
+        <div class="executive-kpi exec-kpi-completed"><div class="exec-kpi-icon">✅</div><div><div class="executive-kpi-label">COMPLETED</div><div id="execCompleted" class="executive-kpi-value">0</div><div id="execCompletedPct" class="kpi-sub">0%</div></div></div>
+        <div class="executive-kpi exec-kpi-progress"><div class="exec-kpi-icon">🚧</div><div><div class="executive-kpi-label">IN PROGRESS</div><div id="execProgress" class="executive-kpi-value">0</div><div id="execProgressPct" class="kpi-sub">0%</div></div></div>
+        <div class="executive-kpi exec-kpi-hold"><div class="exec-kpi-icon">⏸️</div><div><div class="executive-kpi-label">ON HOLD / DELAYED</div><div id="execHold" class="executive-kpi-value">0</div></div></div>
+        <div class="executive-kpi exec-kpi-pending"><div class="exec-kpi-icon">🔍</div><div><div class="executive-kpi-label">PENDING INSPECTIONS</div><div id="execPending" class="executive-kpi-value">0</div></div></div>
+        <div class="executive-kpi exec-kpi-constraint"><div class="exec-kpi-icon">⚠️</div><div><div class="executive-kpi-label">CONSTRAINTS</div><div id="execConstraints" class="executive-kpi-value">0</div></div></div>
       </div>
 
-      <div class="executive-grid">
+      <div class="executive-progress-strip">
+        <div class="summary-progress-head">
+          <div><b>Completion Rate</b><span id="execCompletionText">0 of 0 completed</span></div>
+          <div id="execCompletionPercent">0%</div>
+        </div>
+        <div class="summary-progress-track"><div id="execCompletionBar" class="summary-progress-fill"></div></div>
+      </div>
+
+      <div class="executive-grid executive-grid-v2">
         <div class="executive-panel">
-          <div class="executive-panel-title">Activities by Project</div>
+          <div class="executive-panel-title">🏢 Activity by Project / Tower</div>
           <div id="execProjects" class="executive-panel-body"></div>
         </div>
         <div class="executive-panel">
-          <div class="executive-panel-title">Work Status</div>
+          <div class="executive-panel-title">📈 Work Status Distribution</div>
           <div id="execStatuses" class="executive-panel-body"></div>
         </div>
         <div class="executive-panel">
-          <div class="executive-panel-title">Activities by Trade</div>
+          <div class="executive-panel-title">🛠️ Activity by Trade</div>
           <div id="execTrades" class="executive-panel-body"></div>
         </div>
         <div class="executive-panel">
-          <div class="executive-panel-title">Activities by Contractor</div>
+          <div class="executive-panel-title">👷 Contractor Activity Volume</div>
           <div id="execContractors" class="executive-panel-body"></div>
         </div>
       </div>
 
-      <div class="executive-panel">
-        <div class="executive-panel-title">Latest Critical / Constraint Items</div>
+      <div class="executive-grid executive-management-grid">
+        <div class="executive-panel">
+          <div class="executive-panel-title">📏 Reported Quantity by Activity</div>
+          <div id="execQuantities" class="executive-panel-body"></div>
+        </div>
+        <div class="executive-panel">
+          <div class="executive-panel-title">🔎 Inspection Outcome</div>
+          <div id="execInspectionSummary" class="executive-panel-body"></div>
+        </div>
+      </div>
+
+      <div class="executive-panel executive-critical-panel">
+        <div class="executive-panel-title">🚨 Management Attention / Critical Items</div>
         <div id="execCritical" class="executive-panel-body"></div>
       </div>
+
       <div class="executive-note">Executive Report is visible only to CEO and Project Manager accounts.</div>
     </div>
   </div>
 </div>
-
 
 <div id="dailySummaryPage">
   <div class="header">
@@ -2567,13 +2646,58 @@ function executiveCountBy(rows,key){
 function simpleExecTable(map){
   const entries=Object.keys(map).sort(function(a,b){return map[b]-map[a]});
   if(!entries.length)return '<div class="empty-state">No data.</div>';
-
-  let h='<table class="executive-table"><thead><tr><th>Item</th><th>Count</th></tr></thead><tbody>';
+  const max=Math.max.apply(null,entries.map(k=>map[k]))||1;
+  let h='<table class="exec-summary-table"><tbody>';
   entries.forEach(function(k){
-    h+='<tr><td>'+escapeHtml(k)+'</td><td><b>'+map[k]+'</b></td></tr>';
+    const width=Math.max(4,Math.round((map[k]/max)*100));
+    h+='<tr><td>'+escapeHtml(k)+'</td><td class="exec-bar-cell"><div class="exec-mini-track"><div class="exec-mini-fill" style="width:'+width+'%"></div></div></td><td><b>'+map[k]+'</b></td></tr>';
   });
   return h+'</tbody></table>';
 }
+
+function executiveCountProjectTower(rows){
+  const map={};
+  rows.forEach(r=>{
+    const key=[r.project,r.tower].filter(Boolean).join(" / ")||"Not Specified";
+    map[key]=(map[key]||0)+1;
+  });
+  return map;
+}
+
+function renderExecutiveQuantities(rows){
+  const el=document.getElementById("execQuantities");
+  const grouped={};
+
+  rows.forEach(r=>{
+    const qty=Number(r.todayQuantity);
+    if(isNaN(qty)||qty===0)return;
+    const activity=String(r.activity||"Unspecified").trim()||"Unspecified";
+    const tower=String(r.tower||"-").trim()||"-";
+    const unit=String(r.unit||"").trim();
+    const key=[activity,tower,unit].join("|||");
+    if(!grouped[key])grouped[key]={activity:activity,tower:tower,unit:unit,qty:0};
+    grouped[key].qty+=qty;
+  });
+
+  const list=Object.values(grouped).sort((a,b)=>b.qty-a.qty);
+  if(!list.length){
+    el.innerHTML='<div class="empty-state">No quantity data in selected period.</div>';
+    return;
+  }
+
+  let h='<div style="overflow-x:auto"><table class="exec-quantity-table"><thead><tr><th>Activity</th><th>Tower</th><th>Reported Qty</th></tr></thead><tbody>';
+  list.forEach(x=>{
+    h+='<tr><td>'+escapeHtml(x.activity)+'</td><td>'+escapeHtml(x.tower)+'</td><td>'+escapeHtml(String(x.qty))+(x.unit?' '+escapeHtml(x.unit):'')+'</td></tr>';
+  });
+  el.innerHTML=h+'</tbody></table></div>';
+}
+
+function renderExecutiveInspectionSummary(rows){
+  document.getElementById("execInspectionSummary").innerHTML=
+    simpleExecTable(executiveCountBy(rows,"inspectionStatus"));
+}
+
+function printExecutiveReport(){window.print()}
 
 function loadExecutiveReport(){
   if(!hasExecutiveAccess())return;
@@ -2622,62 +2746,80 @@ function renderExecutiveReport(){
     return (!p||r.project===p)&&(!s||r.workStatus===s);
   });
 
-  const completed=rows.filter(function(r){return normalizeRole(r.workStatus)==="completed"}).length;
-  const progress=rows.filter(function(r){return normalizeRole(r.workStatus)==="in progress"}).length;
+  const total=rows.length;
+  const completed=rows.filter(r=>normalizeRole(r.workStatus)==="completed").length;
+  const progress=rows.filter(r=>normalizeRole(r.workStatus)==="in progress").length;
   const hold=rows.filter(function(r){
     const x=normalizeRole(r.workStatus);
     return x==="hold"||x==="on hold"||x==="delayed";
   }).length;
-  const pending=rows.filter(function(r){return normalizeRole(r.inspectionStatus)==="requested"}).length;
+  const pending=rows.filter(r=>normalizeRole(r.inspectionStatus)==="requested").length;
   const constraints=rows.filter(function(r){
     const issue=String(r.issueConstraint||"").trim();
     const category=String(r.delayCategory||"").trim();
-    return (issue && normalizeRole(issue)!=="none" && normalizeRole(issue)!=="n/a") ||
-           (category && normalizeRole(category)!=="none" && normalizeRole(category)!=="n/a");
+    return (issue && !["none","n/a","na","nil"].includes(normalizeRole(issue))) ||
+           (category && !["none","n/a","na","nil"].includes(normalizeRole(category)));
   }).length;
 
-  document.getElementById("execTotal").innerText=rows.length;
+  const pct=n=>total?Math.round((n/total)*100):0;
+
+  document.getElementById("execTotal").innerText=total;
   document.getElementById("execCompleted").innerText=completed;
   document.getElementById("execProgress").innerText=progress;
   document.getElementById("execHold").innerText=hold;
   document.getElementById("execPending").innerText=pending;
   document.getElementById("execConstraints").innerText=constraints;
+  document.getElementById("execCompletedPct").innerText=pct(completed)+"%";
+  document.getElementById("execProgressPct").innerText=pct(progress)+"%";
 
-  document.getElementById("execProjects").innerHTML=simpleExecTable(executiveCountBy(rows,"project"));
+  document.getElementById("execCompletionText").innerText=completed+" of "+total+" completed";
+  document.getElementById("execCompletionPercent").innerText=pct(completed)+"%";
+  document.getElementById("execCompletionBar").style.width=pct(completed)+"%";
+
+  const from=document.getElementById("execFromDate").value;
+  const to=document.getElementById("execToDate").value;
+  if(from&&to){
+    const fd=new Date(from+"T00:00:00"),td=new Date(to+"T00:00:00");
+    const fmt=d=>d.toLocaleDateString(undefined,{day:"2-digit",month:"short",year:"numeric"});
+    document.getElementById("execPeriodLabel").innerText=fmt(fd)+" – "+fmt(td);
+  }
+
+  document.getElementById("execProjects").innerHTML=simpleExecTable(executiveCountProjectTower(rows));
   document.getElementById("execStatuses").innerHTML=simpleExecTable(executiveCountBy(rows,"workStatus"));
   document.getElementById("execTrades").innerHTML=simpleExecTable(executiveCountBy(rows,"trade"));
   document.getElementById("execContractors").innerHTML=simpleExecTable(executiveCountBy(rows,"contractor"));
+
+  renderExecutiveQuantities(rows);
+  renderExecutiveInspectionSummary(rows);
 
   const critical=rows
     .filter(function(r){
       return String(r.issueConstraint||"").trim() ||
              String(r.actionRequired||"").trim() ||
-             String(r.delayCategory||"").trim();
+             String(r.delayCategory||"").trim() ||
+             r.workStatus==="Hold" ||
+             r.inspectionStatus==="Rectification Required";
     })
     .sort(function(a,b){return (b.timestampMs||0)-(a.timestampMs||0)})
     .slice(0,20);
 
+  const el=document.getElementById("execCritical");
   if(!critical.length){
-    document.getElementById("execCritical").innerHTML='<div class="empty-state">No critical items in the selected period.</div>';
+    el.innerHTML='<div class="empty-state">No critical items in the selected period.</div>';
     return;
   }
 
-  let h='<div style="overflow-x:auto"><table class="executive-table"><thead><tr>'+
-    '<th>Date</th><th>Project / Location</th><th>Activity</th><th>Constraint</th><th>Action Required</th><th>Submitted By</th>'+
-    '</tr></thead><tbody>';
-
-  critical.forEach(function(r){
-    h+='<tr>'+
-      '<td>'+escapeHtml(r.timestamp)+'</td>'+
-      '<td>'+escapeHtml([r.project,r.tower,r.floor].filter(Boolean).join(" / "))+'</td>'+
-      '<td>'+escapeHtml(r.activity)+'</td>'+
-      '<td>'+escapeHtml(r.issueConstraint||r.delayCategory||"-")+'</td>'+
-      '<td>'+escapeHtml(r.actionRequired||"-")+'</td>'+
-      '<td>'+escapeHtml(r.supervisorName||"-")+'</td>'+
-      '</tr>';
-  });
-
-  document.getElementById("execCritical").innerHTML=h+'</tbody></table></div>';
+  el.innerHTML='<div class="exec-critical-list">'+critical.map(r=>{
+    const warning=r.inspectionStatus==="Rectification Required"||r.workStatus==="Hold";
+    const title=r.issueConstraint||r.delayCategory||(r.inspectionStatus==="Rectification Required"?"Rectification Required":"Management Attention");
+    const meta=[r.timestamp,r.project,r.tower,r.floor,r.activity].filter(Boolean).join(" • ");
+    const action=r.actionRequired||r.inspectionRemarks||"Follow-up required";
+    return '<div class="exec-critical-item '+(warning?'warning':'')+'">'+
+      '<div class="exec-critical-title">'+escapeHtml(title)+'</div>'+
+      '<div class="exec-critical-meta">'+escapeHtml(meta)+'</div>'+
+      '<div class="exec-critical-action"><b>Action:</b> '+escapeHtml(action)+'</div>'+
+      '</div>';
+  }).join("")+'</div>';
 }
 
 
