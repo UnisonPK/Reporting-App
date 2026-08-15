@@ -608,6 +608,23 @@ label{color:#344054;font-size:13px;margin-top:14px}
   .summary-progress-head{align-items:flex-start}
 }
 
+
+/* ===== Quantity by Activity ===== */
+.quantity-activity-wrap{overflow-x:auto}
+.quantity-activity-table{width:100%;border-collapse:collapse;min-width:620px}
+.quantity-activity-table th,.quantity-activity-table td{padding:9px 8px;border-bottom:1px solid #eef2f7;text-align:left;font-size:12px;vertical-align:top}
+.quantity-activity-table th{color:#64748b;font-weight:800;background:#f8fafc;white-space:nowrap}
+.quantity-activity-table td.qty-value{font-weight:800;color:#0b3f88;white-space:nowrap}
+.quantity-activity-mobile{display:none}
+.quantity-activity-card{border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#fff}
+.quantity-activity-card-title{font-size:13px;font-weight:800;color:#111827}
+.quantity-activity-card-meta{font-size:11px;color:#64748b;margin-top:3px}
+.quantity-activity-card-qty{font-size:15px;font-weight:800;color:#0b3f88;margin-top:6px}
+@media(max-width:700px){
+  .quantity-activity-table{display:none}
+  .quantity-activity-mobile{display:block}
+}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
@@ -952,7 +969,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
           <div id="summaryHousekeeping" class="summary-panel-body"></div>
         </div>
         <div class="summary-panel">
-          <div class="summary-panel-title">📏 Reported Quantity by Unit</div>
+          <div class="summary-panel-title">📏 Reported Quantity by Activity</div>
           <div id="summaryQuantities" class="summary-panel-body"></div>
         </div>
         <div class="summary-panel">
@@ -2307,16 +2324,103 @@ function updateSummaryFloorFilter(){
 }
 
 function renderQuantitySummary(rows){
-  const totals={};
-  rows.forEach(r=>{
-    const unit=String(r.unit||"Unspecified").trim()||"Unspecified";
-    const qty=Number(r.todayQuantity);
-    if(!isNaN(qty))totals[unit]=(totals[unit]||0)+qty;
-  });
   const el=document.getElementById("summaryQuantities");
-  const entries=Object.entries(totals);
-  if(!entries.length){el.innerHTML='<div class="summary-empty">No quantity data</div>';return;}
-  el.innerHTML='<div class="quantity-summary">'+entries.map(([u,v])=>'<span class="quantity-chip">'+escapeHtml(u)+': '+escapeHtml(String(v))+'</span>').join("")+'</div>';
+  const managementView=hasExecutiveAccess();
+
+  const items=rows
+    .map(r=>({
+      activityId:String(r.activityId||""),
+      activity:String(r.activity||"Unspecified"),
+      contractor:String(r.contractor||"-"),
+      project:String(r.project||""),
+      tower:String(r.tower||""),
+      floor:String(r.floor||""),
+      qty:Number(r.todayQuantity),
+      unit:String(r.unit||"").trim()
+    }))
+    .filter(x=>!isNaN(x.qty) && x.qty!==0);
+
+  if(!items.length){
+    el.innerHTML='<div class="summary-empty">No reported quantity data</div>';
+    return;
+  }
+
+  if(managementView){
+    const grouped={};
+
+    items.forEach(x=>{
+      const key=[x.activity,x.tower,x.unit].join("|||");
+      if(!grouped[key]){
+        grouped[key]={
+          activity:x.activity,
+          tower:x.tower||"-",
+          unit:x.unit,
+          qty:0
+        };
+      }
+      grouped[key].qty+=x.qty;
+    });
+
+    const rows2=Object.values(grouped).sort((a,b)=>{
+      const aa=(a.activity+" "+a.tower).toLowerCase();
+      const bb=(b.activity+" "+b.tower).toLowerCase();
+      return aa.localeCompare(bb);
+    });
+
+    let h='<div class="quantity-activity-wrap"><table class="quantity-activity-table"><thead><tr>'+
+      '<th>Activity</th><th>Tower</th><th>Today Qty</th>'+
+      '</tr></thead><tbody>';
+
+    rows2.forEach(x=>{
+      h+='<tr>'+
+        '<td><b>'+escapeHtml(x.activity)+'</b></td>'+
+        '<td>'+escapeHtml(x.tower)+'</td>'+
+        '<td class="qty-value">'+escapeHtml(String(x.qty))+(x.unit?' '+escapeHtml(x.unit):'')+'</td>'+
+        '</tr>';
+    });
+
+    h+='</tbody></table></div><div class="quantity-activity-mobile">';
+
+    rows2.forEach(x=>{
+      h+='<div class="quantity-activity-card">'+
+        '<div class="quantity-activity-card-title">'+escapeHtml(x.activity)+'</div>'+
+        '<div class="quantity-activity-card-meta">'+escapeHtml(x.tower)+'</div>'+
+        '<div class="quantity-activity-card-qty">'+escapeHtml(String(x.qty))+(x.unit?' '+escapeHtml(x.unit):'')+'</div>'+
+        '</div>';
+    });
+
+    h+='</div>';
+    el.innerHTML=h;
+    return;
+  }
+
+  let h='<div class="quantity-activity-wrap"><table class="quantity-activity-table"><thead><tr>'+
+    '<th>Activity</th><th>Location</th><th>Contractor</th><th>Today Qty</th>'+
+    '</tr></thead><tbody>';
+
+  items.forEach(x=>{
+    const location=[x.project,x.tower,x.floor].filter(Boolean).join(" / ");
+    h+='<tr>'+
+      '<td><b>'+escapeHtml(x.activity)+'</b><div style="color:#94a3b8;font-size:10px;margin-top:2px">'+escapeHtml(x.activityId)+'</div></td>'+
+      '<td>'+escapeHtml(location||"-")+'</td>'+
+      '<td>'+escapeHtml(x.contractor)+'</td>'+
+      '<td class="qty-value">'+escapeHtml(String(x.qty))+(x.unit?' '+escapeHtml(x.unit):'')+'</td>'+
+      '</tr>';
+  });
+
+  h+='</tbody></table></div><div class="quantity-activity-mobile">';
+
+  items.forEach(x=>{
+    const location=[x.project,x.tower,x.floor].filter(Boolean).join(" • ");
+    h+='<div class="quantity-activity-card">'+
+      '<div class="quantity-activity-card-title">'+escapeHtml(x.activity)+'</div>'+
+      '<div class="quantity-activity-card-meta">'+escapeHtml(x.activityId)+(location?' • '+escapeHtml(location):'')+(x.contractor?' • '+escapeHtml(x.contractor):'')+'</div>'+
+      '<div class="quantity-activity-card-qty">'+escapeHtml(String(x.qty))+(x.unit?' '+escapeHtml(x.unit):'')+'</div>'+
+      '</div>';
+  });
+
+  h+='</div>';
+  el.innerHTML=h;
 }
 
 function changeSummaryDate(days){
