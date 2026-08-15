@@ -247,9 +247,24 @@
   .executive-filter-bar{grid-template-columns:1fr}
 }
 
+
+/* UNISON Branding */
+.brand-logo{display:block;max-width:180px;width:62%;height:auto;margin:0 auto 14px;object-fit:contain}
+.header-brand{display:flex;align-items:center;gap:12px;min-width:0}
+.header-logo{width:92px;max-height:34px;object-fit:contain;flex:0 0 auto}
+.header-brand-text{min-width:0}
+@media(max-width:650px){
+  .brand-logo{max-width:160px;width:58%;margin-bottom:12px}
+  .header{padding:12px 14px;gap:10px}
+  .header-brand{gap:9px;min-width:0}
+  .header-logo{width:72px;max-height:28px}
+  .app-name{font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .app-subtitle{font-size:11px}
+  .logout-button,.back-button{padding:9px 12px;font-size:12px;flex:0 0 auto}
+}
 </style></head><body>
-<div id="loginPage"><div class="login-card"><div class="logo">🏗️</div><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
-<div id="dashboardPage"><div class="header"><div><div class="app-name">🏗️ LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><h2 id="welcome">Welcome</h2><div id="userRole"></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div></div></div></div></div>
+<div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
+<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><h2 id="welcome">Welcome</h2><div id="userRole"></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div></div></div></div></div>
 
 
 
