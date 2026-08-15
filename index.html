@@ -488,6 +488,34 @@ label{color:#344054;font-size:13px;margin-top:14px}
   .submit-hint{text-align:center}
 }
 
+
+/* ===== My Reports V2 ===== */
+.reports-range-note{font-size:12px;color:#64748b;align-self:center}
+.status-badge.status-completed{background:#dcfce7;color:#166534}
+.status-badge.status-progress{background:#dbeafe;color:#1d4ed8}
+.status-badge.status-hold{background:#fef3c7;color:#92400e}
+.status-badge.status-not-started{background:#f1f5f9;color:#475569}
+.inspection-badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;background:#f1f5f9;color:#475569;white-space:nowrap}
+.inspection-badge.requested{background:#fff7ed;color:#9a3412}
+.inspection-badge.approved{background:#dcfce7;color:#166534}
+.inspection-badge.rejected{background:#fee2e2;color:#991b1b}
+.inspection-badge.rectification-required{background:#fef3c7;color:#92400e}
+.report-mobile-list{display:none}
+.report-mobile-card{border:1px solid #e5e7eb;border-radius:13px;background:#fff;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(15,23,42,.04)}
+.report-mobile-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:10px}
+.report-mobile-id{font-size:15px;font-weight:800;color:#111827}
+.report-mobile-date{font-size:11px;color:#64748b;margin-top:3px}
+.report-mobile-path{font-size:13px;font-weight:700;color:#334155;margin-bottom:8px}
+.report-mobile-activity{font-size:14px;font-weight:800;margin-bottom:4px}
+.report-mobile-meta{font-size:12px;color:#64748b;margin-bottom:10px}
+.report-mobile-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.report-mobile-actions{display:flex;justify-content:flex-end}
+@media(max-width:760px){
+  #reportsContainer.table-wrap{overflow:visible;border:0;background:transparent}
+  #reportsContainer .reports-table{display:none}
+  #reportsContainer .report-mobile-list{display:block}
+}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
@@ -882,7 +910,15 @@ label{color:#344054;font-size:13px;margin-top:14px}
   </div>
 </div>
 
-<div id="myReportsPage"><div class="header"><div><div class="app-name">📋 My Reports</div><div class="app-subtitle">Submitted site activities</div></div><button class="back-button" onclick="showDashboard()">Back</button></div><div class="container"><div class="form-card"><div class="step-title">My Activity Reports</div><div class="step-subtitle">Search and filter your submitted reports. Click View for full details and photo evidence.</div><div class="reports-toolbar"><input id="reportSearch" class="search-wide" placeholder="Search Activity ID, activity, contractor, trade..." oninput="applyReportFilters()"><select id="reportProject" onchange="applyReportFilters()"><option value="">All Projects</option></select><select id="reportTower" onchange="applyReportFilters()"><option value="">All Towers</option></select><select id="reportFloor" onchange="applyReportFilters()"><option value="">All Floors</option></select><select id="reportStatus" onchange="applyReportFilters()"><option value="">All Work Status</option><option>Not Started</option><option>In Progress</option><option>Completed</option><option>Hold</option></select></div><div class="reports-summary"><span id="reportCount" class="summary-chip">0 Reports</span></div><div id="reportsContainer" class="reports-loading">Loading reports...</div></div></div></div>
+<div id="myReportsPage"><div class="header"><div><div class="app-name">📋 My Reports</div><div class="app-subtitle">Submitted site activities</div></div><button class="back-button" onclick="showDashboard()">Back</button></div><div class="container"><div class="form-card"><div class="step-title">My Activity Reports</div><div class="step-subtitle">Search and filter your submitted reports. Click View for full details and photo evidence.</div><div class="reports-toolbar">
+<input id="reportSearch" class="search-wide" placeholder="Search Activity ID, activity, contractor, trade..." oninput="applyReportFilters()">
+<select id="reportProject" onchange="applyReportFilters()"><option value="">All Projects</option></select>
+<select id="reportTower" onchange="applyReportFilters()"><option value="">All Towers</option></select>
+<select id="reportFloor" onchange="applyReportFilters()"><option value="">All Floors</option></select>
+<select id="reportStatus" onchange="applyReportFilters()"><option value="">All Work Status</option><option>Not Started</option><option>In Progress</option><option>Completed</option><option>Hold</option></select>
+<div class="filter-dates"><input id="reportFromDate" type="date" onchange="applyReportFilters()"><input id="reportToDate" type="date" onchange="applyReportFilters()"></div>
+<button class="reset-filter-btn" onclick="resetMyReportFilters()">Reset</button>
+</div><div class="reports-summary"><span id="reportCount" class="summary-chip">0 Reports</span><span class="reports-range-note">Use date filters to narrow submitted activities.</span></div><div id="reportsContainer" class="reports-loading">Loading reports...</div></div></div></div>
 <div id="reportDetailModal" class="detail-modal" onclick="closeReportDetail(event)">
   <div class="detail-card" onclick="event.stopPropagation()">
     <div class="report-detail-top">
@@ -1490,8 +1526,50 @@ function openMyReports(){
     })
     .getReportsForUser(loggedInUser.userId,loggedInUser.username,loggedInUser.role);
 }
-function applyReportFilters(){let q=(document.getElementById("reportSearch").value||"").toLowerCase(),p=document.getElementById("reportProject").value,t=document.getElementById("reportTower").value,f=document.getElementById("reportFloor").value,s=document.getElementById("reportStatus").value;let rows=myReportsData.filter(r=>{let text=[r.activityId,r.activity,r.contractor,r.trade,r.subTrade].join(" ").toLowerCase();return(!q||text.includes(q))&&(!p||r.project===p)&&(!t||r.tower===t)&&(!f||r.floor===f)&&(!s||r.workStatus===s)});document.getElementById("reportCount").innerText=rows.length+" Report"+(rows.length===1?"":"s");renderReports(rows)}
-function renderReports(rows){let c=document.getElementById("reportsContainer");if(!rows.length){c.className="empty-state";c.innerHTML="No reports found for the selected filters.";return}c.className="table-wrap";let h='<table class="reports-table"><thead><tr><th>Activity ID</th><th>Date</th><th>Project</th><th>Tower</th><th>Floor</th><th>Activity</th><th>Contractor</th><th>Status</th><th>Inspection</th><th></th></tr></thead><tbody>';rows.forEach(r=>{h+='<tr><td><b>'+escapeHtml(r.activityId)+'</b></td><td>'+escapeHtml(r.timestamp)+'</td><td>'+escapeHtml(r.project)+'</td><td>'+escapeHtml(r.tower)+'</td><td>'+escapeHtml(r.floor)+'</td><td>'+escapeHtml(r.activity)+'</td><td>'+escapeHtml(r.contractor)+'</td><td><span class="status-badge">'+escapeHtml(r.workStatus)+'</span></td><td>'+escapeHtml(r.inspectionStatus)+'</td><td><button class="view-btn" onclick="viewReportDetail(\''+escapeHtml(r.activityId)+'\')">View</button></td></tr>'});h+='</tbody></table>';c.innerHTML=h}
+function applyReportFilters(){
+  const q=(document.getElementById("reportSearch").value||"").toLowerCase().trim();
+  const p=document.getElementById("reportProject").value;
+  const t=document.getElementById("reportTower").value;
+  const f=document.getElementById("reportFloor").value;
+  const s=document.getElementById("reportStatus").value;
+  const from=document.getElementById("reportFromDate").value;
+  const to=document.getElementById("reportToDate").value;
+  const fromDate=from?new Date(from+"T00:00:00"):null;
+  const toDate=to?new Date(to+"T23:59:59"):null;
+  const rows=myReportsData.filter(r=>{
+    const txt=[r.activityId,r.activity,r.contractor,r.trade,r.subTrade,r.supervisorName].join(" ").toLowerCase();
+    const rd=parseReportDate(r.timestamp);
+    return (!q||txt.includes(q))&&(!p||r.project===p)&&(!t||r.tower===t)&&(!f||r.floor===f)&&(!s||r.workStatus===s)&&(!fromDate||!rd||rd>=fromDate)&&(!toDate||!rd||rd<=toDate);
+  });
+  document.getElementById("reportCount").innerText=rows.length+" Report"+(rows.length===1?"":"s");
+  renderReports(rows);
+}
+
+function workStatusClass(status){
+  const s=String(status||"").trim().toLowerCase();
+  if(s==="completed")return "status-completed";
+  if(s==="in progress")return "status-progress";
+  if(s==="hold")return "status-hold";
+  return "status-not-started";
+}
+function inspectionClass(status){
+  return String(status||"").trim().toLowerCase().replace(/\s+/g,"-");
+}
+function renderReports(rows){
+  const c=document.getElementById("reportsContainer");
+  if(!rows.length){c.className="empty-state";c.innerHTML="No reports found for the selected filters.";return}
+  c.className="table-wrap";
+  let h='<table class="reports-table"><thead><tr><th>Activity ID</th><th>Date</th><th>Project</th><th>Tower</th><th>Floor</th><th>Activity</th><th>Contractor</th><th>Status</th><th>Inspection</th><th></th></tr></thead><tbody>';
+  rows.forEach(r=>{
+    h+='<tr><td><b>'+escapeHtml(r.activityId)+'</b></td><td>'+escapeHtml(r.timestamp)+'</td><td>'+escapeHtml(r.project)+'</td><td>'+escapeHtml(r.tower)+'</td><td>'+escapeHtml(r.floor)+'</td><td>'+escapeHtml(r.activity)+'</td><td>'+escapeHtml(r.contractor)+'</td><td><span class="status-badge '+workStatusClass(r.workStatus)+'">'+escapeHtml(r.workStatus)+'</span></td><td><span class="inspection-badge '+inspectionClass(r.inspectionStatus)+'">'+escapeHtml(r.inspectionStatus||"-")+'</span></td><td><button class="view-btn" onclick="viewReportDetail(\''+escapeHtml(r.activityId)+'\')">View</button></td></tr>';
+  });
+  h+='</tbody></table><div class="report-mobile-list">';
+  rows.forEach(r=>{
+    h+='<div class="report-mobile-card"><div class="report-mobile-top"><div><div class="report-mobile-id">'+escapeHtml(r.activityId)+'</div><div class="report-mobile-date">'+escapeHtml(r.timestamp)+'</div></div><span class="status-badge '+workStatusClass(r.workStatus)+'">'+escapeHtml(r.workStatus)+'</span></div><div class="report-mobile-path">'+escapeHtml([r.project,r.tower,r.floor].filter(Boolean).join(" • "))+'</div><div class="report-mobile-activity">'+escapeHtml(r.activity)+'</div><div class="report-mobile-meta">'+escapeHtml(r.trade||"")+(r.contractor?' • '+escapeHtml(r.contractor):'')+'</div><div class="report-mobile-badges"><span class="inspection-badge '+inspectionClass(r.inspectionStatus)+'">'+escapeHtml(r.inspectionStatus||"-")+'</span></div><div class="report-mobile-actions"><button class="view-btn" onclick="viewReportDetail(\''+escapeHtml(r.activityId)+'\')">View Details</button></div></div>';
+  });
+  h+='</div>';
+  c.innerHTML=h;
+}
 function detailItem(label,value){return '<div class="detail-item"><strong>'+escapeHtml(label)+'</strong><div>'+escapeHtml(value||"-")+'</div></div>'}
 function longDetail(label,value){return '<div class="long-text"><strong style="display:block;color:#6b7280;font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">'+escapeHtml(label)+'</strong>'+escapeHtml(value||"-")+'</div>'}
 function photoLink(url,label){return url?'<a class="photo-link" href="'+escapeHtml(url)+'" target="_blank" rel="noopener">'+escapeHtml(label)+'</a>':''}
@@ -2433,10 +2511,10 @@ function parseReportDate(s){
   return new Date(Number(m[3]),months[m[2]],Number(m[1]),Number(m[4]||0),Number(m[5]||0));
 }
 function resetMyReportFilters(){
-  ["reportSearch","reportProjectFilter","reportTowerFilter","reportFloorFilter","reportStatusFilter","reportFromDate","reportToDate"].forEach(id=>{
+  ["reportSearch","reportProject","reportTower","reportFloor","reportStatus","reportFromDate","reportToDate"].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value="";
   });
-  if(typeof filterMyReports==="function")filterMyReports();
+  applyReportFilters();
 }
 
 </script><script>
