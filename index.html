@@ -516,6 +516,58 @@ label{color:#344054;font-size:13px;margin-top:14px}
   #reportsContainer .report-mobile-list{display:block}
 }
 
+
+/* ===== Inspection Workflow V2 ===== */
+.inspection-v2-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}
+.inspection-refresh-btn{border:0;background:#e2e8f0;color:#334155;padding:10px 13px;border-radius:8px;font-weight:800;cursor:pointer}
+.inspection-tabs{display:flex;gap:8px;border-bottom:1px solid #e5e7eb;margin-bottom:16px}
+.inspection-tab{border:0;background:transparent;color:#64748b;padding:11px 14px;border-bottom:3px solid transparent;font-weight:800;cursor:pointer}
+.inspection-tab.active{color:#0b3f88;border-bottom-color:#0b3f88}
+.tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 7px;border-radius:999px;background:#e2e8f0;color:#334155;font-size:11px;margin-left:4px}
+.inspection-tab.active .tab-count{background:#dbeafe;color:#1d4ed8}
+.inspection-tab-section{display:none}
+.inspection-tab-section.active{display:block}
+.inspection-toolbar-v2{grid-template-columns:1.5fr repeat(4,1fr) auto}
+.inspection-search-wide{min-width:0}
+.inspection-help{font-size:12px;color:#64748b;align-self:center}
+.history-chip{background:#ecfdf5;color:#166534}
+.inspection-history-table{width:100%;border-collapse:collapse;min-width:1000px}
+.inspection-history-table th,.inspection-history-table td{padding:11px 10px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top;font-size:13px}
+.inspection-history-table th{background:#f8fafc;color:#475569;white-space:nowrap}
+.inspection-decision-badge{display:inline-block;padding:5px 9px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap}
+.inspection-decision-badge.approved{background:#dcfce7;color:#166534}
+.inspection-decision-badge.rejected{background:#fee2e2;color:#991b1b}
+.inspection-decision-badge.rectification-required{background:#fef3c7;color:#92400e}
+.inspection-mobile-list{display:none}
+.inspection-mobile-card{border:1px solid #e5e7eb;border-radius:13px;background:#fff;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px rgba(15,23,42,.04)}
+.inspection-mobile-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+.inspection-mobile-id{font-weight:800;color:#111827}
+.inspection-mobile-date{font-size:11px;color:#64748b;margin-top:3px}
+.inspection-mobile-path{font-size:13px;font-weight:700;color:#334155;margin-bottom:6px}
+.inspection-mobile-activity{font-size:14px;font-weight:800;margin-bottom:4px}
+.inspection-mobile-meta{font-size:12px;color:#64748b;margin-bottom:10px}
+.inspection-mobile-actions{display:flex;justify-content:flex-end}
+.history-toolbar{grid-template-columns:1.5fr 1fr 1fr 1.4fr auto}
+@media(max-width:900px){
+  .inspection-toolbar-v2,.history-toolbar{grid-template-columns:1fr 1fr}
+  .inspection-search-wide{grid-column:1/-1}
+  .inspection-toolbar-v2 .reset-filter-btn,.history-toolbar .reset-filter-btn{grid-column:1/-1}
+}
+@media(max-width:760px){
+  .inspection-v2-head{flex-direction:column}
+  .inspection-refresh-btn{width:100%}
+  .inspection-tabs{overflow-x:auto}
+  .inspection-tab{white-space:nowrap}
+  .inspection-toolbar-v2,.history-toolbar{grid-template-columns:1fr}
+  .inspection-search-wide,.inspection-toolbar-v2 .reset-filter-btn,.history-toolbar .reset-filter-btn{grid-column:auto}
+  #pendingInspectionsContainer.pending-table-wrap{overflow:visible;border:0}
+  #pendingInspectionsContainer .pending-table{display:none}
+  #pendingInspectionsContainer .inspection-mobile-list{display:block}
+  #inspectionHistoryContainer.pending-table-wrap{overflow:visible;border:0}
+  #inspectionHistoryContainer .inspection-history-table{display:none}
+  #inspectionHistoryContainer .inspection-mobile-list{display:block}
+}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
@@ -841,26 +893,76 @@ label{color:#344054;font-size:13px;margin-top:14px}
   </div>
 </div>
 
+
 <div id="pendingInspectionsPage">
   <div class="header">
     <div>
-      <div class="app-name">🔍 Pending Inspections</div>
-      <div class="app-subtitle">Review and decide requested site inspections</div>
+      <div class="app-name">🔍 Inspections</div>
+      <div class="app-subtitle">Pending inspection queue and inspection history</div>
     </div>
     <button class="back-button" onclick="showDashboard()">Back</button>
   </div>
+
   <div class="container">
     <div class="form-card">
-      <div class="step-title">Inspection Queue</div>
-      <div class="step-subtitle">Activities with Inspection Status = Requested. Open an item to approve, reject, or require rectification.</div>
-      <div class="inspection-toolbar">
-        <input id="inspectionSearch" placeholder="Search Activity ID, activity, contractor..." oninput="applyInspectionFilters()">
-        <select id="inspectionProjectFilter" onchange="applyInspectionFilters()"><option value="">All Projects</option></select>
-        <select id="inspectionTowerFilter" onchange="applyInspectionFilters()"><option value="">All Towers</option></select>
-        <select id="inspectionFloorFilter" onchange="applyInspectionFilters()"><option value="">All Floors</option></select>
+      <div class="inspection-v2-head">
+        <div>
+          <div class="step-title">Inspection Workflow</div>
+          <div class="step-subtitle">Review pending requests or view completed inspection decisions.</div>
+        </div>
+        <button class="inspection-refresh-btn" onclick="refreshInspectionWorkflow()">↻ Refresh</button>
       </div>
-      <div class="inspection-summary-row"><span id="pendingInspectionCount" class="inspection-chip">0 Pending</span></div>
-      <div id="pendingInspectionsContainer" class="reports-loading">Loading pending inspections...</div>
+
+      <div class="inspection-tabs">
+        <button id="inspectionPendingTab" class="inspection-tab active" onclick="showInspectionTab('pending')">⏳ Pending <span id="pendingTabCount" class="tab-count">0</span></button>
+        <button id="inspectionHistoryTab" class="inspection-tab" onclick="showInspectionTab('history')">✓ History <span id="historyTabCount" class="tab-count">0</span></button>
+      </div>
+
+      <div id="inspectionPendingSection" class="inspection-tab-section active">
+        <div class="inspection-toolbar inspection-toolbar-v2">
+          <input id="inspectionSearch" class="inspection-search-wide" placeholder="Search Activity ID, activity, contractor, supervisor..." oninput="applyInspectionFilters()">
+          <select id="inspectionProjectFilter" onchange="updateInspectionDependentFilters();applyInspectionFilters()"><option value="">All Projects</option></select>
+          <select id="inspectionTowerFilter" onchange="updateInspectionFloorFilter();applyInspectionFilters()"><option value="">All Towers</option></select>
+          <select id="inspectionFloorFilter" onchange="applyInspectionFilters()"><option value="">All Floors</option></select>
+          <select id="inspectionWorkStatusFilter" onchange="applyInspectionFilters()">
+            <option value="">All Work Status</option>
+            <option>Not Started</option>
+            <option>In Progress</option>
+            <option>Completed</option>
+            <option>Hold</option>
+          </select>
+          <button class="reset-filter-btn" onclick="resetInspectionFilters()">Reset</button>
+        </div>
+
+        <div class="inspection-summary-row">
+          <span id="pendingInspectionCount" class="inspection-chip">0 Pending</span>
+          <span class="inspection-help">Open an item to approve, reject, or require rectification.</span>
+        </div>
+
+        <div id="pendingInspectionsContainer" class="reports-loading">Loading pending inspections...</div>
+      </div>
+
+      <div id="inspectionHistorySection" class="inspection-tab-section">
+        <div class="inspection-toolbar history-toolbar">
+          <input id="inspectionHistorySearch" class="inspection-search-wide" placeholder="Search history..." oninput="applyInspectionHistoryFilters()">
+          <select id="inspectionHistoryStatus" onchange="applyInspectionHistoryFilters()">
+            <option value="">All Decisions</option>
+            <option>Approved</option>
+            <option>Rejected</option>
+            <option>Rectification Required</option>
+          </select>
+          <select id="inspectionHistoryProject" onchange="applyInspectionHistoryFilters()"><option value="">All Projects</option></select>
+          <div class="filter-dates">
+            <input id="inspectionHistoryFrom" type="date" onchange="applyInspectionHistoryFilters()">
+            <input id="inspectionHistoryTo" type="date" onchange="applyInspectionHistoryFilters()">
+          </div>
+          <button class="reset-filter-btn" onclick="resetInspectionHistoryFilters()">Reset</button>
+        </div>
+        <div class="inspection-summary-row">
+          <span id="inspectionHistoryCount" class="inspection-chip history-chip">0 Decisions</span>
+        </div>
+        <div id="inspectionHistoryContainer" class="reports-loading">Open History to load inspection decisions.</div>
+      </div>
     </div>
   </div>
 </div>
@@ -1665,21 +1767,29 @@ function printCurrentReport(){window.print()}
 
 
 let pendingInspectionData=[];
+let inspectionHistoryData=[];
+let inspectionHistoryLoaded=false;
 let currentInspectionActivityId="";
 
 function openPendingInspections(){
   hideAppPages();
   document.getElementById("pendingInspectionsPage").style.display="block";
+  showInspectionTab("pending");
+  loadPendingInspectionQueue();
+}
+
+function loadPendingInspectionQueue(){
   const c=document.getElementById("pendingInspectionsContainer");
   c.className="reports-loading";
   c.innerText="Loading pending inspections...";
+
   google.script.run
     .withSuccessHandler(function(rows){
       pendingInspectionData=rows||[];
       fillReportFilter("inspectionProjectFilter",uniqueValues(pendingInspectionData,"project"),"All Projects");
-      fillReportFilter("inspectionTowerFilter",uniqueValues(pendingInspectionData,"tower"),"All Towers");
-      fillReportFilter("inspectionFloorFilter",uniqueValues(pendingInspectionData,"floor"),"All Floors");
+      updateInspectionDependentFilters();
       applyInspectionFilters();
+      document.getElementById("pendingTabCount").innerText=pendingInspectionData.length;
     })
     .withFailureHandler(function(e){
       c.className="empty-state";
@@ -1688,16 +1798,57 @@ function openPendingInspections(){
     .getPendingInspectionsForUser(loggedInUser.userId,loggedInUser.username,loggedInUser.role);
 }
 
+function showInspectionTab(tab){
+  document.getElementById("inspectionPendingSection").classList.toggle("active",tab==="pending");
+  document.getElementById("inspectionHistorySection").classList.toggle("active",tab==="history");
+  document.getElementById("inspectionPendingTab").classList.toggle("active",tab==="pending");
+  document.getElementById("inspectionHistoryTab").classList.toggle("active",tab==="history");
+  if(tab==="history"&&!inspectionHistoryLoaded)loadInspectionHistory();
+}
+
+function refreshInspectionWorkflow(){
+  loadPendingInspectionQueue();
+  if(inspectionHistoryLoaded)loadInspectionHistory();
+}
+
+function updateInspectionDependentFilters(){
+  const p=document.getElementById("inspectionProjectFilter").value;
+  const rows=p?pendingInspectionData.filter(r=>r.project===p):pendingInspectionData;
+  fillReportFilter("inspectionTowerFilter",uniqueValues(rows,"tower"),"All Towers");
+  updateInspectionFloorFilter();
+}
+
+function updateInspectionFloorFilter(){
+  const p=document.getElementById("inspectionProjectFilter").value;
+  const t=document.getElementById("inspectionTowerFilter").value;
+  let rows=pendingInspectionData;
+  if(p)rows=rows.filter(r=>r.project===p);
+  if(t)rows=rows.filter(r=>r.tower===t);
+  fillReportFilter("inspectionFloorFilter",uniqueValues(rows,"floor"),"All Floors");
+}
+
+function resetInspectionFilters(){
+  ["inspectionSearch","inspectionProjectFilter","inspectionTowerFilter","inspectionFloorFilter","inspectionWorkStatusFilter"].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value="";
+  });
+  updateInspectionDependentFilters();
+  applyInspectionFilters();
+}
+
 function applyInspectionFilters(){
   const q=(document.getElementById("inspectionSearch").value||"").toLowerCase().trim();
   const p=document.getElementById("inspectionProjectFilter").value;
   const t=document.getElementById("inspectionTowerFilter").value;
   const f=document.getElementById("inspectionFloorFilter").value;
+  const ws=document.getElementById("inspectionWorkStatusFilter").value;
+
   const rows=pendingInspectionData.filter(r=>{
     const text=[r.activityId,r.activity,r.contractor,r.trade,r.subTrade,r.supervisorName].join(" ").toLowerCase();
-    return (!q||text.includes(q))&&(!p||r.project===p)&&(!t||r.tower===t)&&(!f||r.floor===f);
+    return (!q||text.includes(q))&&(!p||r.project===p)&&(!t||r.tower===t)&&(!f||r.floor===f)&&(!ws||r.workStatus===ws);
   });
+
   document.getElementById("pendingInspectionCount").innerText=rows.length+" Pending";
+  document.getElementById("pendingTabCount").innerText=pendingInspectionData.length;
   renderPendingInspections(rows);
 }
 
@@ -1708,11 +1859,10 @@ function renderPendingInspections(rows){
     c.innerHTML="No pending inspections found.";
     return;
   }
+
   c.className="pending-table-wrap";
-  let h='<table class="pending-table"><thead><tr>'+
-    '<th>Activity ID</th><th>Date</th><th>Project</th><th>Tower</th><th>Floor</th>'+
-    '<th>Activity</th><th>Contractor</th><th>Supervisor</th><th>Status</th><th></th>'+
-    '</tr></thead><tbody>';
+  let h='<table class="pending-table"><thead><tr><th>Activity ID</th><th>Date</th><th>Project</th><th>Tower</th><th>Floor</th><th>Activity</th><th>Contractor</th><th>Supervisor</th><th>Work Status</th><th></th></tr></thead><tbody>';
+
   rows.forEach(r=>{
     h+='<tr>'+
       '<td><b>'+escapeHtml(r.activityId)+'</b></td>'+
@@ -1723,11 +1873,23 @@ function renderPendingInspections(rows){
       '<td>'+escapeHtml(r.activity)+'</td>'+
       '<td>'+escapeHtml(r.contractor)+'</td>'+
       '<td>'+escapeHtml(r.supervisorName)+'</td>'+
-      '<td><span class="pending-badge">Requested</span></td>'+
+      '<td><span class="status-badge '+workStatusClass(r.workStatus)+'">'+escapeHtml(r.workStatus)+'</span></td>'+
       '<td><button class="inspect-btn" onclick="openInspectionDecision(\''+escapeHtml(r.activityId)+'\')">Inspect</button></td>'+
       '</tr>';
   });
-  h+='</tbody></table>';
+  h+='</tbody></table><div class="inspection-mobile-list">';
+
+  rows.forEach(r=>{
+    h+='<div class="inspection-mobile-card">'+
+      '<div class="inspection-mobile-top"><div><div class="inspection-mobile-id">'+escapeHtml(r.activityId)+'</div><div class="inspection-mobile-date">'+escapeHtml(r.timestamp)+'</div></div><span class="pending-badge">Requested</span></div>'+
+      '<div class="inspection-mobile-path">'+escapeHtml([r.project,r.tower,r.floor].filter(Boolean).join(" • "))+'</div>'+
+      '<div class="inspection-mobile-activity">'+escapeHtml(r.activity)+'</div>'+
+      '<div class="inspection-mobile-meta">'+escapeHtml(r.contractor||"-")+' • '+escapeHtml(r.supervisorName||"-")+'</div>'+
+      '<div class="inspection-mobile-actions"><button class="inspect-btn" onclick="openInspectionDecision(\''+escapeHtml(r.activityId)+'\')">Inspect</button></div>'+
+      '</div>';
+  });
+
+  h+='</div>';
   c.innerHTML=h;
 }
 
@@ -1807,6 +1969,7 @@ function saveInspectionDecision(){
       msg.innerText="Inspection updated successfully: "+r.status;
       btn.disabled=false;
       pendingInspectionData=pendingInspectionData.filter(x=>x.activityId!==currentInspectionActivityId);
+      inspectionHistoryLoaded=false;
       applyInspectionFilters();
       setTimeout(closeInspectionDecision,700);
     })
@@ -1826,6 +1989,99 @@ function saveInspectionDecision(){
     });
 }
 
+
+
+function loadInspectionHistory(){
+  const c=document.getElementById("inspectionHistoryContainer");
+  c.className="reports-loading";
+  c.innerText="Loading inspection history...";
+
+  google.script.run
+    .withSuccessHandler(function(rows){
+      inspectionHistoryData=(rows||[]).filter(r=>{
+        const s=String(r.inspectionStatus||"").trim();
+        return ["Approved","Rejected","Rectification Required"].includes(s);
+      });
+      inspectionHistoryLoaded=true;
+      fillReportFilter("inspectionHistoryProject",uniqueValues(inspectionHistoryData,"project"),"All Projects");
+      document.getElementById("historyTabCount").innerText=inspectionHistoryData.length;
+      applyInspectionHistoryFilters();
+    })
+    .withFailureHandler(function(e){
+      c.className="empty-state";
+      c.innerText="Unable to load inspection history: "+e.message;
+    })
+    .getReportsForUser(loggedInUser.userId,loggedInUser.username,loggedInUser.role);
+}
+
+function applyInspectionHistoryFilters(){
+  const q=(document.getElementById("inspectionHistorySearch").value||"").toLowerCase().trim();
+  const s=document.getElementById("inspectionHistoryStatus").value;
+  const p=document.getElementById("inspectionHistoryProject").value;
+  const from=document.getElementById("inspectionHistoryFrom").value;
+  const to=document.getElementById("inspectionHistoryTo").value;
+  const fromDate=from?new Date(from+"T00:00:00"):null;
+  const toDate=to?new Date(to+"T23:59:59"):null;
+
+  const rows=inspectionHistoryData.filter(r=>{
+    const txt=[r.activityId,r.activity,r.contractor,r.trade,r.supervisorName,r.inspector,r.inspectionRemarks].join(" ").toLowerCase();
+    const rd=parseReportDate(r.inspectionDate||r.timestamp);
+    return (!q||txt.includes(q))&&(!s||r.inspectionStatus===s)&&(!p||r.project===p)&&(!fromDate||!rd||rd>=fromDate)&&(!toDate||!rd||rd<=toDate);
+  });
+
+  document.getElementById("inspectionHistoryCount").innerText=rows.length+" Decision"+(rows.length===1?"":"s");
+  renderInspectionHistory(rows);
+}
+
+function resetInspectionHistoryFilters(){
+  ["inspectionHistorySearch","inspectionHistoryStatus","inspectionHistoryProject","inspectionHistoryFrom","inspectionHistoryTo"].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value="";
+  });
+  applyInspectionHistoryFilters();
+}
+
+function renderInspectionHistory(rows){
+  const c=document.getElementById("inspectionHistoryContainer");
+  if(!rows.length){
+    c.className="empty-state";
+    c.innerHTML="No inspection decisions found for the selected filters.";
+    return;
+  }
+
+  c.className="pending-table-wrap";
+  let h='<table class="inspection-history-table"><thead><tr><th>Activity ID</th><th>Inspection Date</th><th>Project / Location</th><th>Activity</th><th>Decision</th><th>Inspector</th><th>Remarks</th><th></th></tr></thead><tbody>';
+
+  rows.forEach(r=>{
+    h+='<tr>'+
+      '<td><b>'+escapeHtml(r.activityId)+'</b></td>'+
+      '<td>'+escapeHtml(r.inspectionDate||"-")+'</td>'+
+      '<td>'+escapeHtml([r.project,r.tower,r.floor].filter(Boolean).join(" / "))+'</td>'+
+      '<td>'+escapeHtml(r.activity)+'</td>'+
+      '<td><span class="inspection-decision-badge '+inspectionClass(r.inspectionStatus)+'">'+escapeHtml(r.inspectionStatus)+'</span></td>'+
+      '<td>'+escapeHtml(r.inspector||"-")+'</td>'+
+      '<td>'+escapeHtml(r.inspectionRemarks||"-")+'</td>'+
+      '<td><button class="view-btn" onclick="openInspectionHistoryReport(\''+escapeHtml(r.activityId)+'\')">View</button></td>'+
+      '</tr>';
+  });
+
+  h+='</tbody></table><div class="inspection-mobile-list">';
+  rows.forEach(r=>{
+    h+='<div class="inspection-mobile-card">'+
+      '<div class="inspection-mobile-top"><div><div class="inspection-mobile-id">'+escapeHtml(r.activityId)+'</div><div class="inspection-mobile-date">'+escapeHtml(r.inspectionDate||r.timestamp)+'</div></div><span class="inspection-decision-badge '+inspectionClass(r.inspectionStatus)+'">'+escapeHtml(r.inspectionStatus)+'</span></div>'+
+      '<div class="inspection-mobile-path">'+escapeHtml([r.project,r.tower,r.floor].filter(Boolean).join(" • "))+'</div>'+
+      '<div class="inspection-mobile-activity">'+escapeHtml(r.activity)+'</div>'+
+      '<div class="inspection-mobile-meta">Inspector: '+escapeHtml(r.inspector||"-")+'</div>'+
+      '<div class="inspection-mobile-actions"><button class="view-btn" onclick="openInspectionHistoryReport(\''+escapeHtml(r.activityId)+'\')">View Details</button></div>'+
+      '</div>';
+  });
+  h+='</div>';
+  c.innerHTML=h;
+}
+
+function openInspectionHistoryReport(id){
+  myReportsData=inspectionHistoryData.slice();
+  viewReportDetail(id);
+}
 
 
 let dailySummaryCache=[];
