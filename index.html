@@ -460,6 +460,34 @@ label{color:#344054;font-size:13px;margin-top:14px}
 #activityPage input:disabled,#activityPage select:disabled,#activityPage textarea:disabled{background:#f1f5f9;color:#94a3b8;cursor:not-allowed}
 .field-error{border-color:#dc2626!important;box-shadow:0 0 0 3px rgba(220,38,38,.10)!important}
 @media(max-width:650px){#activityPage .step-title{font-size:20px}#activityPage .form-card{padding:18px 14px}.smart-note{font-size:12px}.form-actions button{min-height:46px;flex:1}.form-actions .next-btn,.form-actions .submit-btn{margin-left:0}}
+
+/* ===== New Activity V3: Single-page form ===== */
+#activityPage .activity-single-form{padding:22px}
+.single-form-intro{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
+.single-form-status{background:#e8f0fe;color:#0b3f88;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:800;white-space:nowrap}
+.activity-section{border:1px solid #e5e7eb;border-radius:14px;background:#fff;padding:18px;margin-bottom:16px;scroll-margin-top:90px}
+.activity-section-head{display:flex;align-items:center;gap:12px;padding-bottom:12px;margin-bottom:4px;border-bottom:1px solid #eef2f7}
+.section-number{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#0b3f88;color:#fff;font-weight:800;flex:0 0 auto}
+.activity-section-title{font-size:17px;font-weight:800;color:#111827}
+.activity-section-subtitle{font-size:12px;color:#64748b;margin-top:2px}
+.single-submit-bar{position:sticky;bottom:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:14px;margin:22px -22px -22px;padding:14px 22px;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid #e5e7eb;border-radius:0 0 14px 14px;box-shadow:0 -7px 22px rgba(15,23,42,.08)}
+.single-submit-btn{margin-left:auto!important;min-width:190px;padding:14px 20px!important;border:0;border-radius:10px;font-weight:800;cursor:pointer;background:#16a34a;color:#fff}
+.single-submit-btn:disabled{opacity:.65;cursor:not-allowed}
+.submit-hint{font-size:12px;color:#64748b}
+#activityPage .progress-bar,#activityPage #previousButton,#activityPage #nextButton,#activityPage #reviewContainer{display:none!important}
+#activityPage .field-error{border-color:#dc2626!important;box-shadow:0 0 0 3px rgba(220,38,38,.10)!important}
+#activityPage .smart-note{margin-top:12px;padding:10px 12px;border-radius:9px;background:#f8fafc;color:#475569;font-size:12px;border:1px solid #e5e7eb}
+@media(max-width:650px){
+  #activityPage .activity-single-form{padding:12px}
+  .single-form-intro{flex-direction:column;margin-bottom:12px}
+  .activity-section{padding:14px 12px;margin-bottom:12px;border-radius:12px}
+  .activity-section-head{align-items:flex-start}
+  .activity-section-title{font-size:16px}
+  .single-submit-bar{margin:16px -12px -12px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));flex-direction:column;align-items:stretch}
+  .single-submit-btn{width:100%;min-width:0}
+  .submit-hint{text-align:center}
+}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
@@ -876,16 +904,152 @@ label{color:#344054;font-size:13px;margin-top:14px}
     </div>
   </div>
 </div>
-<div id="activityPage"><div class="header"><div><div class="app-name">📝 New Site Activity</div><div class="app-subtitle">Smart site reporting • required fields adjust to your selections</div></div><button class="back-button" onclick="showDashboard()">Back</button></div><div class="container"><div class="form-card"><div class="progress-bar"><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div></div>
-<div class="step"><div class="step-title">1. Location</div><div class="form-grid"><div><label>Project *</label><select id="project" onchange="updateTowers()"><option value="">Select Project</option></select></div><div><label>Tower / Block *</label><select id="tower" onchange="updateFloors()"><option value="">Select Tower</option></select></div><div><label>Floor *</label><select id="floor"><option value="">Select Floor</option></select></div><div><label>Location Type *</label><select id="locationType"><option value="">Select</option><option>Apartment</option><option>Lobby</option><option>Corridor</option><option>Staircase</option><option>Common Area</option><option>Roof</option><option>Basement</option><option>External</option><option>Other</option></select></div><div><label>Apartment / Room No. *</label><input id="apartment"></div><div><label>Specific Location *</label><input id="specificLocation"></div></div></div>
-<div class="step"><div class="step-title">2. Work Details</div><div class="form-grid"><div><label>Trade *</label><select id="trade" onchange="updateSubTrades()"><option value="">Select Trade</option></select></div><div><label>Sub-Trade *</label><select id="subTrade" onchange="updateActivities()"><option value="">Select Sub-Trade</option></select></div><div><label>Activity *</label><select id="activity"><option value="">Select Activity</option></select></div><div><label>Contractor *</label><input id="contractor"></div><div><label>Quantity *</label><input id="quantity" type="number" step="any" inputmode="decimal"></div><div><label>Unit *</label><select id="unit"><option value="">Select Unit</option></select></div></div></div>
-<div class="step"><div class="step-title">3. Progress Details</div><div class="form-grid"><div><label>Work Status *</label><select id="workStatus" onchange="updateProgressRequirements()"><option value="">Select</option><option>Not Started</option><option>In Progress</option><option>Completed</option><option>Hold</option></select></div><div><label>Start Date *</label><input id="startDate" type="date"></div><div><label>Planned Completion Date *</label><input id="plannedCompletionDate" type="date"></div><div><label>Actual Completion Date <span style="color:#6b7280;font-weight:normal">(required only when Completed)</span></label><input id="actualCompletionDate" type="date"></div><div><label>Today's Quantity *</label><input id="todayQuantity" type="number" step="any" inputmode="decimal"></div><div><label>Cumulative Quantity *</label><input id="cumulativeQuantity" type="number" step="any" inputmode="decimal"></div></div></div>
-<div class="step"><div class="step-title">4. Inspection</div><div class="step-subtitle">Select whether this activity requires inspection. Non-applicable fields will be disabled automatically.</div><div class="form-grid"><div><label>Inspection Required *</label><select id="inspectionRequired" onchange="updateInspectionRequirements()"><option value="">Select</option><option>Yes</option><option>No</option></select></div><div><label>Inspection Status <span id="inspectionStatusReq">*</span></label><select id="inspectionStatus"><option value="">Select</option><option>Not Requested</option><option>Requested</option><option>Approved</option><option>Rejected</option><option>Rectification Required</option></select></div><div><label>Inspection Date <span id="inspectionDateReq">*</span></label><input id="inspectionDate" type="date"></div><div><label>Inspector / Engineer <span id="inspectorReq">*</span></label><input id="inspector" placeholder="Name of inspector / engineer"></div><div class="full-width"><label>Inspection Remarks <span id="inspectionRemarksReq">*</span></label><textarea id="inspectionRemarks" placeholder="Inspection request / findings / remarks"></textarea></div></div><div id="inspectionSmartNote" class="smart-note">Choose Yes or No to configure this step.</div></div>
-<div class="step"><div class="step-title">5. Housekeeping</div><div class="form-grid"><div><label>Housekeeping Status *</label><select id="housekeepingStatus"><option value="">Select</option><option>Done</option><option>Pending</option><option>Not Applicable</option></select></div><div class="full-width"><label>Housekeeping Remarks *</label><textarea id="housekeepingRemarks"></textarea></div></div></div>
-<div class="step"><div class="step-title">6. Photos</div><div class="step-subtitle">Photos are stored in Google Drive by Project → Tower → Upload Date → Floor → Activity ID. Required evidence changes with Work Status and Inspection selection.</div><div class="form-grid"><div><label>Before Work Photo *</label><input id="beforePhoto" type="file" accept="image/*" capture="environment" onchange="previewSinglePhoto(this,'beforePreview')"><div class="upload-note">Required for every activity.</div><div id="beforePreview" class="photo-preview-wrap"></div></div><div><label>Progress Photos <span id="progressPhotoReq"></span></label><input id="progressPhotos" type="file" accept="image/*" multiple onchange="previewMultiplePhotos(this,'progressPreview')"><div id="progressPhotoNote" class="upload-note">Add one or more progress photos when work is in progress.</div><div id="progressPreview" class="photo-preview-wrap"></div></div><div><label>Completion Photo <span id="completionPhotoReq"></span></label><input id="completionPhoto" type="file" accept="image/*" capture="environment" onchange="previewSinglePhoto(this,'completionPreview')"><div id="completionPhotoNote" class="upload-note">Required only when Work Status = Completed.</div><div id="completionPreview" class="photo-preview-wrap"></div></div><div><label>Inspection Photo <span id="inspectionPhotoReq"></span></label><input id="inspectionPhoto" type="file" accept="image/*" capture="environment" onchange="previewSinglePhoto(this,'inspectionPreview')"><div id="inspectionPhotoNote" class="upload-note">Required when inspection is requested or recorded.</div><div id="inspectionPreview" class="photo-preview-wrap"></div></div></div><div id="photoSmartNote" class="smart-note"></div></div>
-<div class="step"><div class="step-title">7. Constraints & Remarks</div><div class="form-grid"><div class="full-width"><label>Supervisor Remarks *</label><textarea id="supervisorRemarks"></textarea></div><div class="full-width"><label>Issue / Constraint *</label><textarea id="issueConstraint"></textarea></div><div class="full-width"><label>Action Required *</label><textarea id="actionRequired"></textarea></div><div><label>Work Front Available *</label><select id="workFrontAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select></div><div><label>Material Available *</label><select id="materialAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select></div><div><label>Drawing / Approval Available *</label><select id="drawingApprovalAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select></div><div><label>Delay / Constraint Category *</label><select id="delayCategory"><option value="">Select Category</option></select></div></div></div>
-<div class="step"><div class="step-title">8. Review & Submit</div><div id="reviewContainer"></div></div>
-<div class="form-actions"><button id="previousButton" onclick="previousStep()">Previous</button><button id="nextButton" class="next-btn" onclick="nextStep()">Next</button><button id="submitButton" class="submit-btn" onclick="submitActivity()" style="display:none">Submit Activity</button></div><div id="activityMessage" class="message"></div></div></div></div>
+
+<div id="activityPage">
+  <div class="header">
+    <div>
+      <div class="app-name">📝 New Site Activity</div>
+      <div class="app-subtitle">Single-page site reporting • complete and submit in one screen</div>
+    </div>
+    <button class="back-button" onclick="showDashboard()">Back</button>
+  </div>
+
+  <div class="container">
+    <div class="form-card activity-single-form">
+
+      <div class="single-form-intro">
+        <div>
+          <div class="step-title">New Activity Report</div>
+          <div class="step-subtitle">Complete the applicable sections below. Smart fields and photo requirements adjust automatically.</div>
+        </div>
+        <div class="single-form-status">ONE-PAGE FORM</div>
+      </div>
+
+      <section class="activity-section" id="sectionLocation">
+        <div class="activity-section-head">
+          <div class="section-number">1</div>
+          <div><div class="activity-section-title">📍 Location</div><div class="activity-section-subtitle">Project, tower, floor and exact work location</div></div>
+        </div>
+        <div class="form-grid">
+          <div><label>Project *</label><select id="project" onchange="updateTowers()"><option value="">Select Project</option></select></div>
+          <div><label>Tower / Block *</label><select id="tower" onchange="updateFloors()"><option value="">Select Tower</option></select></div>
+          <div><label>Floor *</label><select id="floor"><option value="">Select Floor</option></select></div>
+          <div><label>Location Type *</label><select id="locationType"><option value="">Select</option><option>Apartment</option><option>Lobby</option><option>Corridor</option><option>Staircase</option><option>Common Area</option><option>Roof</option><option>Basement</option><option>External</option><option>Other</option></select></div>
+          <div><label>Apartment / Room No. *</label><input id="apartment"></div>
+          <div><label>Specific Location *</label><input id="specificLocation"></div>
+        </div>
+      </section>
+
+      <section class="activity-section" id="sectionWork">
+        <div class="activity-section-head">
+          <div class="section-number">2</div>
+          <div><div class="activity-section-title">🛠️ Work Details</div><div class="activity-section-subtitle">Trade, activity, contractor and quantity</div></div>
+        </div>
+        <div class="form-grid">
+          <div><label>Trade *</label><select id="trade" onchange="updateSubTrades()"><option value="">Select Trade</option></select></div>
+          <div><label>Sub-Trade *</label><select id="subTrade" onchange="updateActivities()"><option value="">Select Sub-Trade</option></select></div>
+          <div><label>Activity *</label><select id="activity"><option value="">Select Activity</option></select></div>
+          <div><label>Contractor *</label><input id="contractor"></div>
+          <div><label>Quantity *</label><input id="quantity" type="number" step="any" inputmode="decimal"></div>
+          <div><label>Unit *</label><select id="unit"><option value="">Select Unit</option></select></div>
+        </div>
+      </section>
+
+      <section class="activity-section" id="sectionProgress">
+        <div class="activity-section-head">
+          <div class="section-number">3</div>
+          <div><div class="activity-section-title">📈 Progress Details</div><div class="activity-section-subtitle">Status, dates and reported quantities</div></div>
+        </div>
+        <div class="form-grid">
+          <div><label>Work Status *</label><select id="workStatus" onchange="updateProgressRequirements()"><option value="">Select</option><option>Not Started</option><option>In Progress</option><option>Completed</option><option>Hold</option></select></div>
+          <div><label>Start Date *</label><input id="startDate" type="date"></div>
+          <div><label>Planned Completion Date *</label><input id="plannedCompletionDate" type="date"></div>
+          <div><label>Actual Completion Date <span style="color:#6b7280;font-weight:normal">(required only when Completed)</span></label><input id="actualCompletionDate" type="date"></div>
+          <div><label>Today's Quantity *</label><input id="todayQuantity" type="number" step="any" inputmode="decimal"></div>
+          <div><label>Cumulative Quantity *</label><input id="cumulativeQuantity" type="number" step="any" inputmode="decimal"></div>
+        </div>
+      </section>
+
+      <section class="activity-section" id="sectionInspection">
+        <div class="activity-section-head">
+          <div class="section-number">4</div>
+          <div><div class="activity-section-title">🔍 Inspection</div><div class="activity-section-subtitle">Non-applicable fields are disabled automatically</div></div>
+        </div>
+        <div class="form-grid">
+          <div><label>Inspection Required *</label><select id="inspectionRequired" onchange="updateInspectionRequirements()"><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+          <div><label>Inspection Status <span id="inspectionStatusReq">*</span></label><select id="inspectionStatus" onchange="updatePhotoRequirements()"><option value="">Select</option><option>Not Requested</option><option>Requested</option><option>Approved</option><option>Rejected</option><option>Rectification Required</option></select></div>
+          <div><label>Inspection Date <span id="inspectionDateReq">*</span></label><input id="inspectionDate" type="date"></div>
+          <div><label>Inspector / Engineer <span id="inspectorReq">*</span></label><input id="inspector" placeholder="Name of inspector / engineer"></div>
+          <div class="full-width"><label>Inspection Remarks <span id="inspectionRemarksReq">*</span></label><textarea id="inspectionRemarks" placeholder="Inspection request / findings / remarks"></textarea></div>
+        </div>
+        <div id="inspectionSmartNote" class="smart-note">Choose Yes or No to configure inspection requirements.</div>
+      </section>
+
+      <section class="activity-section" id="sectionHousekeeping">
+        <div class="activity-section-head">
+          <div class="section-number">5</div>
+          <div><div class="activity-section-title">🧹 Housekeeping</div><div class="activity-section-subtitle">Record housekeeping condition after the activity</div></div>
+        </div>
+        <div class="form-grid">
+          <div><label>Housekeeping Status *</label><select id="housekeepingStatus"><option value="">Select</option><option>Done</option><option>Pending</option><option>Not Applicable</option></select></div>
+          <div class="full-width"><label>Housekeeping Remarks *</label><textarea id="housekeepingRemarks"></textarea></div>
+        </div>
+      </section>
+
+      <section class="activity-section" id="sectionPhotos">
+        <div class="activity-section-head">
+          <div class="section-number">6</div>
+          <div><div class="activity-section-title">📷 Photo Evidence</div><div class="activity-section-subtitle">Photo requirements adapt to work and inspection status</div></div>
+        </div>
+        <div class="form-grid">
+          <div>
+            <label>Before Work Photo *</label>
+            <input id="beforePhoto" type="file" accept="image/*" capture="environment" onchange="previewSinglePhoto(this,'beforePreview')">
+            <div class="upload-note">Required for every activity.</div><div id="beforePreview" class="photo-preview-wrap"></div>
+          </div>
+          <div>
+            <label>Progress Photos <span id="progressPhotoReq"></span></label>
+            <input id="progressPhotos" type="file" accept="image/*" multiple onchange="previewMultiplePhotos(this,'progressPreview')">
+            <div id="progressPhotoNote" class="upload-note">Required when Work Status = In Progress.</div><div id="progressPreview" class="photo-preview-wrap"></div>
+          </div>
+          <div>
+            <label>Completion Photo <span id="completionPhotoReq"></span></label>
+            <input id="completionPhoto" type="file" accept="image/*" capture="environment" onchange="previewSinglePhoto(this,'completionPreview')">
+            <div id="completionPhotoNote" class="upload-note">Required only when Work Status = Completed.</div><div id="completionPreview" class="photo-preview-wrap"></div>
+          </div>
+          <div>
+            <label>Inspection Photo <span id="inspectionPhotoReq"></span></label>
+            <input id="inspectionPhoto" type="file" accept="image/*" capture="environment" onchange="previewSinglePhoto(this,'inspectionPreview')">
+            <div id="inspectionPhotoNote" class="upload-note">Required when inspection is requested or recorded.</div><div id="inspectionPreview" class="photo-preview-wrap"></div>
+          </div>
+        </div>
+        <div id="photoSmartNote" class="smart-note"></div>
+      </section>
+
+      <section class="activity-section" id="sectionConstraints">
+        <div class="activity-section-head">
+          <div class="section-number">7</div>
+          <div><div class="activity-section-title">⚠️ Constraints & Remarks</div><div class="activity-section-subtitle">Site issues, availability and actions required</div></div>
+        </div>
+        <div class="form-grid">
+          <div class="full-width"><label>Supervisor Remarks *</label><textarea id="supervisorRemarks"></textarea></div>
+          <div class="full-width"><label>Issue / Constraint *</label><textarea id="issueConstraint"></textarea></div>
+          <div class="full-width"><label>Action Required *</label><textarea id="actionRequired"></textarea></div>
+          <div><label>Work Front Available *</label><select id="workFrontAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+          <div><label>Material Available *</label><select id="materialAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+          <div><label>Drawing / Approval Available *</label><select id="drawingApprovalAvailable"><option value="">Select</option><option>Yes</option><option>No</option></select></div>
+          <div><label>Delay / Constraint Category *</label><select id="delayCategory"><option value="">Select Category</option></select></div>
+        </div>
+      </section>
+
+      <div class="single-submit-bar">
+        <div class="submit-hint">Review the highlighted fields if submission is stopped.</div>
+        <button id="submitButton" class="submit-btn single-submit-btn" onclick="submitActivity()">✓ Submit Activity</button>
+      </div>
+      <div id="activityMessage" class="message"></div>
+    </div>
+  </div>
+</div>
 <script src="app-config.js"></script>
 <script src="api-shim.js"></script>
 <script>
@@ -1207,39 +1371,92 @@ function markInvalid(el){
   try{el.scrollIntoView({behavior:"smooth",block:"center"})}catch(e){}
 }
 
-function updateStepDisplay(){document.querySelectorAll(".step").forEach((s,i)=>s.classList.toggle("active",i===currentStep));document.querySelectorAll(".progress-step").forEach((s,i)=>s.classList.toggle("active",i<=currentStep));document.getElementById("previousButton").style.visibility=currentStep===0?"hidden":"visible";document.getElementById("nextButton").style.display=currentStep===7?"none":"block";document.getElementById("submitButton").style.display=currentStep===7?"block":"none";updateProgressRequirements();updateInspectionRequirements();updatePhotoRequirements();window.scrollTo({top:0,behavior:"smooth"})}
-function validateCurrentStep(){
+function updateStepDisplay(){
+  updateProgressRequirements();
+  updateInspectionRequirements();
+  updatePhotoRequirements();
+}
+function validateActivityForm(){
   clearFieldErrors();
-  const stepEl=document.querySelectorAll(".step")[currentStep];
-  const skip=new Set(["actualCompletionDate","inspectionStatus","inspectionDate","inspector","inspectionRemarks","progressPhotos","completionPhoto","inspectionPhoto"]);
-  for(const f of stepEl.querySelectorAll("input,select,textarea")){
-    if(f.disabled||skip.has(f.id))continue;
-    if(f.type==="file"&&!f.files.length){markInvalid(f);return false;}
-    if(f.type!=="file"&&!String(f.value).trim()){markInvalid(f);return false;}
-  }
-  if(currentStep===2){
-    const status=value("workStatus");
-    const actual=value("actualCompletionDate");
-    if(status==="Completed"&&!actual){markInvalid(document.getElementById("actualCompletionDate"));alert("Actual Completion Date is required when Work Status is Completed.");return false;}
-    if(actual){
-      const selected=new Date(actual+"T00:00:00"),today=new Date();today.setHours(0,0,0,0);
-      if(selected>today){markInvalid(document.getElementById("actualCompletionDate"));alert("Actual Completion Date cannot be in the future.");return false;}
+
+  const requiredIds=[
+    "project","tower","floor","locationType","apartment","specificLocation",
+    "trade","subTrade","activity","contractor","quantity","unit",
+    "workStatus","startDate","plannedCompletionDate","todayQuantity","cumulativeQuantity",
+    "inspectionRequired","housekeepingStatus","housekeepingRemarks",
+    "supervisorRemarks","issueConstraint","actionRequired",
+    "workFrontAvailable","materialAvailable","drawingApprovalAvailable","delayCategory"
+  ];
+
+  for(const id of requiredIds){
+    const el=document.getElementById(id);
+    if(el && !el.disabled && !String(el.value||"").trim()){
+      markInvalid(el);
+      el.scrollIntoView({behavior:"smooth",block:"center"});
+      alert("Please complete all mandatory fields.");
+      return false;
     }
-    const tq=Number(value("todayQuantity")),cq=Number(value("cumulativeQuantity")),q=Number(value("quantity"));
-    if(!isNaN(tq)&&!isNaN(cq)&&tq>cq){markInvalid(document.getElementById("todayQuantity"));alert("Today's Quantity cannot be greater than Cumulative Quantity.");return false;}
-    if(!isNaN(q)&&!isNaN(cq)&&q>0&&cq>q){markInvalid(document.getElementById("cumulativeQuantity"));alert("Cumulative Quantity cannot be greater than the total Quantity.");return false;}
   }
-  if(currentStep===3&&value("inspectionRequired")==="Yes"){
-    for(const id of ["inspectionStatus","inspectionDate","inspector","inspectionRemarks"]){if(!value(id)){markInvalid(document.getElementById(id));return false;}}
+
+  const status=value("workStatus");
+  const actual=value("actualCompletionDate");
+  if(status==="Completed"&&!actual){
+    const el=document.getElementById("actualCompletionDate");markInvalid(el);el.scrollIntoView({behavior:"smooth",block:"center"});
+    alert("Actual Completion Date is required when Work Status is Completed.");
+    return false;
   }
-  if(currentStep===5){
-    const req=[["beforePhoto",true],["progressPhotos",value("workStatus")==="In Progress"],["completionPhoto",value("workStatus")==="Completed"],["inspectionPhoto",value("inspectionRequired")==="Yes"&&value("inspectionStatus")!=="Not Requested"]];
-    for(const [id,needed] of req){const el=document.getElementById(id);if(needed&&!el.files.length){markInvalid(el);alert("Please add the required photo evidence for this report.");return false;}}
+  if(actual){
+    const selected=new Date(actual+"T00:00:00"),today=new Date();today.setHours(0,0,0,0);
+    if(selected>today){
+      const el=document.getElementById("actualCompletionDate");markInvalid(el);el.scrollIntoView({behavior:"smooth",block:"center"});
+      alert("Actual Completion Date cannot be in the future.");
+      return false;
+    }
+  }
+
+  const tq=Number(value("todayQuantity")),cq=Number(value("cumulativeQuantity")),q=Number(value("quantity"));
+  if(!isNaN(tq)&&!isNaN(cq)&&tq>cq){
+    const el=document.getElementById("todayQuantity");markInvalid(el);el.scrollIntoView({behavior:"smooth",block:"center"});
+    alert("Today's Quantity cannot be greater than Cumulative Quantity.");
+    return false;
+  }
+  if(!isNaN(q)&&!isNaN(cq)&&q>0&&cq>q){
+    const el=document.getElementById("cumulativeQuantity");markInvalid(el);el.scrollIntoView({behavior:"smooth",block:"center"});
+    alert("Cumulative Quantity cannot be greater than the total Quantity.");
+    return false;
+  }
+
+  if(value("inspectionRequired")==="Yes"){
+    for(const id of ["inspectionStatus","inspectionDate","inspector","inspectionRemarks"]){
+      if(!value(id)){
+        const el=document.getElementById(id);markInvalid(el);el.scrollIntoView({behavior:"smooth",block:"center"});
+        alert("Please complete the required inspection details.");
+        return false;
+      }
+    }
+  }
+
+  const photoRules=[
+    ["beforePhoto",true,"Before Work Photo is required."],
+    ["progressPhotos",status==="In Progress","Progress Photo is required when Work Status is In Progress."],
+    ["completionPhoto",status==="Completed","Completion Photo is required when Work Status is Completed."],
+    ["inspectionPhoto",value("inspectionRequired")==="Yes"&&value("inspectionStatus")!=="Not Requested","Inspection Photo is required for the selected inspection status."]
+  ];
+
+  for(const [id,needed,msg] of photoRules){
+    const el=document.getElementById(id);
+    if(needed && el && !el.files.length){
+      markInvalid(el);el.scrollIntoView({behavior:"smooth",block:"center"});
+      alert(msg);
+      return false;
+    }
   }
   return true;
 }
-function nextStep(){if(!validateCurrentStep()){alert("Please complete all mandatory fields.");return}if(currentStep<7)currentStep++;updateStepDisplay();if(currentStep===7)buildReview()}
-function previousStep(){if(currentStep>0)currentStep--;updateStepDisplay()}
+
+function validateCurrentStep(){return validateActivityForm()}
+function nextStep(){return false}
+function previousStep(){return false}
 function collectFormData(){return {supervisorName:loggedInUser.supervisorName,userId:loggedInUser.userId,username:loggedInUser.username,project:value("project"),tower:value("tower"),floor:value("floor"),locationType:value("locationType"),apartment:value("apartment"),specificLocation:value("specificLocation"),trade:value("trade"),subTrade:value("subTrade"),activity:value("activity"),contractor:value("contractor"),quantity:value("quantity"),unit:value("unit"),workStatus:value("workStatus"),startDate:value("startDate"),plannedCompletionDate:value("plannedCompletionDate"),actualCompletionDate:value("actualCompletionDate"),todayQuantity:value("todayQuantity"),cumulativeQuantity:value("cumulativeQuantity"),inspectionRequired:value("inspectionRequired"),inspectionStatus:value("inspectionStatus"),inspectionDate:value("inspectionDate"),inspector:value("inspector"),inspectionRemarks:value("inspectionRemarks"),housekeepingStatus:value("housekeepingStatus"),housekeepingRemarks:value("housekeepingRemarks"),supervisorRemarks:value("supervisorRemarks"),issueConstraint:value("issueConstraint"),actionRequired:value("actionRequired"),workFrontAvailable:value("workFrontAvailable"),materialAvailable:value("materialAvailable"),drawingApprovalAvailable:value("drawingApprovalAvailable"),delayCategory:value("delayCategory"),beforePhoto:"",progressPhotos:"",completionPhoto:"",inspectionPhoto:""}}
 
 function clearPreview(id){document.getElementById(id).innerHTML=""}
@@ -1248,7 +1465,7 @@ function previewMultiplePhotos(input,previewId){clearPreview(previewId);Array.fr
 function fileToBase64(file){return new Promise((resolve,reject)=>{if(!file)return resolve(null);let r=new FileReader();r.onload=e=>resolve({base64:e.target.result.split(",")[1],mimeType:file.type,name:file.name});r.onerror=reject;r.readAsDataURL(file)})}
 async function collectPhotoData(){let a=[];for(const f of Array.from(document.getElementById("progressPhotos").files||[]))a.push(await fileToBase64(f));return {beforePhoto:await fileToBase64(document.getElementById("beforePhoto").files[0]),progressPhotos:a,completionPhoto:await fileToBase64(document.getElementById("completionPhoto").files[0]),inspectionPhoto:await fileToBase64(document.getElementById("inspectionPhoto").files[0])}}
 function buildReview(){let d=collectFormData(),r=document.getElementById("reviewContainer");r.innerHTML="";["project","tower","floor","trade","subTrade","activity","contractor","quantity","unit","workStatus","inspector","inspectionStatus","housekeepingStatus","delayCategory"].forEach(k=>{let x=document.createElement("div");x.className="review-row";x.textContent=k+": "+d[k];r.appendChild(x)})}
-async function submitActivity(){let m=document.getElementById("activityMessage"),b=document.getElementById("submitButton");b.disabled=true;m.className="message";m.innerText="Uploading photos and submitting activity... Please wait.";try{let payload={formData:collectFormData(),photos:await collectPhotoData()};google.script.run.withSuccessHandler(r=>{m.className="success-box";m.innerHTML="Activity submitted successfully.<br>Activity ID: <b>"+r.activityId+"</b>"+(r.activityFolderUrl?'<br><a href="'+r.activityFolderUrl+'" target="_blank">Open Activity Photo Folder</a>':'');b.disabled=false}).withFailureHandler(e=>{m.className="message";m.innerText="Submission failed: "+e.message;b.disabled=false}).saveActivityWithPhotos(payload)}catch(e){m.className="message";m.innerText=e.message;b.disabled=false}}
+async function submitActivity(){if(!validateActivityForm())return;let m=document.getElementById("activityMessage"),b=document.getElementById("submitButton");b.disabled=true;m.className="message";m.innerText="Uploading photos and submitting activity... Please wait.";try{let payload={formData:collectFormData(),photos:await collectPhotoData()};google.script.run.withSuccessHandler(r=>{m.className="success-box";m.innerHTML="Activity submitted successfully.<br>Activity ID: <b>"+r.activityId+"</b>"+(r.activityFolderUrl?'<br><a href="'+r.activityFolderUrl+'" target="_blank">Open Activity Photo Folder</a>':'');b.disabled=false}).withFailureHandler(e=>{m.className="message";m.innerText="Submission failed: "+e.message;b.disabled=false}).saveActivityWithPhotos(payload)}catch(e){m.className="message";m.innerText=e.message;b.disabled=false}}
 
 function escapeHtml(v){return String(v==null?"":v).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]})}
 function uniqueValues(arr,key){return [...new Set(arr.map(x=>String(x[key]||"").trim()).filter(Boolean))].sort()}
