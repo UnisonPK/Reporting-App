@@ -428,9 +428,34 @@ label{color:#344054;font-size:13px;margin-top:14px}
   .header-logo{width:66px!important}.app-subtitle{max-width:145px}
 }
 
+
+/* Dashboard V2 - live operational snapshot */
+.dashboard-head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.dashboard-date{font-size:13px;color:#64748b;margin-top:5px}
+.dashboard-refresh{border:0;background:#eef2ff;color:#3730a3;border-radius:10px;padding:10px 13px;font-weight:800;cursor:pointer;white-space:nowrap}
+.dashboard-refresh:disabled{opacity:.6;cursor:wait}
+.dashboard-kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin:16px 0 20px}
+.dashboard-kpi{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:14px 15px;box-shadow:0 3px 12px rgba(15,23,42,.045)}
+.dashboard-kpi-label{font-size:11px;line-height:1.25;color:#64748b;font-weight:800;text-transform:uppercase;letter-spacing:.035em}
+.dashboard-kpi-value{font-size:25px;line-height:1.1;font-weight:900;color:#111827;margin-top:6px}
+.dashboard-kpi-sub{font-size:11px;color:#94a3b8;margin-top:4px;min-height:14px}
+.dashboard-kpi.pending .dashboard-kpi-value{color:#b45309}
+.dashboard-kpi.constraints .dashboard-kpi-value{color:#b91c1c}
+.menu-stat{margin-top:auto;padding-top:10px;font-size:12px;color:#64748b;font-weight:700}
+.menu-stat strong{color:#111827;font-size:14px}
+.menu-card{display:flex;flex-direction:column}
+.dashboard-status{font-size:12px;color:#64748b;margin-top:8px}
+@media(max-width:900px){.dashboard-kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){
+ .dashboard-head-row{gap:10px}.dashboard-refresh{padding:9px 11px;font-size:12px}
+ .dashboard-kpis{grid-template-columns:repeat(2,1fr);gap:9px;margin:12px 0 16px}
+ .dashboard-kpi{padding:12px}.dashboard-kpi-value{font-size:22px}.dashboard-kpi-label{font-size:10px}
+ .dashboard-kpi:first-child{grid-column:1/-1}
+}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
-<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><h2 id="welcome">Welcome</h2><div id="userRole"></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div></div></div></div></div>
+<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
 
 
 
@@ -964,8 +989,72 @@ function showDashboard(){
   document.getElementById("welcome").innerText="Welcome, "+loggedInUser.supervisorName;
   document.getElementById("userRole").innerText="Role: "+loggedInUser.role+" | Employee ID: "+loggedInUser.employeeId;
   applyRoleAccess();
+  loadDashboardStats();
 }
 function addOption(s,v){if(!v)return;let o=document.createElement("option");o.value=v;o.textContent=v;s.appendChild(o)}
+
+function dashboardTodayString(){
+  const n=new Date();
+  return n.getFullYear()+"-"+String(n.getMonth()+1).padStart(2,"0")+"-"+String(n.getDate()).padStart(2,"0");
+}
+
+function loadDashboardStats(){
+  if(!loggedInUser)return;
+  const btn=document.getElementById("dashboardRefreshButton");
+  const status=document.getElementById("dashboardStatus");
+  const dateEl=document.getElementById("dashboardDate");
+  const today=dashboardTodayString();
+  if(dateEl)dateEl.innerText=new Date().toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  if(btn){btn.disabled=true;btn.innerText="↻ Refreshing...";}
+  if(status)status.innerText="Updating live dashboard counts...";
+
+  let summaryDone=false,inspectionDone=false,hadError=false;
+  function finish(){
+    if(!summaryDone||!inspectionDone)return;
+    if(btn){btn.disabled=false;btn.innerText="↻ Refresh Dashboard";}
+    if(status)status.innerText=hadError?"Some dashboard counts could not be refreshed.":"Live snapshot updated just now.";
+  }
+
+  google.script.run
+    .withSuccessHandler(function(rows){
+      rows=rows||[];
+      const completed=rows.filter(r=>String(r.workStatus||"").trim().toLowerCase()==="completed").length;
+      const progress=rows.filter(r=>String(r.workStatus||"").trim().toLowerCase()==="in progress").length;
+      const constraints=rows.filter(r=>{
+        const issue=String(r.issueConstraint||"").trim().toLowerCase();
+        const cat=String(r.delayCategory||"").trim().toLowerCase();
+        return (issue&&issue!=="none"&&issue!=="n/a")||(cat&&cat!=="none"&&cat!=="n/a");
+      }).length;
+      document.getElementById("dashActivities").innerText=rows.length;
+      document.getElementById("dashProgress").innerText=progress;
+      document.getElementById("dashCompleted").innerText=completed;
+      document.getElementById("dashConstraints").innerText=constraints;
+      document.getElementById("dashReportsCardCount").innerText=rows.length;
+      document.getElementById("dashCompletionCardCount").innerText=completed;
+      const cc=document.getElementById("dashConstraintCardCount");if(cc)cc.innerText=constraints;
+      summaryDone=true;finish();
+    })
+    .withFailureHandler(function(){
+      ["dashActivities","dashProgress","dashCompleted","dashConstraints","dashReportsCardCount","dashCompletionCardCount","dashConstraintCardCount"].forEach(id=>{const e=document.getElementById(id);if(e)e.innerText="—";});
+      hadError=true;summaryDone=true;finish();
+    })
+    .getDailySummaryRowsForUser(today,loggedInUser.userId,loggedInUser.username,loggedInUser.role);
+
+  google.script.run
+    .withSuccessHandler(function(rows){
+      const n=(rows||[]).length;
+      document.getElementById("dashPending").innerText=n;
+      document.getElementById("dashInspectionCardCount").innerText=n;
+      inspectionDone=true;finish();
+    })
+    .withFailureHandler(function(){
+      document.getElementById("dashPending").innerText="—";
+      document.getElementById("dashInspectionCardCount").innerText="—";
+      hadError=true;inspectionDone=true;finish();
+    })
+    .getPendingInspectionsForUser(loggedInUser.userId,loggedInUser.username,loggedInUser.role);
+}
+
 function resetSelect(id,t){document.getElementById(id).innerHTML='<option value="">'+t+'</option>'}
 function openActivityForm(){
   hideAppPages();
