@@ -568,6 +568,46 @@ label{color:#344054;font-size:13px;margin-top:14px}
   #inspectionHistoryContainer .inspection-mobile-list{display:block}
 }
 
+
+/* ===== Daily Summary V3 ===== */
+.summary-v3-title-row{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:14px}
+.summary-date-label{background:#eff6ff;color:#1d4ed8;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:800;white-space:nowrap}
+.summary-cards-v3 .summary-kpi{display:flex;align-items:center;gap:12px;min-height:108px}
+.kpi-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:#f8fafc;font-size:21px;flex:0 0 auto}
+.kpi-primary{border-top:4px solid #2563eb}
+.kpi-progress{border-top:4px solid #f59e0b}
+.kpi-completed{border-top:4px solid #16a34a}
+.kpi-pending{border-top:4px solid #7c3aed}
+.kpi-rectification{border-top:4px solid #ea580c}
+.kpi-constraint{border-top:4px solid #dc2626}
+.summary-progress-strip{border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px;background:#fff;margin-bottom:18px}
+.summary-progress-head{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:13px}
+.summary-progress-head span{color:#64748b;font-weight:400;margin-left:8px}
+#summaryProgressPercent{font-size:16px;font-weight:800;color:#166534}
+.summary-progress-track{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin-top:10px}
+.summary-progress-fill{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:999px;transition:width .25s ease}
+.summary-management-grid{grid-template-columns:1.3fr .7fr}
+.attention-list{display:flex;flex-direction:column;gap:8px}
+.attention-item{border:1px solid #e5e7eb;border-left:4px solid #dc2626;border-radius:9px;padding:10px 12px;background:#fff}
+.attention-item.warning{border-left-color:#f59e0b}
+.attention-item-title{font-weight:800;font-size:13px;color:#111827}
+.attention-item-meta{font-size:12px;color:#64748b;margin-top:3px}
+.contributor-row{display:grid;grid-template-columns:1fr auto;gap:10px;padding:9px 2px;border-bottom:1px solid #eef2f7;font-size:13px}
+.contributor-row:last-child{border-bottom:0}
+.contributor-row b:last-child{color:#0b3f88}
+.summary-list .summary-bar-cell{width:42%;padding-left:10px}
+.summary-mini-track{height:7px;background:#eef2f7;border-radius:999px;overflow:hidden}
+.summary-mini-fill{height:100%;background:#3b82f6;border-radius:999px}
+@media(max-width:900px){
+  .summary-management-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .summary-v3-title-row{flex-direction:column}
+  .summary-date-label{align-self:flex-start}
+  .summary-cards-v3 .summary-kpi{min-height:96px}
+  .summary-progress-head{align-items:flex-start}
+}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="title">LCRG / OLC</div><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-name">LCRG / OLC Reporting App</div><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><button class="logout-button" onclick="logout()">Logout</button></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
@@ -808,6 +848,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
   </div>
 </div>
 
+
 <div id="dailySummaryPage">
   <div class="header">
     <div>
@@ -822,8 +863,17 @@ label{color:#344054;font-size:13px;margin-top:14px}
       <button class="back-button" onclick="showDashboard()">Back</button>
     </div>
   </div>
+
   <div class="container">
     <div class="form-card">
+      <div class="summary-v3-title-row">
+        <div>
+          <div class="step-title">Daily Management Snapshot</div>
+          <div class="step-subtitle">Review progress, inspections, constraints and today's site activity distribution.</div>
+        </div>
+        <div id="summaryDateLabel" class="summary-date-label"></div>
+      </div>
+
       <div class="summary-filter-bar">
         <input id="summaryDate" type="date" onchange="loadDailySummary()">
         <select id="summaryProject" onchange="updateSummaryDependentFilters();renderDailySummaryFromCache()"><option value="">All Projects</option></select>
@@ -841,58 +891,94 @@ label{color:#344054;font-size:13px;margin-top:14px}
         <button class="reset-filter-btn" onclick="resetSummaryFilters()">Reset</button>
       </div>
 
-      <div class="summary-cards">
-        <div class="summary-kpi clickable" onclick="scrollToRecentSummary()"><div class="kpi-label">Total Activities</div><div id="kpiActivities" class="kpi-value">0</div><div class="kpi-sub">Click to view activities</div></div>
-        <div class="summary-kpi"><div class="kpi-label">In Progress</div><div id="kpiInProgress" class="kpi-value">0</div></div>
-        <div class="summary-kpi"><div class="kpi-label">Completed</div><div id="kpiCompleted" class="kpi-value">0</div></div>
-        <div class="summary-kpi clickable" onclick="openPendingInspections()"><div class="kpi-label">Pending Inspections</div><div id="kpiPending" class="kpi-value">0</div><div class="kpi-sub">Open inspection queue</div></div>
-        <div class="summary-kpi"><div class="kpi-label">Rectification</div><div id="kpiRectification" class="kpi-value">0</div></div>
-        <div class="summary-kpi"><div class="kpi-label">Constraints</div><div id="kpiConstraints" class="kpi-value">0</div></div>
+      <div class="summary-cards summary-cards-v3">
+        <div class="summary-kpi clickable kpi-primary" onclick="scrollToRecentSummary()">
+          <div class="kpi-icon">📝</div>
+          <div><div class="kpi-label">Total Activities</div><div id="kpiActivities" class="kpi-value">0</div><div class="kpi-sub">Click to view activities</div></div>
+        </div>
+        <div class="summary-kpi kpi-progress">
+          <div class="kpi-icon">🚧</div>
+          <div><div class="kpi-label">In Progress</div><div id="kpiInProgress" class="kpi-value">0</div><div id="kpiInProgressPct" class="kpi-sub">0%</div></div>
+        </div>
+        <div class="summary-kpi kpi-completed">
+          <div class="kpi-icon">✅</div>
+          <div><div class="kpi-label">Completed</div><div id="kpiCompleted" class="kpi-value">0</div><div id="kpiCompletedPct" class="kpi-sub">0%</div></div>
+        </div>
+        <div class="summary-kpi clickable kpi-pending" onclick="openPendingInspections()">
+          <div class="kpi-icon">🔍</div>
+          <div><div class="kpi-label">Pending Inspections</div><div id="kpiPending" class="kpi-value">0</div><div class="kpi-sub">Open inspection queue</div></div>
+        </div>
+        <div class="summary-kpi kpi-rectification">
+          <div class="kpi-icon">🛠️</div>
+          <div><div class="kpi-label">Rectification</div><div id="kpiRectification" class="kpi-value">0</div><div id="kpiRectificationPct" class="kpi-sub">0%</div></div>
+        </div>
+        <div class="summary-kpi kpi-constraint">
+          <div class="kpi-icon">⚠️</div>
+          <div><div class="kpi-label">Constraints</div><div id="kpiConstraints" class="kpi-value">0</div><div id="kpiConstraintsPct" class="kpi-sub">0%</div></div>
+        </div>
       </div>
 
-      <div class="summary-grid">
+      <div class="summary-progress-strip">
+        <div class="summary-progress-head">
+          <div><b>Activity Completion</b><span id="summaryProgressText">0 of 0 completed</span></div>
+          <div id="summaryProgressPercent">0%</div>
+        </div>
+        <div class="summary-progress-track"><div id="summaryProgressBar" class="summary-progress-fill"></div></div>
+      </div>
+
+      <div class="summary-grid summary-grid-v3">
         <div class="summary-panel">
-          <div class="summary-panel-title">Activities by Project</div>
+          <div class="summary-panel-title">🏢 Activities by Project</div>
           <div id="summaryByProject" class="summary-panel-body"></div>
         </div>
         <div class="summary-panel">
-          <div class="summary-panel-title">Activities by Tower</div>
+          <div class="summary-panel-title">🏗️ Activities by Tower</div>
           <div id="summaryByTower" class="summary-panel-body"></div>
         </div>
         <div class="summary-panel">
-          <div class="summary-panel-title">Work Status</div>
+          <div class="summary-panel-title">📈 Work Status</div>
           <div id="summaryWorkStatus" class="summary-panel-body"></div>
         </div>
         <div class="summary-panel">
-          <div class="summary-panel-title">Inspection Status</div>
+          <div class="summary-panel-title">🔍 Inspection Status</div>
           <div id="summaryInspectionStatus" class="summary-panel-body"></div>
         </div>
         <div class="summary-panel">
-          <div class="summary-panel-title">Delay / Constraint Categories</div>
+          <div class="summary-panel-title">⚠️ Delay / Constraint Categories</div>
           <div id="summaryConstraints" class="summary-panel-body"></div>
         </div>
         <div class="summary-panel">
-          <div class="summary-panel-title">Housekeeping Status</div>
+          <div class="summary-panel-title">🧹 Housekeeping Status</div>
           <div id="summaryHousekeeping" class="summary-panel-body"></div>
         </div>
         <div class="summary-panel">
-          <div class="summary-panel-title">Reported Quantity by Unit</div>
+          <div class="summary-panel-title">📏 Reported Quantity by Unit</div>
           <div id="summaryQuantities" class="summary-panel-body"></div>
         </div>
         <div class="summary-panel">
-          <div class="summary-panel-title">Activities by Supervisor</div>
+          <div class="summary-panel-title">👷 Activities by Supervisor</div>
           <div id="summarySupervisors" class="summary-panel-body"></div>
         </div>
       </div>
 
+      <div class="summary-grid summary-management-grid">
+        <div class="summary-panel">
+          <div class="summary-panel-title">🚨 Management Attention</div>
+          <div id="summaryAttention" class="summary-panel-body"></div>
+        </div>
+        <div class="summary-panel">
+          <div class="summary-panel-title">🏆 Top Activity Contributors</div>
+          <div id="summaryTopContributors" class="summary-panel-body"></div>
+        </div>
+      </div>
+
       <div id="summaryRecentPanel" class="summary-panel">
-        <div class="summary-panel-title">Recent Activities</div>
+        <div class="summary-panel-title">🕒 Recent Activities</div>
         <div id="summaryRecent" class="summary-panel-body"></div>
       </div>
     </div>
   </div>
 </div>
-
 
 <div id="pendingInspectionsPage">
   <div class="header">
@@ -2144,16 +2230,47 @@ function renderDailySummaryFromCache(){
 
   const countBy=(key)=>{
     const o={};
-    rows.forEach(r=>{const v=String(r[key]||"Unspecified").trim()||"Unspecified";o[v]=(o[v]||0)+1});
+    rows.forEach(r=>{
+      const v=String(r[key]||"Unspecified").trim()||"Unspecified";
+      o[v]=(o[v]||0)+1;
+    });
     return o;
   };
 
-  document.getElementById("kpiActivities").innerText=rows.length;
-  document.getElementById("kpiInProgress").innerText=rows.filter(r=>r.workStatus==="In Progress").length;
-  document.getElementById("kpiCompleted").innerText=rows.filter(r=>r.workStatus==="Completed").length;
-  document.getElementById("kpiPending").innerText=rows.filter(r=>r.inspectionStatus==="Requested").length;
-  document.getElementById("kpiRectification").innerText=rows.filter(r=>r.inspectionStatus==="Rectification Required").length;
-  document.getElementById("kpiConstraints").innerText=rows.filter(r=>String(r.delayCategory||"").trim()).length;
+  const total=rows.length;
+  const inProgress=rows.filter(r=>r.workStatus==="In Progress").length;
+  const completed=rows.filter(r=>r.workStatus==="Completed").length;
+  const pending=rows.filter(r=>r.inspectionStatus==="Requested").length;
+  const rectification=rows.filter(r=>r.inspectionStatus==="Rectification Required").length;
+  const constraints=rows.filter(r=>{
+    const x=String(r.delayCategory||"").trim();
+    const issue=String(r.issueConstraint||"").trim();
+    return !!x || (!!issue && !["none","n/a","na","nil"].includes(issue.toLowerCase()));
+  }).length;
+
+  const pct=n=>total?Math.round((n/total)*100):0;
+
+  document.getElementById("kpiActivities").innerText=total;
+  document.getElementById("kpiInProgress").innerText=inProgress;
+  document.getElementById("kpiCompleted").innerText=completed;
+  document.getElementById("kpiPending").innerText=pending;
+  document.getElementById("kpiRectification").innerText=rectification;
+  document.getElementById("kpiConstraints").innerText=constraints;
+
+  document.getElementById("kpiInProgressPct").innerText=pct(inProgress)+"% of activities";
+  document.getElementById("kpiCompletedPct").innerText=pct(completed)+"% of activities";
+  document.getElementById("kpiRectificationPct").innerText=pct(rectification)+"% requiring action";
+  document.getElementById("kpiConstraintsPct").innerText=pct(constraints)+"% with constraints";
+
+  document.getElementById("summaryProgressText").innerText=completed+" of "+total+" completed";
+  document.getElementById("summaryProgressPercent").innerText=pct(completed)+"%";
+  document.getElementById("summaryProgressBar").style.width=pct(completed)+"%";
+
+  const dateVal=document.getElementById("summaryDate").value;
+  if(dateVal){
+    const d=new Date(dateVal+"T00:00:00");
+    document.getElementById("summaryDateLabel").innerText=d.toLocaleDateString(undefined,{weekday:"short",day:"2-digit",month:"short",year:"numeric"});
+  }
 
   renderSummaryTable("summaryByProject",countBy("project"));
   renderSummaryTable("summaryByTower",countBy("tower"));
@@ -2163,6 +2280,8 @@ function renderDailySummaryFromCache(){
   renderSummaryTable("summaryHousekeeping",countBy("housekeepingStatus"));
   renderSummaryTable("summarySupervisors",countBy("supervisorName"));
   renderQuantitySummary(rows);
+  renderManagementAttention(rows);
+  renderTopContributors(rows);
   renderRecentSummary(rows);
 }
 
@@ -2231,11 +2350,54 @@ function openSummaryReport(id){
 function renderSummaryTable(id,obj){
   const el=document.getElementById(id);
   const entries=Object.entries(obj).sort((a,b)=>b[1]-a[1]);
-  if(!entries.length){el.innerHTML='<div class="summary-empty">No data</div>';return;}
+  if(!entries.length){
+    el.innerHTML='<div class="summary-empty">No data</div>';
+    return;
+  }
+  const max=Math.max(...entries.map(x=>x[1]),1);
   let h='<table class="summary-list">';
-  entries.forEach(([k,v])=>h+='<tr><td>'+escapeHtml(k)+'</td><td>'+v+'</td></tr>');
+  entries.forEach(([k,v])=>{
+    const w=Math.max(4,Math.round((v/max)*100));
+    h+='<tr><td>'+escapeHtml(k)+'</td><td class="summary-bar-cell"><div class="summary-mini-track"><div class="summary-mini-fill" style="width:'+w+'%"></div></div></td><td>'+v+'</td></tr>';
+  });
   h+='</table>';
   el.innerHTML=h;
+}
+
+function renderManagementAttention(rows){
+  const el=document.getElementById("summaryAttention");
+  const critical=rows.filter(r=>{
+    const hasConstraint=String(r.issueConstraint||"").trim() || String(r.delayCategory||"").trim();
+    return hasConstraint || r.workStatus==="Hold" || r.inspectionStatus==="Rectification Required";
+  }).slice().sort((a,b)=>(b.timestampMs||0)-(a.timestampMs||0)).slice(0,8);
+
+  if(!critical.length){
+    el.innerHTML='<div class="summary-empty">No management attention items for selected filters.</div>';
+    return;
+  }
+
+  el.innerHTML='<div class="attention-list">'+critical.map(r=>{
+    const isRect=r.inspectionStatus==="Rectification Required";
+    const title=isRect?"Rectification Required":(r.workStatus==="Hold"?"Activity on Hold":"Constraint / Issue");
+    const meta=[r.activityId,r.project,r.tower,r.floor,r.activity].filter(Boolean).join(" • ");
+    const detail=r.issueConstraint||r.delayCategory||r.inspectionRemarks||r.actionRequired||"Action required";
+    return '<div class="attention-item '+(isRect?'warning':'')+'"><div class="attention-item-title">'+escapeHtml(title)+' — '+escapeHtml(detail)+'</div><div class="attention-item-meta">'+escapeHtml(meta)+'</div></div>';
+  }).join("")+'</div>';
+}
+
+function renderTopContributors(rows){
+  const el=document.getElementById("summaryTopContributors");
+  const counts={};
+  rows.forEach(r=>{
+    const n=String(r.supervisorName||"Unspecified").trim()||"Unspecified";
+    counts[n]=(counts[n]||0)+1;
+  });
+  const entries=Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if(!entries.length){
+    el.innerHTML='<div class="summary-empty">No data</div>';
+    return;
+  }
+  el.innerHTML=entries.map(([n,v],i)=>'<div class="contributor-row"><span>'+(i+1)+'. '+escapeHtml(n)+'</span><b>'+v+'</b></div>').join("");
 }
 
 function renderRecentSummary(rows){
