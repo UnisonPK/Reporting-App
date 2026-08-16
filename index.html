@@ -851,7 +851,10 @@ label{color:#344054;font-size:13px;margin-top:14px}
           <div class="step-title">BOQ & Cost Register</div>
           <div class="step-subtitle">Shared project cost register. Use “Overall / All Floors” when a BOQ item applies to the complete selected tower.</div>
         </div>
-        <button class="admin-primary-btn" onclick="openBOQModal()">+ Add BOQ Item</button>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="admin-primary-btn" onclick="openBOQModal()">+ Add BOQ Item</button>
+          <button id="boqBulkImportButton" type="button" onclick="openBOQBulkImport()" style="border:0;background:#0b3f88;color:white;padding:11px 15px;border-radius:8px;font-weight:800;cursor:pointer">⇧ Bulk Excel Import</button>
+        </div>
       </div>
 
       <div class="module-note"><b>Cost Control V2.1:</b> BOQ items are linked to the existing Project → Tower / Block → Floor / Area master hierarchy. Contract and certified values are calculated from Qty × Rate. Revised Value = Contract Amount + Variation.</div>
@@ -1924,7 +1927,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 </div>
 <script src="app-config.js?v=20260816-7"></script>
 <script src="api-shim.js?v=20260816-7"></script>
-<script src="boq-bulk-import-v1.js?v=20260816-2"></script>
+<script src="boq-bulk-import-v1.js?v=20260816-3"></script>
 <script>
 let loggedInUser=null,masterData=null,currentStep=0,myReportsData=[],currentReportActivityId="";
 
