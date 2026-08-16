@@ -898,7 +898,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
       <div class="admin-toolbar">
         <div>
           <div class="step-title">Cash Flow Register</div>
-          <div class="step-subtitle">Current project / tower financial position using the simplified 11-field structure.</div>
+          <div class="step-subtitle">Current project / tower financial position including Activity.</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <button class="admin-primary-btn" onclick="openCashFlowModal()">+ Add / Update</button>
@@ -944,7 +944,8 @@ label{color:#344054;font-size:13px;margin-top:14px}
       <div class="cashflow-form-grid">
         <div><label>S.No.</label><input id="cashSerialNo" placeholder="e.g. 1"></div>
         <div><label>Project *</label><select id="cashProject" onchange="updateCashFlowFormTowers()"><option value="">Select Project</option></select></div>
-        <div><label>Tower *</label><select id="cashTower"><option value="">Select Tower</option></select></div>
+        <div><label>Tower / Scope *</label><select id="cashTower"><option value="">Select Tower / Scope</option></select></div>
+        <div><label>Activity</label><input id="cashActivity" placeholder="e.g. Boundary Wall, Sewerage System"></div>
         <div><label>Budget as per Initial Quotation (PKR)</label><input id="cashInitialBudget" type="number" step="any" inputmode="decimal"></div>
         <div><label>Awarded Value / Budgeted Value (PKR)</label><input id="cashAwardedValue" type="number" step="any" inputmode="decimal" oninput="updateCashFlowCalcPreview()"></div>
         <div><label>Actual Spending (PKR)</label><input id="cashActualSpending" type="number" step="any" inputmode="decimal" oninput="updateCashFlowCalcPreview()"></div>
@@ -979,7 +980,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
       <button class="modal-close" type="button" onclick="closeCashFlowImport()">Close</button>
     </div>
     <div class="cashflow-import-body">
-      <div class="module-note"><b>Accepted fields:</b> S.No., Project, Tower, Budget as per Initial Quotation, Awarded Value / Budgeted Value, Actual Spending, Pending Approval, Actual Progress, Financial Progress and Remarks. <b>All and Overall are treated as the same scope</b> and resolve to the selected Default Tower / Area. Balance and Financial Progress are recalculated by the backend.</div>
+      <div class="module-note"><b>Accepted fields:</b> S.No., Activity, Project, Tower, Budget as per Initial Quotation, Awarded Value / Budgeted Value, Actual Spending, Pending Approval, Actual Progress, Financial Progress and Remarks. <b>All and Overall are treated as the same scope</b> and are stored as <b>Overall / All Towers</b>. A Default Tower is used only when the Excel Tower cell is blank. Balance and Financial Progress are recalculated by the backend.</div>
 
       <div class="cashflow-import-actions">
         <input id="cashFlowImportFile" type="file" accept=".xlsx,.xls" style="max-width:430px" onchange="loadCashFlowWorkbook()">
@@ -990,7 +991,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
       <div class="cashflow-import-defaults">
         <div><label>Worksheet *</label><select id="cashFlowImportSheet"><option value="">Select worksheet</option></select></div>
         <div><label>Default Project *</label><select id="cashFlowImportProject" onchange="updateCashFlowImportTowers()"><option value="">Select Project</option></select></div>
-        <div><label>Default Tower *</label><select id="cashFlowImportTower"><option value="">Select Tower</option></select></div>
+        <div><label>Default Tower / Scope *</label><select id="cashFlowImportTower"><option value="">Select Tower / Scope</option></select></div>
       </div>
 
       <div id="cashFlowImportStatus" class="cashflow-import-status"></div>
@@ -5490,6 +5491,7 @@ function updateCashFlowTowerFilter(){
   let towers=(masterData&&masterData.towers||[]);
   if(p)towers=towers.filter(x=>String(x["Project"]||"")===p);
   const vals=[...new Set(towers.map(x=>x["Tower / Block"]).filter(Boolean))].sort();
+  vals.unshift("Overall / All Towers");
   const current=document.getElementById("cashTowerFilter").value;
   fillSimpleSelect("cashTowerFilter",vals,"All Towers");
   if(vals.includes(current))document.getElementById("cashTowerFilter").value=current;
@@ -5502,7 +5504,9 @@ function updateCashFlowFormTowers(){
     .map(x=>x["Tower / Block"])
     .filter(Boolean);
   const current=document.getElementById("cashTower").value;
-  fillSimpleSelect("cashTower",[...new Set(vals)].sort(),"Select Tower");
+  const options=[...new Set(vals)].sort();
+  options.unshift("Overall / All Towers");
+  fillSimpleSelect("cashTower",options,"Select Tower / Scope");
   if(vals.includes(current))document.getElementById("cashTower").value=current;
 }
 
@@ -5513,7 +5517,9 @@ function updateCashFlowImportTowers(){
     .map(x=>x["Tower / Block"])
     .filter(Boolean);
   const current=document.getElementById("cashFlowImportTower").value;
-  fillSimpleSelect("cashFlowImportTower",[...new Set(vals)].sort(),"Select Tower");
+  const options=[...new Set(vals)].sort();
+  options.unshift("Overall / All Towers");
+  fillSimpleSelect("cashFlowImportTower",options,"Select Tower / Scope");
   if(vals.includes(current))document.getElementById("cashFlowImportTower").value=current;
 }
 
@@ -5560,7 +5566,7 @@ function renderCashFlow(){
 
   c.className="cashflow-table-wrap";
   let h='<table class="cashflow-table"><thead><tr>'+
-    '<th>S.No.</th><th>Project</th><th>Tower</th><th>Initial Budget</th><th>Awarded Value</th>'+
+    '<th>S.No.</th><th>Project</th><th>Tower / Scope</th><th>Activity</th><th>Initial Budget</th><th>Awarded Value</th>'+
     '<th>Actual Spending</th><th>Actual Balance</th><th>Pending Approval</th><th>Actual Progress</th><th>Financial Progress</th><th>Remarks</th><th></th>'+
     '</tr></thead><tbody>';
 
@@ -5571,6 +5577,7 @@ function renderCashFlow(){
       '<td>'+escapeHtml(String(r.serialNo||""))+'</td>'+
       '<td>'+escapeHtml(r.project||"")+'</td>'+
       '<td><b>'+escapeHtml(r.tower||"")+'</b></td>'+
+      '<td>'+escapeHtml(r.activity||"")+'</td>'+
       '<td class="cashflow-money">'+escapeHtml(formatCashPKR(r.initialBudget))+'</td>'+
       '<td class="cashflow-money"><b>'+escapeHtml(formatCashPKR(r.awardedValue))+'</b></td>'+
       '<td class="cashflow-money">'+escapeHtml(formatCashPKR(r.actualSpending))+'</td>'+
@@ -5588,7 +5595,7 @@ function renderCashFlow(){
 }
 
 function clearCashFlowForm(){
-  ["cashFlowId","cashSerialNo","cashInitialBudget","cashAwardedValue","cashActualSpending","cashPendingApproval","cashActualProgress","cashRemarks"].forEach(id=>{
+  ["cashFlowId","cashSerialNo","cashActivity","cashInitialBudget","cashAwardedValue","cashActualSpending","cashPendingApproval","cashActualProgress","cashRemarks"].forEach(id=>{
     const e=document.getElementById(id);if(e)e.value="";
   });
   populateCashFlowProjectOptions();
@@ -5622,6 +5629,7 @@ function editCashFlowRecord(id){
     document.getElementById("cashProject").value=r.project||"";
     updateCashFlowFormTowers();
     document.getElementById("cashTower").value=r.tower||"";
+    document.getElementById("cashActivity").value=r.activity||"";
     document.getElementById("cashInitialBudget").value=cashNum(r.initialBudget);
     document.getElementById("cashAwardedValue").value=cashNum(r.awardedValue);
     document.getElementById("cashActualSpending").value=cashNum(r.actualSpending);
@@ -5659,6 +5667,7 @@ function saveCashFlowRecord(){
     serialNo:document.getElementById("cashSerialNo").value.trim(),
     project:project,
     tower:tower,
+    activity:document.getElementById("cashActivity").value.trim(),
     initialBudget:cashNum(document.getElementById("cashInitialBudget").value),
     awardedValue:cashNum(document.getElementById("cashAwardedValue").value),
     actualSpending:cashNum(document.getElementById("cashActualSpending").value),
@@ -5703,15 +5712,19 @@ function isCashFlowOverallImportValue(v){
 }
 function normalizeCashFlowImportTower(v,defaultTower){
   const raw=cashNorm(v);
-  /* User rule: All and Overall are the same scope.
-     In Excel import they mean the whole selected/default Tower / Area.
-     Example: External Development sheet + Tower=All -> External Development. */
-  if(!raw||isCashFlowOverallImportValue(raw))return cashNorm(defaultTower)||"Overall";
+  /* User rule:
+     All and Overall are the same scope.
+     If Excel explicitly says All/Overall, preserve that meaning as
+     Overall / All Towers — never force it to Tower I/L1/L2/etc.
+     Default Tower is used only when the workbook Tower cell is blank. */
+  if(isCashFlowOverallImportValue(raw))return "Overall / All Towers";
+  if(!raw)return cashNorm(defaultTower)||"Overall / All Towers";
   return raw;
 }
 
 const CASH_ALIASES={
   serialNo:["s.no","s no","s.no.","sno","serial no","sr no","sr. no."],
+  activity:["activity","work activity","scope","description"],
   project:["project","project name"],
   tower:["tower","tower / block","tower/block","block"],
   initialBudget:["budget as per initial quotation","budget as per initial quotation received","first quotation received","initial quotation","initial budget"],
@@ -5738,7 +5751,7 @@ function cashHeaderScore(headers){
   const m=cashMapColumns(headers);
   let s=0;
   ["initialBudget","awardedValue","actualSpending"].forEach(k=>{if(m[k]>=0)s+=3;});
-  ["serialNo","pendingApproval","actualProgress","financialProgress","remarks","project","tower"].forEach(k=>{if(m[k]>=0)s+=1;});
+  ["serialNo","activity","pendingApproval","actualProgress","financialProgress","remarks","project","tower"].forEach(k=>{if(m[k]>=0)s+=1;});
   return s;
 }
 function cashDetectHeader(rows){
@@ -5818,6 +5831,7 @@ function previewCashFlowExcel(){
     for(let r=detected.rowIndex+1;r<rows.length;r++){
       const row=rows[r]||[];
       const serial=map.serialNo>=0?cashNorm(row[map.serialNo]):"";
+      const activity=map.activity>=0?cashNorm(row[map.activity]):"";
       const initial=map.initialBudget>=0?row[map.initialBudget]:"";
       const awarded=map.awardedValue>=0?row[map.awardedValue]:"";
       const spent=map.actualSpending>=0?row[map.actualSpending]:"";
@@ -5829,7 +5843,7 @@ function previewCashFlowExcel(){
       const project=normalizeCashFlowImportProject(sourceProject||defaultProject);
       const tower=normalizeCashFlowImportTower(sourceTower,defaultTower);
 
-      if(!serial && cashNorm(initial)==="" && cashNorm(awarded)==="" && cashNorm(spent)==="" && cashNorm(pending)==="" && cashNorm(actual)==="" && !remarks)continue;
+      if(!serial && !activity && cashNorm(initial)==="" && cashNorm(awarded)==="" && cashNorm(spent)==="" && cashNorm(pending)==="" && cashNorm(actual)==="" && !remarks)continue;
 
       const errors=[];
       if(!project)errors.push("Project required");
@@ -5840,7 +5854,7 @@ function previewCashFlowExcel(){
 
       out.push({
         _row:r+1,_errors:errors,
-        serialNo:serial,project:project,tower:tower,
+        serialNo:serial,project:project,tower:tower,activity:activity,
         initialBudget:initialN,awardedValue:awardedN,actualSpending:spentN,
         pendingApproval:pendingN,actualProgress:actualN,remarks:remarks
       });
@@ -5855,13 +5869,13 @@ function previewCashFlowExcel(){
       '<span class="cashflow-import-chip">Awarded: '+formatCashPKR(valid.reduce((a,x)=>a+x.awardedValue,0))+'</span>';
 
     let h='<div class="cashflow-import-table-wrap"><table class="cashflow-import-table"><thead><tr>'+
-      '<th>Excel Row</th><th>S.No.</th><th>Project</th><th>Tower</th><th>Initial Budget</th><th>Awarded</th><th>Actual Spending</th><th>Balance</th><th>Pending Approval</th><th>Actual Progress</th><th>Financial Progress</th><th>Remarks</th><th>Validation</th>'+
+      '<th>Excel Row</th><th>S.No.</th><th>Activity</th><th>Project</th><th>Tower / Scope</th><th>Initial Budget</th><th>Awarded</th><th>Actual Spending</th><th>Balance</th><th>Pending Approval</th><th>Actual Progress</th><th>Financial Progress</th><th>Remarks</th><th>Validation</th>'+
       '</tr></thead><tbody>';
     out.forEach(x=>{
       const bal=x.awardedValue-x.actualSpending;
       const fp=x.awardedValue?(x.actualSpending/x.awardedValue)*100:0;
       h+='<tr class="'+(x._errors.length?"cashflow-import-error":"cashflow-import-valid")+'">'+
-        '<td>'+x._row+'</td><td>'+escapeHtml(x.serialNo)+'</td><td>'+escapeHtml(x.project)+'</td><td>'+escapeHtml(x.tower)+'</td>'+
+        '<td>'+x._row+'</td><td>'+escapeHtml(x.serialNo)+'</td><td>'+escapeHtml(x.activity)+'</td><td>'+escapeHtml(x.project)+'</td><td>'+escapeHtml(x.tower)+'</td>'+
         '<td>'+escapeHtml(formatCashPKR(x.initialBudget))+'</td><td>'+escapeHtml(formatCashPKR(x.awardedValue))+'</td><td>'+escapeHtml(formatCashPKR(x.actualSpending))+'</td><td>'+escapeHtml(formatCashPKR(bal))+'</td>'+
         '<td>'+escapeHtml(formatCashPKR(x.pendingApproval))+'</td><td>'+x.actualProgress.toFixed(2)+'%</td><td>'+fp.toFixed(2)+'%</td><td>'+escapeHtml(x.remarks)+'</td><td>'+(x._errors.length?escapeHtml(x._errors.join("; ")):"Ready")+'</td></tr>';
     });
@@ -5878,7 +5892,7 @@ function previewCashFlowExcel(){
 }
 function commitCashFlowImport(){
   const valid=cashFlowImportRows.filter(x=>!x._errors.length).map(x=>({
-    serialNo:x.serialNo,project:x.project,tower:x.tower,
+    serialNo:x.serialNo,project:x.project,tower:x.tower,activity:x.activity,
     defaultTower:document.getElementById("cashFlowImportTower").value,
     initialBudget:x.initialBudget,awardedValue:x.awardedValue,
     actualSpending:x.actualSpending,pendingApproval:x.pendingApproval,
