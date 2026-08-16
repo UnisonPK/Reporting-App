@@ -1929,7 +1929,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 <script src="api-shim.js?v=20260816-7"></script>
 <!-- BOQ Smart Import V2 embedded -->
 <script>
-/* Reporting App - BOQ Smart Import V2.2 - Code/QTY selection + 2-decimal Rate/Amount */
+/* Reporting App - BOQ Smart Import V2.3 - Code-only headings + 2-decimal Rate/Amount */
 (function(){
   "use strict";
 
@@ -1995,7 +1995,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
     if(!document.getElementById("boqBulkImportModal")){
       const modal=document.createElement("div");modal.id="boqBulkImportModal";modal.className="boq-import-modal";
       modal.innerHTML=`<div class="boq-import-card"><div class="boq-import-head"><div><div style="font-size:22px;font-weight:900">BOQ Smart Excel Import V2</div><div style="color:#64748b;margin-top:4px">Automatically detects project BOQ layouts, two-line headers and common column names.</div></div><button class="modal-close" type="button" onclick="closeBOQBulkImport()">Close</button></div>
-      <div class="boq-import-body"><div class="module-note"><b>Smart Import V2.1:</b> Rows with a QTY value are selected. If QTY is empty, the row is selected only when BOQ Code has a value. Rows with both QTY and Code empty are discarded automatically. Missing Project, Work Package and Contractor can be applied below.</div>
+      <div class="boq-import-body"><div class="module-note"><b>Smart Import V2.3:</b> Rows with QTY are treated as measurable BOQ items. When Code exists but QTY is blank, the preview shows only Code, Description and Floor; Qty, Unit, Rate, Amount, Project, Tower, Package and Contractor remain blank. Rows with both Code and QTY blank are discarded automatically.</div>
       <div class="boq-import-actions"><input id="boqBulkFile" type="file" accept=".xlsx,.xls" style="max-width:430px"><button class="boq-import-btn" type="button" onclick="previewBOQExcel()">Detect & Preview</button><button id="boqBulkImportNow" class="boq-import-btn" type="button" onclick="commitBOQBulkImport()" disabled>Import Valid Rows</button></div>
       <div class="boq-import-defaults"><div><label>Default Project *</label><select id="boqImportProject"><option value="">Auto-detect / Select Project</option></select></div><div><label>Work Package / Category *</label><input id="boqImportPackage" placeholder="e.g. Structural Works"></div><div><label>Contractor</label><input id="boqImportContractor" placeholder="Not Assigned"></div></div>
       <div id="boqDetectedInfo"></div><div id="boqBulkStatus" class="boq-import-status"></div><div id="boqBulkSummary" class="boq-import-summary"></div><div id="boqBulkPreview"></div></div></div>`;
@@ -2028,13 +2028,22 @@ label{color:#344054;font-size:13px;margin-top:14px}
   function buildComponentRemark(row,map){const parts=[];Object.keys(map.components).forEach(k=>{const i=map.components[k];if(i>=0&&norm(row[i])!=="")parts.push(k.replace(/([A-Z])/g," $1")+"="+norm(row[i]));});return parts.length?"Cost Components: "+parts.join("; "):"";}
   function isLikelyDataRow(row,map){
     const code=map.itemNo>=0?norm(row[map.itemNo]):"";
+    const desc=map.description>=0?norm(row[map.description]):"";
     const qtyRaw=map.contractQty>=0?norm(row[map.contractQty]):"";
 
-    /* Smart Import V2.1 selection rule:
+    /* Smart Import V2.3 selection rule:
+       - Ignore the secondary header row such as "NO." / "SPECIFICATION".
        - Keep row when QTY contains any value, including 0.
        - If QTY is empty, keep row only when BOQ Code contains a value.
        - If both QTY and BOQ Code are empty, discard the row silently.
     */
+    const c=canon(code);
+    const d=canon(desc);
+    if((c==="no"||c==="no."||c==="code no"||c==="code number") &&
+       (d==="specification"||d==="description specification")){
+      return false;
+    }
+
     return qtyRaw!=="" || code!=="";
   }
 
@@ -2049,6 +2058,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
       out.push({
         _row:r+1,
+        _codeOnly:codeOnlyRow,
         itemNo:code,
         description:map.description>=0?norm(row[map.description]):"",
         unit:codeOnlyRow?"":(map.unit>=0?norm(row[map.unit]):""),
@@ -2066,7 +2076,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
   }
 
   function validateRows(rows){
-    const seen=new Set();return rows.map(r=>{const errors=[];const codeOnlyRow=!!r.itemNo&&norm(r.contractQty)==="";if(!r.itemNo)errors.push("BOQ Code is required");if(!r.description)errors.push("Description is required");if(!codeOnlyRow&&!r.unit)errors.push("Unit is required");if(!codeOnlyRow&&!r.project)errors.push("Project is required");if(!codeOnlyRow&&!r.tower)errors.push("Tower/Block is required");if(!r.floor)r.floor="Overall / All Floors";if(!r.workPackage)errors.push("Work Package is required");
+    const seen=new Set();return rows.map(r=>{const errors=[];const codeOnlyRow=!!r.itemNo&&norm(r.contractQty)==="";if(!r.itemNo)errors.push("BOQ Code is required");if(!r.description)errors.push("Description is required");if(!codeOnlyRow&&!r.unit)errors.push("Unit is required");if(!codeOnlyRow&&!r.project)errors.push("Project is required");if(!codeOnlyRow&&!r.tower)errors.push("Tower/Block is required");if(!r.floor)r.floor="Overall / All Floors";if(!codeOnlyRow&&!r.workPackage)errors.push("Work Package is required");
       const qtyRaw=norm(r.contractQty);
       const qty=qtyRaw===""?0:num(r.contractQty);
       const rate=num(r.rate);
@@ -2074,18 +2084,34 @@ label{color:#344054;font-size:13px;margin-top:14px}
       if(!codeOnlyRow&&(!Number.isFinite(rate)||rate<0))errors.push("Rate must be a non-negative number");
       if(r.project&&!projectExists(r.project))errors.push("Invalid Project");if(r.project&&r.tower&&!towerExists(r.project,r.tower))errors.push("Invalid Tower/Block for Project");if(r.project&&r.tower&&r.floor&&!floorExists(r.project,r.tower,r.floor))errors.push("Invalid Floor/Area");
       const key=[r.project,r.tower,r.floor,r.itemNo].map(x=>norm(x).toLowerCase()).join("||");if(seen.has(key))errors.push("Duplicate within Excel file");seen.add(key);
-      r.contractQty=Number.isFinite(qty)?qty:0;
-      r.rate=Number.isFinite(rate)?Math.round(rate*100)/100:0;
-      r.amount=Math.round(r.contractQty*r.rate*100)/100;
+      if(codeOnlyRow){
+        r.contractQty="";
+        r.rate="";
+        r.amount="";
+      }else{
+        r.contractQty=Number.isFinite(qty)?qty:0;
+        r.rate=Number.isFinite(rate)?Math.round(rate*100)/100:0;
+        r.amount=Math.round(r.contractQty*r.rate*100)/100;
+      }
       r._errors=errors;
       return r;});
   }
 
   function renderPreview(){
-    const valid=importRows.filter(r=>!r._errors.length).length,invalid=importRows.length-valid,total=importRows.reduce((s,r)=>s+(r._errors.length?0:r.amount),0);
+    const valid=importRows.filter(r=>!r._errors.length).length,invalid=importRows.length-valid,total=importRows.reduce((s,r)=>s+(r._errors.length?0:(Number(r.amount)||0)),0);
     document.getElementById("boqBulkSummary").innerHTML=`<span class="boq-import-chip">Rows: ${importRows.length}</span><span class="boq-import-chip">Valid: ${valid}</span><span class="boq-import-chip">Errors: ${invalid}</span><span class="boq-import-chip">Valid Amount: PKR ${total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</span>`;
     let h='<div class="boq-import-table-wrap"><table class="boq-import-table"><thead><tr><th>Excel Row</th><th>Code</th><th>Description</th><th>Tower</th><th>Floor</th><th>Qty</th><th>Unit</th><th>Rate</th><th>Amount</th><th>Project</th><th>Package</th><th>Validation</th></tr></thead><tbody>';
-    importRows.forEach(r=>{h+=`<tr class="${r._errors.length?"boq-import-error":"boq-import-valid"}"><td>${r._row}</td><td><b>${safe(r.itemNo)}</b></td><td>${safe(r.description)}</td><td>${safe(r.tower)}</td><td>${safe(r.floor)}</td><td>${r.contractQty}</td><td>${safe(r.unit)}</td><td>${Number(r.rate||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td>${Number(r.amount||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td>${safe(r.project)}</td><td>${safe(r.workPackage)}</td><td>${r._errors.length?safe(r._errors.join("; ")):"Ready"}</td></tr>`;});
+    importRows.forEach(r=>{
+      const codeOnly=!!r._codeOnly;
+      const towerCell=codeOnly?"":safe(r.tower);
+      const qtyCell=codeOnly?"":r.contractQty;
+      const unitCell=codeOnly?"":safe(r.unit);
+      const rateCell=codeOnly?"":Number(r.rate||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+      const amountCell=codeOnly?"":Number(r.amount||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+      const projectCell=codeOnly?"":safe(r.project);
+      const packageCell=codeOnly?"":safe(r.workPackage);
+      h+=`<tr class="${r._errors.length?"boq-import-error":"boq-import-valid"}"><td>${r._row}</td><td><b>${safe(r.itemNo)}</b></td><td>${safe(r.description)}</td><td>${towerCell}</td><td>${safe(r.floor)}</td><td>${qtyCell}</td><td>${unitCell}</td><td>${rateCell}</td><td>${amountCell}</td><td>${projectCell}</td><td>${packageCell}</td><td>${r._errors.length?safe(r._errors.join("; ")):"Ready"}</td></tr>`;
+    });
     document.getElementById("boqBulkPreview").innerHTML=h+'</tbody></table></div>';
   }
 
@@ -2104,7 +2130,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
   };
 
   window.commitBOQBulkImport=function(){
-    const validRows=importRows.filter(r=>!r._errors.length).map(r=>({itemNo:r.itemNo,description:r.description,unit:r.unit,contractQty:r.contractQty,rate:r.rate,project:r.project,tower:r.tower,floor:r.floor,workPackage:r.workPackage,contractor:r.contractor,status:"Active",certifiedQty:0,paidAmount:0,variationAmount:0,remarks:r.remarks}));if(!validRows.length)return;
+    const validRows=importRows.filter(r=>!r._errors.length&&!r._codeOnly).map(r=>({itemNo:r.itemNo,description:r.description,unit:r.unit,contractQty:r.contractQty,rate:r.rate,project:r.project,tower:r.tower,floor:r.floor,workPackage:r.workPackage,contractor:r.contractor,status:"Active",certifiedQty:0,paidAmount:0,variationAmount:0,remarks:r.remarks}));if(!validRows.length)return;
     const btn=document.getElementById("boqBulkImportNow"),status=document.getElementById("boqBulkStatus");btn.disabled=true;status.style.color="#475569";status.textContent="Importing validated BOQ rows...";
     if(!window.LCRG_API||typeof window.LCRG_API.call!=="function"){btn.disabled=false;status.style.color="#dc2626";status.textContent="Reporting App API is not available.";return;}
     window.LCRG_API.call("bulkImportBOQ",{rows:validRows}).then(result=>{status.style.color=result.skipped>0?"#b45309":"#166534";status.textContent=`Import complete: ${result.imported} imported, ${result.skipped} duplicate/skipped.`;btn.disabled=false;if(typeof loadBOQCost==="function")loadBOQCost();}).catch(err=>{btn.disabled=false;status.style.color="#dc2626";status.textContent=err.message;});
