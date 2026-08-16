@@ -1929,7 +1929,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 <script src="api-shim.js?v=20260816-7"></script>
 <!-- BOQ Smart Import V2 embedded -->
 <script>
-/* Reporting App - BOQ Smart Import V2.7 - exact For App.xlsx structure + context carry-forward */
+/* Reporting App - BOQ Smart Import V2.8 - mandatory BOQ fields + floor normalization */
 (function(){
   "use strict";
 
@@ -2047,6 +2047,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
     const c=canon(raw);
 
+    /* Explicit overall values. */
     if([
       "all",
       "overall",
@@ -2064,17 +2065,43 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
     const floors=(getMD().floors||[])
       .filter(x=>
-        canon(x["Tower / Block"])===towerKey &&
-        (!canon(x["Project"]) || canon(x["Project"])===projectKey)
+        (!towerKey || canon(x["Tower / Block"])===towerKey) &&
+        (!projectKey || !canon(x["Project"]) || canon(x["Project"])===projectKey)
       )
       .map(x=>norm(x["Floor"]))
       .filter(Boolean);
 
+    /* Priority 1: exact master-data floor match. */
     const exact=floors.find(x=>canon(x)===c);
     if(exact)return exact;
 
+    /* Priority 2: any clear nF reference means nth Floor.
+       Examples:
+       5F -> 5th Floor
+       6 F -> 6th Floor
+       5th Slab (4F level) -> 4th Floor
+    */
+    const fMatch=raw.match(/(?:^|[^0-9])(\d{1,2})\s*F(?:\b|[^A-Za-z])/i);
+
+    if(fMatch){
+      const n=Number(fMatch[1]);
+
+      const suffix=
+        (n%10===1&&n%100!==11)?"st":
+        (n%10===2&&n%100!==12)?"nd":
+        (n%10===3&&n%100!==13)?"rd":
+        "th";
+
+      const candidate=n+suffix+" Floor";
+
+      const found=floors.find(x=>canon(x)===canon(candidate));
+      return found || candidate;
+    }
+
+    /* Also accept a simple numeric floor. */
     if(/^\d+$/.test(raw)){
       const n=Number(raw);
+
       const suffix=
         (n%10===1&&n%100!==11)?"st":
         (n%10===2&&n%100!==12)?"nd":
@@ -2083,10 +2110,12 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
       const candidate=n+suffix+" Floor";
       const found=floors.find(x=>canon(x)===canon(candidate));
-      if(found)return found;
+      return found || candidate;
     }
 
-    return raw;
+    /* User rule:
+       Any other non-standard Floor / Area value is treated as Overall. */
+    return "Overall / All Floors";
   }
 
   function addStyle(){
@@ -2113,10 +2142,10 @@ label{color:#344054;font-size:13px;margin-top:14px}
     addStyle();
     if(!document.getElementById("boqBulkImportModal")){
       const modal=document.createElement("div");modal.id="boqBulkImportModal";modal.className="boq-import-modal";
-      modal.innerHTML=`<div class="boq-import-card"><div class="boq-import-head"><div><div style="font-size:22px;font-weight:900">BOQ Smart Excel Import V2.7</div><div style="color:#64748b;margin-top:4px">Automatically detects project BOQ layouts, two-line headers and common column names.</div></div><button class="modal-close" type="button" onclick="closeBOQBulkImport()">Close</button></div>
-      <div class="boq-import-body"><div class="module-note"><b>Smart Import V2.7:</b> Built for the actual For App.xlsx structure: Code, Description, Tower, Floor, Project, Work Package, QTY, Unit, cost components, Rate and Amount. Project is read directly from Excel; BOQ heading context is carried into measurable child rows; Tower 1/2 and Overall / All Floors are normalized automatically.</div>
+      modal.innerHTML=`<div class="boq-import-card"><div class="boq-import-head"><div><div style="font-size:22px;font-weight:900">BOQ Smart Excel Import V2.8</div><div style="color:#64748b;margin-top:4px">Automatically detects project BOQ layouts, two-line headers and common column names.</div></div><button class="modal-close" type="button" onclick="closeBOQBulkImport()">Close</button></div>
+      <div class="boq-import-body"><div class="module-note"><b>Smart Import V2.8:</b> Mandatory measurable fields are Code, Description, Work Package, QTY, Unit, Rate and Amount. Project, Tower / Block, Floor / Area and Contractor are optional and can be assigned later. Floor rules: a clear nF value maps to nth Floor (5F → 5th Floor, 6F → 6th Floor); any other non-standard Floor / Area value becomes Overall / All Floors. Code-only rows remain heading/context rows.</div>
       <div class="boq-import-actions"><input id="boqBulkFile" type="file" accept=".xlsx,.xls" style="max-width:430px"><button class="boq-import-btn" type="button" onclick="previewBOQExcel()">Detect & Preview</button><button id="boqBulkImportNow" class="boq-import-btn" type="button" onclick="commitBOQBulkImport()" disabled>Import Valid Rows</button></div>
-      <div class="boq-import-defaults"><div><label>Default Project *</label><select id="boqImportProject"><option value="">Auto-detect / Select Project</option></select></div><div><label>Work Package / Category *</label><input id="boqImportPackage" placeholder="e.g. Structural Works"></div><div><label>Contractor</label><input id="boqImportContractor" placeholder="Not Assigned"></div></div>
+      <div class="boq-import-defaults"><div><label>Default Project <span style="font-weight:400;color:#64748b">(optional)</span></label><select id="boqImportProject"><option value="">Auto-detect / Select Project</option></select></div><div><label>Work Package / Category * <span style="font-weight:400;color:#64748b">(used when Excel is blank)</span></label><input id="boqImportPackage" placeholder="e.g. Structural Works"></div><div><label>Contractor</label><input id="boqImportContractor" placeholder="Not Assigned"></div></div>
       <div id="boqDetectedInfo"></div><div id="boqBulkStatus" class="boq-import-status"></div><div id="boqBulkSummary" class="boq-import-summary"></div><div id="boqBulkPreview"></div></div></div>`;
       document.body.appendChild(modal);
     }
@@ -2448,30 +2477,112 @@ label{color:#344054;font-size:13px;margin-top:14px}
   }
 
   function validateRows(rows){
-    const seen=new Set();return rows.map(r=>{const errors=[];const codeOnlyRow=!!r.itemNo&&norm(r.contractQty)==="";if(!r.itemNo)errors.push("BOQ Code is required");if(!r.description)errors.push("Description is required");if(!codeOnlyRow&&!r.unit)errors.push("Unit is required");if(!codeOnlyRow&&!r.project)errors.push("Project is required");if(!codeOnlyRow&&!r.tower)errors.push("Tower/Block is required");if(!r.floor)r.floor="Overall / All Floors";if(!codeOnlyRow&&!r.workPackage)errors.push("Work Package is required");
-      const qtyRaw=norm(r.contractQty);
-      const qty=qtyRaw===""?0:num(r.contractQty);
-      const rate=num(r.rate);
-      if(qtyRaw!==""&&(!Number.isFinite(qty)||qty<0))errors.push("Qty must be a non-negative number");
-      if(!codeOnlyRow&&(!Number.isFinite(rate)||rate<0))errors.push("Rate must be a non-negative number");
-      if(r.project&&!projectExists(r.project))errors.push("Invalid Project");if(r.project&&r.tower&&!towerExists(r.project,r.tower))errors.push("Invalid Tower/Block for Project");if(r.project&&r.tower&&r.floor&&!floorExists(r.project,r.tower,r.floor))errors.push("Invalid Floor/Area");
-      const key=[r.project,r.tower,r.floor,r.itemNo].map(x=>norm(x).toLowerCase()).join("||");if(seen.has(key))errors.push("Duplicate within Excel file");seen.add(key);
+    const seen=new Set();
+
+    return rows.map(r=>{
+      const errors=[];
+      const warnings=[];
+      const codeOnlyRow=!!r.itemNo && norm(r.contractQty)==="";
+
+      r._codeOnly=codeOnlyRow;
+
+      /* Code-only BOQ heading / section row:
+         retained for preview context; not treated as a measurable item. */
       if(codeOnlyRow){
+        if(!r.itemNo)errors.push("BOQ Code is required");
+        if(!r.description)errors.push("Description is required");
+
         r.contractQty="";
         r.rate="";
         r.amount="";
-      }else{
-        r.contractQty=Number.isFinite(qty)?qty:0;
-        r.rate=Number.isFinite(rate)?Math.round(rate*100)/100:0;
-        r.amount=Math.round(r.contractQty*r.rate*100)/100;
+        r._errors=errors;
+        r._warnings=warnings;
+        return r;
       }
+
+      /* Mandatory measurable BOQ fields agreed with user. */
+      if(!r.itemNo)errors.push("BOQ Code is required");
+      if(!r.description)errors.push("Description is required");
+      if(!r.workPackage)errors.push("Work Package is required");
+      if(norm(r.contractQty)==="")errors.push("Qty is required");
+      if(!r.unit)errors.push("Unit is required");
+      if(norm(r.rate)==="")errors.push("Rate is required");
+      if(norm(r.sourceAmount)==="")errors.push("Amount is required");
+
+      const qty=num(r.contractQty);
+      const rate=num(r.rate);
+      const sourceAmount=num(r.sourceAmount);
+
+      if(norm(r.contractQty)!=="" && (!Number.isFinite(qty)||qty<0)){
+        errors.push("Qty must be a non-negative number");
+      }
+
+      if(norm(r.rate)!=="" && (!Number.isFinite(rate)||rate<0)){
+        errors.push("Rate must be a non-negative number");
+      }
+
+      if(norm(r.sourceAmount)!=="" && (!Number.isFinite(sourceAmount)||sourceAmount<0)){
+        errors.push("Amount must be a non-negative number");
+      }
+
+      /* Optional fields: do not block import. */
+      if(!r.project)warnings.push("Project not assigned");
+      if(!r.tower)warnings.push("Tower/Block not assigned");
+      if(!r.floor)warnings.push("Floor/Area not assigned");
+      if(!r.contractor)warnings.push("Contractor not assigned");
+
+      /* If optional hierarchy fields are present, normalize/validate where possible.
+         Invalid optional hierarchy is a warning, not an import-blocking error. */
+      if(r.project && !projectExists(r.project)){
+        warnings.push("Project not found in master data");
+      }
+
+      if(r.project && r.tower && !towerExists(r.project,r.tower)){
+        warnings.push("Tower/Block not found in master data");
+      }
+
+      if(r.project && r.tower && r.floor && !floorExists(r.project,r.tower,r.floor)){
+        warnings.push("Floor/Area not found in master data");
+      }
+
+      /* Do not let preview-only heading rows create duplicate errors.
+         For measurable rows, include Description in the local duplicate key
+         because real BOQs may repeat the same Code across detail lines. */
+      const key=[
+        r.project,
+        r.tower,
+        r.floor,
+        r.itemNo,
+        r.description
+      ].map(x=>norm(x).toLowerCase()).join("||");
+
+      if(seen.has(key)){
+        errors.push("Duplicate measurable BOQ row within Excel file");
+      }
+      seen.add(key);
+
+      r.contractQty=Number.isFinite(qty)?qty:0;
+      r.rate=Number.isFinite(rate)?Math.round(rate*100)/100:0;
+
+      /* Amount is mandatory in the source workbook.
+         We retain the workbook amount, rounded to 2 decimals. */
+      r.amount=Number.isFinite(sourceAmount)
+        ? Math.round(sourceAmount*100)/100
+        : 0;
+
       r._errors=errors;
-      return r;});
+      r._warnings=warnings;
+      return r;
+    });
   }
 
   function renderPreview(){
-    const valid=importRows.filter(r=>!r._errors.length).length,invalid=importRows.length-valid,total=importRows.reduce((s,r)=>s+(r._errors.length?0:(Number(r.amount)||0)),0);
-    document.getElementById("boqBulkSummary").innerHTML=`<span class="boq-import-chip">Rows: ${importRows.length}</span><span class="boq-import-chip">Valid: ${valid}</span><span class="boq-import-chip">Errors: ${invalid}</span><span class="boq-import-chip">Valid Amount: PKR ${total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</span>`;
+    const headings=importRows.filter(r=>r._codeOnly).length;
+    const measurable=importRows.filter(r=>!r._codeOnly);
+    const valid=measurable.filter(r=>!r._errors.length).length;
+    const invalid=measurable.filter(r=>r._errors.length).length;
+    const total=measurable.reduce((s,r)=>s+(r._errors.length?0:(Number(r.amount)||0)),0);
+    document.getElementById("boqBulkSummary").innerHTML=`<span class="boq-import-chip">Rows: ${importRows.length}</span><span class="boq-import-chip">Headings: ${headings}</span><span class="boq-import-chip">Valid Measurable: ${valid}</span><span class="boq-import-chip">Errors: ${invalid}</span><span class="boq-import-chip">Valid Amount: PKR ${total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</span>`;
     let h='<div class="boq-import-table-wrap"><table class="boq-import-table"><thead><tr><th>Excel Row</th><th>Code</th><th>Description</th><th>Tower</th><th>Floor</th><th>Qty</th><th>Unit</th><th>Rate</th><th>Amount</th><th>Project</th><th>Package</th><th>Validation</th></tr></thead><tbody>';
     importRows.forEach(r=>{
       const codeOnly=!!r._codeOnly;
@@ -2482,7 +2593,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
       const amountCell=codeOnly?"":Number(r.amount||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
       const projectCell=codeOnly?"":safe(r.project);
       const packageCell=codeOnly?"":safe(r.workPackage);
-      h+=`<tr class="${r._errors.length?"boq-import-error":"boq-import-valid"}"><td>${r._row}</td><td><b>${safe(r.itemNo)}</b></td><td>${safe(r.description)}</td><td>${towerCell}</td><td>${safe(r.floor)}</td><td>${qtyCell}</td><td>${unitCell}</td><td>${rateCell}</td><td>${amountCell}</td><td>${projectCell}</td><td>${packageCell}</td><td>${r._errors.length?safe(r._errors.join("; ")):"Ready"}</td></tr>`;
+      h+=`<tr class="${r._errors.length?"boq-import-error":"boq-import-valid"}"><td>${r._row}</td><td><b>${safe(r.itemNo)}</b></td><td>${safe(r.description)}</td><td>${towerCell}</td><td>${safe(r.floor)}</td><td>${qtyCell}</td><td>${unitCell}</td><td>${rateCell}</td><td>${amountCell}</td><td>${projectCell}</td><td>${packageCell}</td><td>${r._errors.length?safe(r._errors.join("; ")):(r._codeOnly?"Heading / Context":((r._warnings||[]).length?"Ready • "+safe(r._warnings.join("; ")):"Ready"))}</td></tr>`;
     });
     document.getElementById("boqBulkPreview").innerHTML=h+'</tbody></table></div>';
   }
@@ -2497,12 +2608,12 @@ label{color:#344054;font-size:13px;margin-top:14px}
       if(inferred&&!selected){document.getElementById("boqImportProject").value=inferred;}
       detectedInfo={sheetName:data.sheetName,headerRow:detected.rowIndex+1,twoLine:detected.twoLine,headers:detected.headers,project:project};
       document.getElementById("boqDetectedInfo").innerHTML=`<div class="boq-detected"><b>Detected:</b> Sheet “${safe(data.sheetName)}”, header row ${detected.rowIndex+1}${detected.twoLine?" + next row":""}${project?", Project: "+safe(project):""}. Recognized columns: ${safe(detected.headers.filter(Boolean).join(" | "))}</div>`;
-      importRows=validateRows(buildRows(data.rows,detected,{project:project,workPackage:pkg,contractor:contractor}));renderPreview();const valid=importRows.filter(r=>!r._errors.length).length,invalid=importRows.length-valid;status.style.color=invalid?"#b45309":"#166534";status.textContent=invalid?`${valid} valid row(s), ${invalid} row(s) need correction. Select/fill defaults and click Detect & Preview again if needed.`:`${valid} row(s) validated and ready to import.`;document.getElementById("boqBulkImportNow").disabled=valid===0;
+      importRows=validateRows(buildRows(data.rows,detected,{project:project,workPackage:pkg,contractor:contractor}));renderPreview();const measurable=importRows.filter(r=>!r._codeOnly);const valid=measurable.filter(r=>!r._errors.length).length,invalid=measurable.filter(r=>r._errors.length).length;const headings=importRows.filter(r=>r._codeOnly).length;status.style.color=invalid?"#b45309":"#166534";status.textContent=invalid?`${valid} measurable row(s) ready, ${invalid} measurable row(s) need correction; ${headings} heading/context row(s) retained in preview.`:`${valid} measurable row(s) validated and ready to import; ${headings} heading/context row(s) retained in preview.`;document.getElementById("boqBulkImportNow").disabled=valid===0;
     }catch(err){importRows=[];status.style.color="#dc2626";status.textContent=err.message;document.getElementById("boqBulkImportNow").disabled=true;}
   };
 
   window.commitBOQBulkImport=function(){
-    const validRows=importRows.filter(r=>!r._errors.length&&!r._codeOnly).map(r=>({itemNo:r.itemNo,description:r.description,unit:r.unit,contractQty:r.contractQty,rate:r.rate,project:r.project,tower:r.tower,floor:r.floor,workPackage:r.workPackage,contractor:r.contractor,status:"Active",certifiedQty:0,paidAmount:0,variationAmount:0,remarks:r.remarks}));if(!validRows.length)return;
+    const validRows=importRows.filter(r=>!r._errors.length&&!r._codeOnly).map(r=>({itemNo:r.itemNo,description:r.description,unit:r.unit,contractQty:r.contractQty,rate:r.rate,amount:r.amount,project:r.project||"",tower:r.tower||"",floor:r.floor||"",workPackage:r.workPackage,contractor:r.contractor||"",status:"Active",certifiedQty:0,paidAmount:0,variationAmount:0,remarks:r.remarks}));if(!validRows.length)return;
     const btn=document.getElementById("boqBulkImportNow"),status=document.getElementById("boqBulkStatus");btn.disabled=true;status.style.color="#475569";status.textContent="Importing validated BOQ rows...";
     if(!window.LCRG_API||typeof window.LCRG_API.call!=="function"){btn.disabled=false;status.style.color="#dc2626";status.textContent="Reporting App API is not available.";return;}
     window.LCRG_API.call("bulkImportBOQ",{rows:validRows}).then(result=>{status.style.color=result.skipped>0?"#b45309":"#166534";status.textContent=`Import complete: ${result.imported} imported, ${result.skipped} duplicate/skipped.`;btn.disabled=false;if(typeof loadBOQCost==="function")loadBOQCost();}).catch(err=>{btn.disabled=false;status.style.color="#dc2626";status.textContent=err.message;});
