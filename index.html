@@ -770,7 +770,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
     <div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div>
   </div>
 </div>
-<div class="dashboard-section">
+<div id="projectControlsDashboardSection" class="dashboard-section" style="display:none">
   <div class="dashboard-section-head"><div class="dashboard-section-icon">📈</div><div><div class="dashboard-section-title">Project Controls</div><div class="dashboard-section-subtitle">Management reporting, cost control and cash planning</div></div></div>
   <div class="menu-grid">
     <div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div>
@@ -1798,9 +1798,11 @@ function hasAdministrationAccess(){
 function applyRoleAccess(){
   const adminCard=document.getElementById("adminCard");
   const executiveCard=document.getElementById("executiveReportCard");
+  const projectControlsSection=document.getElementById("projectControlsDashboardSection");
   const adminSection=document.getElementById("administrationDashboardSection");
   if(adminCard)adminCard.style.display=hasAdministrationAccess()?"block":"none";
   if(adminSection)adminSection.style.display=hasAdministrationAccess()?"block":"none";
+  if(projectControlsSection)projectControlsSection.style.display=hasExecutiveAccess()?"block":"none";
   if(executiveCard)executiveCard.style.display=hasExecutiveAccess()?"block":"none";
 
   const reportTitle=document.querySelector("#myReportsPage .step-title");
