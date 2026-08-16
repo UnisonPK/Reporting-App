@@ -979,7 +979,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
       <button class="modal-close" type="button" onclick="closeCashFlowImport()">Close</button>
     </div>
     <div class="cashflow-import-body">
-      <div class="module-note"><b>Accepted fields:</b> S.No., Project, Tower, Budget as per Initial Quotation, Awarded Value / Budgeted Value, Actual Spending, Pending Approval, Actual Progress, Financial Progress and Remarks. Balance and Financial Progress are recalculated by the backend.</div>
+      <div class="module-note"><b>Accepted fields:</b> S.No., Project, Tower, Budget as per Initial Quotation, Awarded Value / Budgeted Value, Actual Spending, Pending Approval, Actual Progress, Financial Progress and Remarks. <b>All and Overall are treated as the same scope</b> and resolve to the selected Default Tower / Area. Balance and Financial Progress are recalculated by the backend.</div>
 
       <div class="cashflow-import-actions">
         <input id="cashFlowImportFile" type="file" accept=".xlsx,.xls" style="max-width:430px" onchange="loadCashFlowWorkbook()">
@@ -5686,6 +5686,30 @@ function cashCanon(v){
   return String(v==null?"":v).replace(/\s+/g," ").trim().toLowerCase().replace(/[_-]+/g," ").replace(/[.:]+$/g,"");
 }
 function cashNorm(v){return String(v==null?"":v).replace(/\s+/g," ").trim();}
+
+function normalizeCashFlowImportProject(v){
+  const raw=cashNorm(v);
+  const key=cashCanon(raw);
+  if(["lcrg","lake city roof garden","lake city roof gardens"].includes(key))return "Lake City Roof Garden";
+  if(["olc","one lake city"].includes(key))return "One Lake City";
+  return raw;
+}
+function isCashFlowOverallImportValue(v){
+  const key=cashCanon(v);
+  return [
+    "all","overall","all tower","all towers","all block","all blocks",
+    "overall tower","overall towers","overall all"
+  ].includes(key);
+}
+function normalizeCashFlowImportTower(v,defaultTower){
+  const raw=cashNorm(v);
+  /* User rule: All and Overall are the same scope.
+     In Excel import they mean the whole selected/default Tower / Area.
+     Example: External Development sheet + Tower=All -> External Development. */
+  if(!raw||isCashFlowOverallImportValue(raw))return cashNorm(defaultTower)||"Overall";
+  return raw;
+}
+
 const CASH_ALIASES={
   serialNo:["s.no","s no","s.no.","sno","serial no","sr no","sr. no."],
   project:["project","project name"],
@@ -5800,8 +5824,10 @@ function previewCashFlowExcel(){
       const pending=map.pendingApproval>=0?row[map.pendingApproval]:"";
       const actual=map.actualProgress>=0?row[map.actualProgress]:"";
       const remarks=map.remarks>=0?cashNorm(row[map.remarks]):"";
-      const project=(map.project>=0?cashNorm(row[map.project]):"")||defaultProject;
-      const tower=(map.tower>=0?cashNorm(row[map.tower]):"")||defaultTower;
+      const sourceProject=map.project>=0?cashNorm(row[map.project]):"";
+      const sourceTower=map.tower>=0?cashNorm(row[map.tower]):"";
+      const project=normalizeCashFlowImportProject(sourceProject||defaultProject);
+      const tower=normalizeCashFlowImportTower(sourceTower,defaultTower);
 
       if(!serial && cashNorm(initial)==="" && cashNorm(awarded)==="" && cashNorm(spent)==="" && cashNorm(pending)==="" && cashNorm(actual)==="" && !remarks)continue;
 
@@ -5853,6 +5879,7 @@ function previewCashFlowExcel(){
 function commitCashFlowImport(){
   const valid=cashFlowImportRows.filter(x=>!x._errors.length).map(x=>({
     serialNo:x.serialNo,project:x.project,tower:x.tower,
+    defaultTower:document.getElementById("cashFlowImportTower").value,
     initialBudget:x.initialBudget,awardedValue:x.awardedValue,
     actualSpending:x.actualSpending,pendingApproval:x.pendingApproval,
     actualProgress:x.actualProgress,remarks:x.remarks
