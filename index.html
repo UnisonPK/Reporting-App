@@ -1929,7 +1929,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 <script src="api-shim.js?v=20260816-7"></script>
 <!-- BOQ Smart Import V2 embedded -->
 <script>
-/* Reporting App - BOQ Smart Import V2.8 - mandatory BOQ fields + floor normalization */
+/* Reporting App - BOQ Smart Import V2.9 - remeasurable duplicates allowed */
 (function(){
   "use strict";
 
@@ -2142,8 +2142,8 @@ label{color:#344054;font-size:13px;margin-top:14px}
     addStyle();
     if(!document.getElementById("boqBulkImportModal")){
       const modal=document.createElement("div");modal.id="boqBulkImportModal";modal.className="boq-import-modal";
-      modal.innerHTML=`<div class="boq-import-card"><div class="boq-import-head"><div><div style="font-size:22px;font-weight:900">BOQ Smart Excel Import V2.8</div><div style="color:#64748b;margin-top:4px">Automatically detects project BOQ layouts, two-line headers and common column names.</div></div><button class="modal-close" type="button" onclick="closeBOQBulkImport()">Close</button></div>
-      <div class="boq-import-body"><div class="module-note"><b>Smart Import V2.8:</b> Mandatory measurable fields are Code, Description, Work Package, QTY, Unit, Rate and Amount. Project, Tower / Block, Floor / Area and Contractor are optional and can be assigned later. Floor rules: a clear nF value maps to nth Floor (5F → 5th Floor, 6F → 6th Floor); any other non-standard Floor / Area value becomes Overall / All Floors. Code-only rows remain heading/context rows.</div>
+      modal.innerHTML=`<div class="boq-import-card"><div class="boq-import-head"><div><div style="font-size:22px;font-weight:900">BOQ Smart Excel Import V2.9</div><div style="color:#64748b;margin-top:4px">Automatically detects project BOQ layouts, two-line headers and common column names.</div></div><button class="modal-close" type="button" onclick="closeBOQBulkImport()">Close</button></div>
+      <div class="boq-import-body"><div class="module-note"><b>Smart Import V2.9:</b> Mandatory measurable fields remain Code, Description, Work Package, QTY, Unit, Rate and Amount. Project, Tower / Block, Floor / Area and Contractor are optional. Repeated / duplicate measurable BOQ rows are allowed because remeasurable BOQ items may legitimately repeat across floors or locations.</div>
       <div class="boq-import-actions"><input id="boqBulkFile" type="file" accept=".xlsx,.xls" style="max-width:430px"><button class="boq-import-btn" type="button" onclick="previewBOQExcel()">Detect & Preview</button><button id="boqBulkImportNow" class="boq-import-btn" type="button" onclick="commitBOQBulkImport()" disabled>Import Valid Rows</button></div>
       <div class="boq-import-defaults"><div><label>Default Project <span style="font-weight:400;color:#64748b">(optional)</span></label><select id="boqImportProject"><option value="">Auto-detect / Select Project</option></select></div><div><label>Work Package / Category * <span style="font-weight:400;color:#64748b">(used when Excel is blank)</span></label><input id="boqImportPackage" placeholder="e.g. Structural Works"></div><div><label>Contractor</label><input id="boqImportContractor" placeholder="Not Assigned"></div></div>
       <div id="boqDetectedInfo"></div><div id="boqBulkStatus" class="boq-import-status"></div><div id="boqBulkSummary" class="boq-import-summary"></div><div id="boqBulkPreview"></div></div></div>`;
@@ -2544,22 +2544,6 @@ label{color:#344054;font-size:13px;margin-top:14px}
       if(r.project && r.tower && r.floor && !floorExists(r.project,r.tower,r.floor)){
         warnings.push("Floor/Area not found in master data");
       }
-
-      /* Do not let preview-only heading rows create duplicate errors.
-         For measurable rows, include Description in the local duplicate key
-         because real BOQs may repeat the same Code across detail lines. */
-      const key=[
-        r.project,
-        r.tower,
-        r.floor,
-        r.itemNo,
-        r.description
-      ].map(x=>norm(x).toLowerCase()).join("||");
-
-      if(seen.has(key)){
-        errors.push("Duplicate measurable BOQ row within Excel file");
-      }
-      seen.add(key);
 
       r.contractQty=Number.isFinite(qty)?qty:0;
       r.rate=Number.isFinite(rate)?Math.round(rate*100)/100:0;
