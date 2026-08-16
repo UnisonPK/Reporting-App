@@ -1929,7 +1929,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 <script src="api-shim.js?v=20260816-7"></script>
 <!-- BOQ Smart Import V2 embedded -->
 <script>
-/* Reporting App - BOQ Smart Import V2.4 - hierarchy normalization + Work Package mapping */
+/* Reporting App - BOQ Smart Import V2.5 - Project column + hierarchy normalization */
 (function(){
   "use strict";
 
@@ -1945,7 +1945,8 @@ label{color:#344054;font-size:13px;margin-top:14px}
     unit:["unit","uom"],
     rate:["rate","unit rate","rate pkr","rate (pkr)"],
     amount:["amount","contract amount","total amount"],
-    workPackage:["work package","workpackage","package","category"]
+    workPackage:["work package","workpackage","package","category"],
+    project:["project","project name"]
   };
 
   const COMPONENT_ALIASES={
@@ -2040,7 +2041,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
     if(!document.getElementById("boqBulkImportModal")){
       const modal=document.createElement("div");modal.id="boqBulkImportModal";modal.className="boq-import-modal";
       modal.innerHTML=`<div class="boq-import-card"><div class="boq-import-head"><div><div style="font-size:22px;font-weight:900">BOQ Smart Excel Import V2.4</div><div style="color:#64748b;margin-top:4px">Automatically detects project BOQ layouts, two-line headers and common column names.</div></div><button class="modal-close" type="button" onclick="closeBOQBulkImport()">Close</button></div>
-      <div class="boq-import-body"><div class="module-note"><b>Smart Import V2.4:</b> Rows with QTY are measurable BOQ items. Excel Tower values such as 1 / 2 are mapped to Tower 1 / Tower 2, Floor = All is mapped to Overall / All Floors, and Work Package is read directly from Excel when available. Code-only rows continue to show only Code, Description and Floor.</div>
+      <div class="boq-import-body"><div class="module-note"><b>Smart Import V2.5:</b> Project and Work Package are read directly from Excel when available. Tower values such as 1 / 2 are mapped to Tower 1 / Tower 2, Floor = All is mapped to Overall / All Floors, and Code-only rows continue to show only Code, Description and Floor.</div>
       <div class="boq-import-actions"><input id="boqBulkFile" type="file" accept=".xlsx,.xls" style="max-width:430px"><button class="boq-import-btn" type="button" onclick="previewBOQExcel()">Detect & Preview</button><button id="boqBulkImportNow" class="boq-import-btn" type="button" onclick="commitBOQBulkImport()" disabled>Import Valid Rows</button></div>
       <div class="boq-import-defaults"><div><label>Default Project *</label><select id="boqImportProject"><option value="">Auto-detect / Select Project</option></select></div><div><label>Work Package / Category *</label><input id="boqImportPackage" placeholder="e.g. Structural Works"></div><div><label>Contractor</label><input id="boqImportContractor" placeholder="Not Assigned"></div></div>
       <div id="boqDetectedInfo"></div><div id="boqBulkStatus" class="boq-import-status"></div><div id="boqBulkSummary" class="boq-import-summary"></div><div id="boqBulkPreview"></div></div></div>`;
@@ -2056,7 +2057,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
   function readWorkbookArrays(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:"array",cellDates:false});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:"",raw:true});resolve({rows,workbook:wb,sheetName:wb.SheetNames[0]});}catch(err){reject(err);}};reader.onerror=()=>reject(new Error("Unable to read Excel file."));reader.readAsArrayBuffer(file);});}
 
   function combinedHeaders(rows,rowIndex){const a=rows[rowIndex]||[],b=rows[rowIndex+1]||[],len=Math.max(a.length,b.length);const out=[];for(let i=0;i<len;i++){const x=norm(a[i]),y=norm(b[i]);out.push(x&&y&&!aliasMatch(x,[y])?norm(x+" "+y):(x||y));}return out;}
-  function headerScore(headers){let score=0;[ALIASES.itemNo,ALIASES.description,ALIASES.contractQty,ALIASES.unit,ALIASES.rate].forEach(a=>{if(findColumn(headers,a)>=0)score+=2;});[ALIASES.tower,ALIASES.floor,ALIASES.amount,ALIASES.workPackage].forEach(a=>{if(findColumn(headers,a)>=0)score+=1;});return score;}
+  function headerScore(headers){let score=0;[ALIASES.itemNo,ALIASES.description,ALIASES.contractQty,ALIASES.unit,ALIASES.rate].forEach(a=>{if(findColumn(headers,a)>=0)score+=2;});[ALIASES.tower,ALIASES.floor,ALIASES.amount,ALIASES.workPackage,ALIASES.project].forEach(a=>{if(findColumn(headers,a)>=0)score+=1;});return score;}
   function detectHeader(rows){let best={score:-1,rowIndex:-1,headers:[],twoLine:false};const max=Math.min(rows.length,25);for(let r=0;r<max;r++){const h1=(rows[r]||[]).map(norm),s1=headerScore(h1);if(s1>best.score)best={score:s1,rowIndex:r,headers:h1,twoLine:false};const h2=combinedHeaders(rows,r),s2=headerScore(h2);if(s2>best.score)best={score:s2,rowIndex:r,headers:h2,twoLine:true};}if(best.score<7)throw new Error("Could not detect the BOQ header row. Expected columns similar to Code, Description, Qty, Unit and Rate.");return best;}
 
   function inferProject(rows,headerRow){
@@ -2101,11 +2102,14 @@ label{color:#344054;font-size:13px;margin-top:14px}
       const qtyRaw=map.contractQty>=0?norm(row[map.contractQty]):"";
       const codeOnlyRow=code!=="" && qtyRaw==="";
 
+      const excelProject=map.project>=0?norm(row[map.project]):"";
+      const resolvedProject=excelProject||defaults.project;
+
       const sourceTower=map.tower>=0?norm(row[map.tower]):"";
-      const normalizedTower=normalizeImportedTower(defaults.project,sourceTower);
+      const normalizedTower=normalizeImportedTower(resolvedProject,sourceTower);
 
       const sourceFloor=map.floor>=0?norm(row[map.floor]):"";
-      const normalizedFloor=normalizeImportedFloor(defaults.project,normalizedTower,sourceFloor);
+      const normalizedFloor=normalizeImportedFloor(resolvedProject,normalizedTower,sourceFloor);
 
       const excelPackage=map.workPackage>=0?norm(row[map.workPackage]):"";
       const resolvedPackage=excelPackage||defaults.workPackage;
@@ -2119,12 +2123,12 @@ label{color:#344054;font-size:13px;margin-top:14px}
         contractQty:codeOnlyRow?"":(map.contractQty>=0?row[map.contractQty]:""),
         rate:codeOnlyRow?"":(map.rate>=0?row[map.rate]:""),
         sourceAmount:codeOnlyRow?"":(map.amount>=0?row[map.amount]:""),
-        project:codeOnlyRow?"":defaults.project,
+        project:codeOnlyRow?"":resolvedProject,
         tower:codeOnlyRow?"":normalizedTower,
         floor:normalizedFloor,
         workPackage:codeOnlyRow?"":resolvedPackage,
         contractor:codeOnlyRow?"":(defaults.contractor||"Not Assigned"),
-        remarks:codeOnlyRow?"":["Imported by BOQ Smart Import V2.4",comp].filter(Boolean).join(" | ")
+        remarks:codeOnlyRow?"":["Imported by BOQ Smart Import V2.5",comp].filter(Boolean).join(" | ")
       });
     }return out;
   }
