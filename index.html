@@ -809,6 +809,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 .cashflow-table th,.cashflow-table td{padding:10px 9px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top;font-size:12px}
 .cashflow-table th{background:#f8fafc;color:#475569;white-space:nowrap}
 .cashflow-money{text-align:right!important;white-space:nowrap;font-variant-numeric:tabular-nums}
+.record-delete-btn{border:0;background:#fee2e2;color:#991b1b;padding:7px 10px;border-radius:7px;font-weight:800;cursor:pointer;white-space:nowrap;margin-left:5px}.record-delete-btn:hover{background:#fecaca}
 .cashflow-percent{white-space:nowrap;font-weight:800}
 .cashflow-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .cashflow-form-grid .full-width{grid-column:1/-1}
@@ -898,7 +899,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
       <div class="admin-toolbar">
         <div>
           <div class="step-title">Cash Flow Register</div>
-          <div class="step-subtitle">Current project / tower financial position including Activity.</div>
+          <div class="step-subtitle">Current project / tower / scope financial position including Activity. Ground Floor and External Development are available as Cash Flow scopes.</div>
         </div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <button class="admin-primary-btn" onclick="openCashFlowModal()">+ Add / Update</button>
@@ -5493,40 +5494,46 @@ function populateCashFlowProjectOptions(){
   fillSimpleSelect("cashFlowImportProject",projects,"Select Project");
 }
 
+
+function cashFlowScopeOptions(project){
+  let towers=(masterData&&masterData.towers||[]);
+  if(project)towers=towers.filter(x=>String(x["Project"]||"")===project);
+
+  const vals=[...new Set(towers.map(x=>x["Tower / Block"]).filter(Boolean))].sort();
+
+  /* Cash Flow-specific scopes for Lake City Roof Garden. */
+  if(!project || project==="Lake City Roof Garden"){
+    ["Ground Floor","External Development"].forEach(x=>{
+      if(!vals.includes(x))vals.push(x);
+    });
+  }
+
+  vals.sort((a,b)=>a.localeCompare(b));
+  vals.unshift("Overall / All Towers");
+  return vals;
+}
+
 function updateCashFlowTowerFilter(){
   const p=document.getElementById("cashProjectFilter").value;
-  let towers=(masterData&&masterData.towers||[]);
-  if(p)towers=towers.filter(x=>String(x["Project"]||"")===p);
-  const vals=[...new Set(towers.map(x=>x["Tower / Block"]).filter(Boolean))].sort();
-  vals.unshift("Overall / All Towers");
+  const vals=cashFlowScopeOptions(p);
   const current=document.getElementById("cashTowerFilter").value;
-  fillSimpleSelect("cashTowerFilter",vals,"All Towers");
+  fillSimpleSelect("cashTowerFilter",vals,"All Towers / Scopes");
   if(vals.includes(current))document.getElementById("cashTowerFilter").value=current;
 }
 
 function updateCashFlowFormTowers(){
   const p=document.getElementById("cashProject").value;
-  const vals=(masterData&&masterData.towers||[])
-    .filter(x=>String(x["Project"]||"")===p)
-    .map(x=>x["Tower / Block"])
-    .filter(Boolean);
+  const vals=cashFlowScopeOptions(p);
   const current=document.getElementById("cashTower").value;
-  const options=[...new Set(vals)].sort();
-  options.unshift("Overall / All Towers");
-  fillSimpleSelect("cashTower",options,"Select Tower / Scope");
+  fillSimpleSelect("cashTower",vals,"Select Tower / Scope");
   if(vals.includes(current))document.getElementById("cashTower").value=current;
 }
 
 function updateCashFlowImportTowers(){
   const p=document.getElementById("cashFlowImportProject").value;
-  const vals=(masterData&&masterData.towers||[])
-    .filter(x=>String(x["Project"]||"")===p)
-    .map(x=>x["Tower / Block"])
-    .filter(Boolean);
+  const vals=cashFlowScopeOptions(p);
   const current=document.getElementById("cashFlowImportTower").value;
-  const options=[...new Set(vals)].sort();
-  options.unshift("Overall / All Towers");
-  fillSimpleSelect("cashFlowImportTower",options,"Select Tower / Scope");
+  fillSimpleSelect("cashFlowImportTower",vals,"Select Tower / Scope");
   if(vals.includes(current))document.getElementById("cashFlowImportTower").value=current;
 }
 
@@ -5624,7 +5631,7 @@ function renderCashFlow(){
       '<td><div class="cashflow-progress-wrap"><div class="cashflow-progress-track"><div class="cashflow-progress-fill" style="width:'+ap+'%"></div></div><span class="cashflow-percent">'+(Math.round(ap*10)/10)+'%</span></div></td>'+
       '<td><div class="cashflow-progress-wrap"><div class="cashflow-progress-track"><div class="cashflow-progress-fill" style="width:'+fp+'%"></div></div><span class="cashflow-percent">'+(Math.round(fp*10)/10)+'%</span></div></td>'+
       '<td>'+escapeHtml(r.remarks||"")+'</td>'+
-      '<td><button class="view-btn" data-id="'+escapeHtml(r.cashFlowId)+'" onclick="editCashFlowRecord(this.dataset.id)">Edit</button></td>'+
+      '<td><button class="view-btn" data-id="'+escapeHtml(r.cashFlowId)+'" onclick="editCashFlowRecord(this.dataset.id)">Edit</button><button class="record-delete-btn" data-id="'+escapeHtml(r.cashFlowId)+'" onclick="deleteCashFlowRecord(this.dataset.id)">Delete</button></td>'+
       '</tr>';
   });
 
@@ -5725,6 +5732,31 @@ function saveCashFlowRecord(){
     .catch(function(e){
       btn.disabled=false;
       m.style.color="#dc2626";m.innerText=e.message;
+    });
+}
+
+
+function deleteCashFlowRecord(id){
+  const r=(cashFlowData||[]).find(x=>String(x.cashFlowId)===String(id));
+  if(!r)return;
+
+  const label=[r.project,r.tower,r.activity].filter(Boolean).join(" • ");
+
+  if(!confirm(
+    "Delete this Cash Flow record?\n\n"+
+    label+
+    "\n\nThis action cannot be undone."
+  )){
+    return;
+  }
+
+  cashFlowApi("deleteCashFlow",{cashFlowId:id})
+    .then(function(result){
+      alert(result.message||"Cash Flow record deleted successfully.");
+      loadCashFlow();
+    })
+    .catch(function(e){
+      alert("Unable to delete Cash Flow record: "+e.message);
     });
 }
 
@@ -5916,7 +5948,7 @@ function previewCashFlowExcel(){
       if(!tower)errors.push("Tower required");
 
       if(
-        tower!=="Overall / All Towers" &&
+        !["Overall / All Towers","Ground Floor","External Development"].includes(tower) &&
         !(masterData&&masterData.towers||[]).some(x=>
           cashCanon(x["Project"])===cashCanon(project) &&
           cashCanon(x["Tower / Block"])===cashCanon(tower)
@@ -6005,6 +6037,58 @@ function formatPKR(v){
 
 function boqStatusClass(v){
   return String(v||"").toLowerCase().replace(/\s+/g,"-");
+}
+
+
+function deleteBOQRecord(id){
+  const r=(boqCostData||[]).find(x=>String(x.boqId)===String(id));
+  if(!r)return;
+
+  const label=[
+    r.itemNo,
+    r.description,
+    r.project,
+    r.tower,
+    r.floor
+  ].filter(Boolean).join(" • ");
+
+  if(!confirm(
+    "Delete this BOQ & Cost record?\n\n"+
+    label+
+    "\n\nThis action cannot be undone."
+  )){
+    return;
+  }
+
+  function done(result){
+    alert((result&&result.message)||"BOQ item deleted successfully.");
+    loadBOQCost();
+  }
+
+  function failed(e){
+    alert("Unable to delete BOQ item: "+(e&&e.message?e.message:e));
+  }
+
+  if(window.LCRG_API&&typeof window.LCRG_API.call==="function"){
+    window.LCRG_API.call("deleteBOQCostItem",{boqId:id})
+      .then(done)
+      .catch(failed);
+    return;
+  }
+
+  if(window.google&&google.script&&google.script.run){
+    google.script.run
+      .withSuccessHandler(done)
+      .withFailureHandler(failed)
+      .deleteBOQCostItem({
+        boqId:id,
+        actorUserId:loggedInUser.userId,
+        actorUsername:loggedInUser.username
+      });
+    return;
+  }
+
+  failed(new Error("Reporting App API is not available."));
 }
 
 function openBOQCost(){
@@ -6155,7 +6239,7 @@ function renderBOQCost(){
       '<td class="boq-qty">'+escapeHtml(String(r.balanceQty))+'</td>'+ 
       '<td class="boq-money"><b>'+escapeHtml(formatPKR(r.balanceCost))+'</b></td>'+ 
       '<td><span class="boq-status '+boqStatusClass(r.status)+'">'+escapeHtml(r.status)+'</span></td>'+ 
-      '<td><button class="view-btn" data-id="'+escapeHtml(r.boqId)+'" onclick="editBOQItem(this.dataset.id)">Edit</button></td>'+ 
+      '<td><button class="view-btn" data-id="'+escapeHtml(r.boqId)+'" onclick="editBOQItem(this.dataset.id)">Edit</button><button class="record-delete-btn" data-id="'+escapeHtml(r.boqId)+'" onclick="deleteBOQRecord(this.dataset.id)">Delete</button></td>'+ 
       '</tr>';
   });
 
