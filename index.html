@@ -752,12 +752,90 @@ label{color:#344054;font-size:13px;margin-top:14px}
 .gps-title{font-size:12px;font-weight:800;color:#334155}.gps-status{font-size:11px;color:#64748b;margin-top:2px}
 @media(max-width:700px){.site-utility-bar{align-items:flex-start;flex-direction:column}.site-utility-status{text-align:left}.draft-restore-notice{align-items:flex-start;flex-direction:column}.draft-restore-notice button{width:100%}.gps-capture-row{align-items:flex-start;flex-direction:column}.gps-capture-row .site-utility-btn{width:100%}}
 
+
+/* ===== Dashboard Sections + Project Controls / Technical Documents V1 ===== */
+.dashboard-section{margin:22px 0 26px}.dashboard-section-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}.dashboard-section-icon{width:34px;height:34px;border-radius:10px;background:#eef4ff;display:flex;align-items:center;justify-content:center;font-size:18px}.dashboard-section-title{font-size:15px;font-weight:900;color:#1d2939;text-transform:uppercase;letter-spacing:.045em}.dashboard-section-subtitle{font-size:11px;color:#667085;margin-top:2px}.dashboard-section .menu-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.menu-card.cost:after{background:#7c3aed}.menu-card.cashflow:after{background:#0891b2}.menu-card.drawings:after{background:#2563eb}.menu-card.documents:after{background:#64748b}.menu-card.users:after{background:#dc2626}.menu-card.masterdata:after{background:#ea580c}.menu-card.settings:after{background:#475569}.menu-card.coming-soon{opacity:.92}.coming-soon-pill{position:absolute;right:10px;top:10px;background:#f1f5f9;color:#475569;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+#drawingsPage,#placeholderModulePage{display:none}.drawings-toolbar{display:grid;grid-template-columns:1.5fr repeat(4,1fr) auto;gap:10px;margin-bottom:14px}.drawings-summary{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.drawing-chip{padding:7px 11px;border-radius:999px;background:#eef4ff;color:#1849a9;font-size:12px;font-weight:800}.drawings-table-wrap{overflow-x:auto;border:1px solid #e5e7eb;border-radius:12px}.drawings-table{width:100%;border-collapse:collapse;min-width:1050px}.drawings-table th,.drawings-table td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top;font-size:12px}.drawings-table th{background:#f8fafc;color:#475569;white-space:nowrap}.drawing-status{display:inline-block;padding:5px 8px;border-radius:999px;font-weight:800;font-size:10px;background:#f1f5f9;color:#475569}.drawing-status.approved{background:#dcfce7;color:#166534}.drawing-status.under-review{background:#fef3c7;color:#92400e}.drawing-status.superseded{background:#fee2e2;color:#991b1b}.drawing-link{display:inline-block;text-decoration:none;background:#0b3f88;color:white;border-radius:7px;padding:7px 9px;font-weight:800;font-size:11px}.drawing-delete{border:0;background:#fee2e2;color:#991b1b;border-radius:7px;padding:7px 9px;font-weight:800;cursor:pointer;font-size:11px}.module-note{padding:11px 13px;border:1px solid #bfdbfe;background:#eff6ff;color:#1e3a8a;border-radius:10px;font-size:12px;margin-bottom:14px}.placeholder-center{text-align:center;padding:52px 20px}.placeholder-icon{font-size:48px}.placeholder-title{font-size:24px;font-weight:900;margin-top:12px}.placeholder-text{max-width:620px;margin:8px auto;color:#667085;line-height:1.5}.drawing-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.drawing-form-grid .full-width{grid-column:1/-1}
+@media(max-width:1000px){.dashboard-section .menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.drawings-toolbar{grid-template-columns:1fr 1fr}.drawings-toolbar .drawing-search{grid-column:1/-1}.drawings-toolbar .reset-filter-btn{grid-column:1/-1}}
+@media(max-width:650px){.dashboard-section{margin:18px 0 22px}.dashboard-section .menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-section-title{font-size:13px}.drawings-toolbar{grid-template-columns:1fr}.drawings-toolbar .drawing-search,.drawings-toolbar .reset-filter-btn{grid-column:auto}.drawing-form-grid{grid-template-columns:1fr}.drawing-form-grid .full-width{grid-column:auto}}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
-<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div id="dashboardManagementAttention" class="dashboard-management-attention" style="display:none"><div class="dashboard-attention-head"><div><b>🚨 Management Attention</b><span>Today's constraints, holds and rectification items</span></div><button onclick="openDailySummary()">View Daily Summary</button></div><div id="dashboardAttentionList" class="dashboard-attention-list"><div class="summary-empty">Loading...</div></div></div><div class="menu-grid"><div class="menu-card primary" onclick="openActivityForm()"><span id="draftNotificationBadge" class="menu-notification-badge draft-badge" style="display:none">Draft</span><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div><div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div><div class="menu-card inspection" onclick="openPendingInspections()"><span id="inspectionNotificationBadge" class="menu-notification-badge" style="display:none">0</span><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div><div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div><div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div style="color:#6b7280;font-size:13px">High-level project performance, inspections and constraints</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div><div id="adminCard" class="menu-card admin" style="display:none" onclick="openAdministration()"><span id="adminNotificationBadge" class="menu-notification-badge" style="display:none">0</span><div class="icon">⚙️</div><div class="menu-title">Administration</div><div class="menu-stat">Users, roles and master data</div></div></div></div></div>
+<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div id="dashboardManagementAttention" class="dashboard-management-attention" style="display:none"><div class="dashboard-attention-head"><div><b>🚨 Management Attention</b><span>Today's constraints, holds and rectification items</span></div><button onclick="openDailySummary()">View Daily Summary</button></div><div id="dashboardAttentionList" class="dashboard-attention-list"><div class="summary-empty">Loading...</div></div></div><div class="dashboard-section">
+  <div class="dashboard-section-head"><div class="dashboard-section-icon">🏗️</div><div><div class="dashboard-section-title">Site Operations</div><div class="dashboard-section-subtitle">Daily site reporting, inspections and progress monitoring</div></div></div>
+  <div class="menu-grid">
+    <div class="menu-card primary" onclick="openActivityForm()"><span id="draftNotificationBadge" class="menu-notification-badge draft-badge" style="display:none">Draft</span><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div>
+    <div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div>
+    <div class="menu-card inspection" onclick="openPendingInspections()"><span id="inspectionNotificationBadge" class="menu-notification-badge" style="display:none">0</span><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div>
+    <div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div>
+  </div>
+</div>
+<div class="dashboard-section">
+  <div class="dashboard-section-head"><div class="dashboard-section-icon">📈</div><div><div class="dashboard-section-title">Project Controls</div><div class="dashboard-section-subtitle">Management reporting, cost control and cash planning</div></div></div>
+  <div class="menu-grid">
+    <div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div>
+    <div class="menu-card cost coming-soon" onclick="openPlaceholderModule('💰','BOQ & Cost','Approved BOQ, quantities, rates, certified value, variations and balance cost will be managed here.')"><span class="coming-soon-pill">Next Phase</span><div class="icon">💰</div><div class="menu-title">BOQ & Cost</div><div class="menu-stat">Contract value and cost control</div></div>
+    <div class="menu-card cashflow coming-soon" onclick="openPlaceholderModule('💵','Cash Flow','Planned, certified and paid monthly cash flow with cumulative variance will be managed here.')"><span class="coming-soon-pill">Next Phase</span><div class="icon">💵</div><div class="menu-title">Cash Flow</div><div class="menu-stat">Planned vs actual cash flow</div></div>
+  </div>
+</div>
+<div class="dashboard-section">
+  <div class="dashboard-section-head"><div class="dashboard-section-icon">📚</div><div><div class="dashboard-section-title">Technical Documents</div><div class="dashboard-section-subtitle">Controlled access to drawings, documents and submittals</div></div></div>
+  <div class="menu-grid">
+    <div class="menu-card drawings" onclick="openDrawings()"><div class="icon">📐</div><div class="menu-title">Drawings</div><div class="menu-stat">Drawing register, revisions and links</div></div>
+    <div class="menu-card documents coming-soon" onclick="openPlaceholderModule('📁','Documents / Submittals','Technical submittals, method statements, material approvals and project documents will be organized here.')"><span class="coming-soon-pill">Next Phase</span><div class="icon">📁</div><div class="menu-title">Documents / Submittals</div><div class="menu-stat">Technical document register</div></div>
+  </div>
+</div>
+<div id="administrationDashboardSection" class="dashboard-section" style="display:none">
+  <div class="dashboard-section-head"><div class="dashboard-section-icon">⚙️</div><div><div class="dashboard-section-title">Administration</div><div class="dashboard-section-subtitle">Users, master data and application configuration</div></div></div>
+  <div class="menu-grid">
+    <div class="menu-card users" onclick="openAdministrationSection('users')"><span id="adminNotificationBadge" class="menu-notification-badge" style="display:none">0</span><div class="icon">👥</div><div class="menu-title">Users</div><div class="menu-stat">Users, roles and passwords</div></div>
+    <div class="menu-card masterdata" onclick="openAdministrationSection('master')"><div class="icon">🗂️</div><div class="menu-title">Master Data</div><div class="menu-stat">Projects, towers, floors and trades</div></div>
+    <div class="menu-card settings coming-soon" onclick="openPlaceholderModule('⚙️','Settings','Application settings and future configuration options will be managed here.')"><span class="coming-soon-pill">Planned</span><div class="icon">⚙️</div><div class="menu-title">Settings</div><div class="menu-stat">Application configuration</div></div>
+  </div>
+</div></div></div>
 
 
 
+
+
+<div id="drawingsPage">
+  <div class="header"><div><div class="app-name">📐 Drawings Register</div><div class="app-subtitle">Controlled drawing register, revisions, status and document links</div></div><button class="back-button" onclick="showDashboard()">Back</button></div>
+  <div class="container"><div class="form-card">
+    <div class="admin-toolbar"><div><div class="step-title">Project Drawings</div><div class="step-subtitle">Search the current register and open the latest linked drawing file.</div></div><button class="admin-primary-btn" onclick="openDrawingModal()">+ Add Drawing</button></div>
+    <div class="module-note"><b>Phase 1:</b> The Drawings Register is now active in the app. Records added in this version are stored in this browser/device. In the next step we can connect the same register to a central Google Sheet + Google Drive so every user sees one live register.</div>
+    <div class="drawings-toolbar">
+      <input id="drawingSearch" class="drawing-search" placeholder="Search Drawing No., title, discipline or consultant..." oninput="renderDrawings()">
+      <select id="drawingProjectFilter" onchange="renderDrawings()"><option value="">All Projects</option></select>
+      <select id="drawingAreaFilter" onchange="renderDrawings()"><option value="">All Towers / Areas</option></select>
+      <select id="drawingDisciplineFilter" onchange="renderDrawings()"><option value="">All Disciplines</option></select>
+      <select id="drawingStatusFilter" onchange="renderDrawings()"><option value="">All Statuses</option><option>Approved</option><option>Approved with Comments</option><option>Under Review</option><option>Superseded</option><option>For Construction</option><option>As-Built</option></select>
+      <button class="reset-filter-btn" onclick="resetDrawingFilters()">Reset</button>
+    </div>
+    <div class="drawings-summary"><span id="drawingCount" class="drawing-chip">0 Drawings</span><span id="drawingLatestCount" class="drawing-chip">0 Current / Latest</span></div>
+    <div id="drawingsContainer" class="empty-state">No drawings added yet.</div>
+  </div></div>
+</div>
+
+<div id="drawingModal" class="admin-modal" onclick="closeDrawingModal(event)">
+  <div class="admin-modal-card" style="max-width:760px" onclick="event.stopPropagation()">
+    <div class="admin-modal-head"><div><div id="drawingModalTitle" class="admin-modal-title">Add Drawing</div><div class="app-subtitle">Store the register information and the Google Drive / PDF link.</div></div><button class="modal-close" onclick="closeDrawingModal()">Close</button></div>
+    <div class="admin-modal-body"><div class="drawing-form-grid">
+      <div><label>Project *</label><input id="drawingProject"></div><div><label>Tower / Area *</label><input id="drawingArea"></div>
+      <div><label>Drawing No. *</label><input id="drawingNo"></div><div><label>Revision *</label><input id="drawingRevision" placeholder="e.g. R0, R1, Rev-A"></div>
+      <div class="full-width"><label>Drawing Title *</label><input id="drawingTitle"></div>
+      <div><label>Discipline *</label><select id="drawingDiscipline"><option value="">Select</option><option>Architectural</option><option>Structural</option><option>MEP</option><option>Electrical</option><option>Plumbing</option><option>HVAC</option><option>Fire Fighting</option><option>Landscape</option><option>Interior</option><option>Shop Drawing</option><option>As-Built</option><option>Other</option></select></div>
+      <div><label>Status *</label><select id="drawingStatus"><option value="">Select</option><option>Approved</option><option>Approved with Comments</option><option>Under Review</option><option>Superseded</option><option>For Construction</option><option>As-Built</option></select></div>
+      <div><label>Date Issued *</label><input id="drawingDate" type="date"></div><div><label>Consultant / Issuer</label><input id="drawingConsultant"></div>
+      <div class="full-width"><label>Google Drive / PDF Link *</label><input id="drawingUrl" type="url" placeholder="https://..."></div>
+      <div class="full-width"><label>Remarks</label><textarea id="drawingRemarks"></textarea></div>
+    </div><div class="decision-actions"><button class="decision-save" onclick="saveDrawing()">Save Drawing</button></div><div id="drawingMessage" class="admin-message"></div></div>
+  </div>
+</div>
+
+<div id="placeholderModulePage">
+  <div class="header"><div><div id="placeholderModuleHeader" class="app-name">Module</div><div class="app-subtitle">Reporting App expansion</div></div><button class="back-button" onclick="showDashboard()">Back</button></div>
+  <div class="container"><div class="form-card placeholder-center"><div id="placeholderModuleIcon" class="placeholder-icon">📦</div><div id="placeholderModuleTitle" class="placeholder-title">Module</div><div id="placeholderModuleText" class="placeholder-text"></div><div class="module-note" style="max-width:700px;margin:22px auto 0">The dashboard navigation is ready. We will connect this module to the live Google Sheets / Drive backend in its development phase without changing the existing site reporting functions.</div></div></div>
+</div>
 
 <div id="forgotPasswordModal" class="admin-modal" onclick="closeForgotPasswordModal(event)">
   <div class="admin-modal-card password-self-card" onclick="event.stopPropagation()">
@@ -1720,7 +1798,9 @@ function hasAdministrationAccess(){
 function applyRoleAccess(){
   const adminCard=document.getElementById("adminCard");
   const executiveCard=document.getElementById("executiveReportCard");
+  const adminSection=document.getElementById("administrationDashboardSection");
   if(adminCard)adminCard.style.display=hasAdministrationAccess()?"block":"none";
+  if(adminSection)adminSection.style.display=hasAdministrationAccess()?"block":"none";
   if(executiveCard)executiveCard.style.display=hasExecutiveAccess()?"block":"none";
 
   const reportTitle=document.querySelector("#myReportsPage .step-title");
@@ -1732,7 +1812,7 @@ function applyRoleAccess(){
 }
 
 function hideAppPages(){
-  ["loginPage","dashboardPage","activityPage","myReportsPage","pendingInspectionsPage","dailySummaryPage","administrationPage","executiveReportPage"].forEach(function(id){
+  ["loginPage","dashboardPage","activityPage","myReportsPage","pendingInspectionsPage","dailySummaryPage","administrationPage","executiveReportPage","drawingsPage","placeholderModulePage"].forEach(function(id){
     const el=document.getElementById(id);
     if(el)el.style.display="none";
   });
@@ -3520,6 +3600,11 @@ let adminMasterData=null;
 let adminEditUserId="";
 let adminPasswordUserId="";
 
+function openAdministrationSection(section){
+  if(!loggedInUser || !hasAdministrationAccess()){alert("You do not have permission to access Administration.");return;}
+  hideAppPages();document.getElementById("administrationPage").style.display="block";showAdminSection(section||"users");loadAdministrationData();
+}
+
 function openAdministration(){
   if(!loggedInUser || !hasAdministrationAccess()){
     alert("You do not have permission to access Administration.");
@@ -4209,6 +4294,32 @@ function saveOwnPasswordChange(){
       newPassword:next
     });
 }
+
+
+/* ===================== DRAWINGS REGISTER V1 ===================== */
+const DRAWINGS_KEY="UNISON_REPORTING_DRAWINGS_V1";
+let drawingsData=[];
+function getStoredDrawings(){try{return JSON.parse(localStorage.getItem(DRAWINGS_KEY)||"[]")}catch(e){return []}}
+function saveStoredDrawings(){localStorage.setItem(DRAWINGS_KEY,JSON.stringify(drawingsData||[]))}
+function drawingUnique(key){return [...new Set((drawingsData||[]).map(x=>String(x[key]||"").trim()).filter(Boolean))].sort()}
+function fillSimpleSelect(id,vals,label){const el=document.getElementById(id),cur=el.value;el.innerHTML='<option value="">'+label+'</option>';vals.forEach(v=>addOption(el,v));if(vals.includes(cur))el.value=cur}
+function openDrawings(){hideAppPages();document.getElementById("drawingsPage").style.display="block";drawingsData=getStoredDrawings();fillDrawingFilters();renderDrawings()}
+function fillDrawingFilters(){fillSimpleSelect("drawingProjectFilter",drawingUnique("project"),"All Projects");fillSimpleSelect("drawingAreaFilter",drawingUnique("area"),"All Towers / Areas");fillSimpleSelect("drawingDisciplineFilter",drawingUnique("discipline"),"All Disciplines")}
+function resetDrawingFilters(){["drawingSearch","drawingProjectFilter","drawingAreaFilter","drawingDisciplineFilter","drawingStatusFilter"].forEach(id=>document.getElementById(id).value="");renderDrawings()}
+function drawingStatusClass(v){return String(v||"").toLowerCase().replace(/\s+/g,"-")}
+function renderDrawings(){
+  const q=(document.getElementById("drawingSearch").value||"").toLowerCase().trim(),p=document.getElementById("drawingProjectFilter").value,a=document.getElementById("drawingAreaFilter").value,d=document.getElementById("drawingDisciplineFilter").value,st=document.getElementById("drawingStatusFilter").value;
+  const rows=(drawingsData||[]).filter(r=>{const txt=[r.no,r.title,r.discipline,r.consultant,r.revision].join(" ").toLowerCase();return(!q||txt.includes(q))&&(!p||r.project===p)&&(!a||r.area===a)&&(!d||r.discipline===d)&&(!st||r.status===st)}).sort((x,y)=>String(y.date||"").localeCompare(String(x.date||"")));
+  document.getElementById("drawingCount").innerText=rows.length+" Drawing"+(rows.length===1?"":"s");document.getElementById("drawingLatestCount").innerText=rows.filter(r=>r.status!=="Superseded").length+" Current / Latest";
+  const c=document.getElementById("drawingsContainer");if(!rows.length){c.className="empty-state";c.innerText="No drawings found. Use + Add Drawing to start the register.";return;}
+  c.className="drawings-table-wrap";let h='<table class="drawings-table"><thead><tr><th>Drawing No.</th><th>Title</th><th>Project / Area</th><th>Discipline</th><th>Rev.</th><th>Status</th><th>Date</th><th>Consultant</th><th>File</th><th></th></tr></thead><tbody>';
+  rows.forEach(r=>{h+='<tr><td><b>'+escapeHtml(r.no)+'</b></td><td>'+escapeHtml(r.title)+'</td><td>'+escapeHtml([r.project,r.area].filter(Boolean).join(" / "))+'</td><td>'+escapeHtml(r.discipline)+'</td><td><b>'+escapeHtml(r.revision)+'</b></td><td><span class="drawing-status '+drawingStatusClass(r.status)+'">'+escapeHtml(r.status)+'</span></td><td>'+escapeHtml(r.date)+'</td><td>'+escapeHtml(r.consultant||"-")+'</td><td><a class="drawing-link" href="'+escapeHtml(r.url)+'" target="_blank" rel="noopener">View PDF</a></td><td><button class="drawing-delete" data-id="'+escapeHtml(r.id)+'" onclick="deleteDrawing(this.dataset.id)">Delete</button></td></tr>';});h+='</tbody></table>';c.innerHTML=h;
+}
+function openDrawingModal(){["drawingProject","drawingArea","drawingNo","drawingRevision","drawingTitle","drawingDiscipline","drawingStatus","drawingDate","drawingConsultant","drawingUrl","drawingRemarks"].forEach(id=>{const e=document.getElementById(id);if(e)e.value=""});document.getElementById("drawingDate").value=localToday();document.getElementById("drawingMessage").innerText="";document.getElementById("drawingModal").style.display="block";document.body.style.overflow="hidden"}
+function closeDrawingModal(e){if(e&&e.target!==document.getElementById("drawingModal"))return;document.getElementById("drawingModal").style.display="none";document.body.style.overflow=""}
+function saveDrawing(){const rec={id:"DRW-"+Date.now(),project:value("drawingProject"),area:value("drawingArea"),no:value("drawingNo"),revision:value("drawingRevision"),title:value("drawingTitle"),discipline:value("drawingDiscipline"),status:value("drawingStatus"),date:value("drawingDate"),consultant:value("drawingConsultant"),url:value("drawingUrl"),remarks:value("drawingRemarks"),createdBy:loggedInUser?loggedInUser.username:"",createdAt:new Date().toISOString()};const required=["project","area","no","revision","title","discipline","status","date","url"];if(required.some(k=>!String(rec[k]||"").trim())){const m=document.getElementById("drawingMessage");m.style.color="#dc2626";m.innerText="Please complete all mandatory drawing fields.";return}try{new URL(rec.url)}catch(e){const m=document.getElementById("drawingMessage");m.style.color="#dc2626";m.innerText="Please enter a valid Google Drive / PDF URL.";return}drawingsData=getStoredDrawings();drawingsData.push(rec);saveStoredDrawings();closeDrawingModal();fillDrawingFilters();renderDrawings()}
+function deleteDrawing(id){if(!confirm("Delete this drawing register entry from this device?"))return;drawingsData=getStoredDrawings().filter(x=>String(x.id)!==String(id));saveStoredDrawings();fillDrawingFilters();renderDrawings()}
+function openPlaceholderModule(icon,title,text){hideAppPages();document.getElementById("placeholderModulePage").style.display="block";document.getElementById("placeholderModuleHeader").innerText=icon+" "+title;document.getElementById("placeholderModuleIcon").innerText=icon;document.getElementById("placeholderModuleTitle").innerText=title;document.getElementById("placeholderModuleText").innerText=text}
 
 function logout(){loggedInUser=null;if(window.LCRG_API&&LCRG_API.clearToken)LCRG_API.clearToken();location.reload()}
 window.onload=function(){let u=localStorage.getItem("rememberedUsername");if(u){document.getElementById("username").value=u;document.getElementById("rememberMe").checked=true}updateStepDisplay();updateNetworkStatus();updateDashboardDraftBadge()}
