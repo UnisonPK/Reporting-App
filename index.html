@@ -802,13 +802,13 @@ label{color:#344054;font-size:13px;margin-top:14px}
   <div class="header"><div><div class="app-name">📐 Drawings Register</div><div class="app-subtitle">Controlled drawing register, revisions, status and document links</div></div><button class="back-button" onclick="showDashboard()">Back</button></div>
   <div class="container"><div class="form-card">
     <div class="admin-toolbar"><div><div class="step-title">Project Drawings</div><div class="step-subtitle">Search the current register and open the latest linked drawing file.</div></div><button class="admin-primary-btn" onclick="openDrawingModal()">+ Add Drawing</button></div>
-    <div class="module-note"><b>Phase 1:</b> The Drawings Register is now active in the app. Records added in this version are stored in this browser/device. In the next step we can connect the same register to a central Google Sheet + Google Drive so every user sees one live register.</div>
+    <div class="module-note"><b>Live Shared Register:</b> Drawings are now stored centrally in Google Sheets. The drawing/PDF file remains in Google Drive and the register stores its controlled link, revision, status and issue information for all logged-in users.</div>
     <div class="drawings-toolbar">
       <input id="drawingSearch" class="drawing-search" placeholder="Search Drawing No., title, discipline or consultant..." oninput="renderDrawings()">
       <select id="drawingProjectFilter" onchange="renderDrawings()"><option value="">All Projects</option></select>
       <select id="drawingAreaFilter" onchange="renderDrawings()"><option value="">All Towers / Areas</option></select>
       <select id="drawingDisciplineFilter" onchange="renderDrawings()"><option value="">All Disciplines</option></select>
-      <select id="drawingStatusFilter" onchange="renderDrawings()"><option value="">All Statuses</option><option>Approved</option><option>Approved with Comments</option><option>Under Review</option><option>Superseded</option><option>For Construction</option><option>As-Built</option></select>
+      <select id="drawingStatusFilter" onchange="renderDrawings()"><option value="">All Statuses</option><option>Approved</option><option>Approved with Comments</option><option>Under Review</option><option>Superseded</option><option>For Information</option><option>For Construction</option><option>As-Built</option></select>
       <button class="reset-filter-btn" onclick="resetDrawingFilters()">Reset</button>
     </div>
     <div class="drawings-summary"><span id="drawingCount" class="drawing-chip">0 Drawings</span><span id="drawingLatestCount" class="drawing-chip">0 Current / Latest</span></div>
@@ -819,16 +819,16 @@ label{color:#344054;font-size:13px;margin-top:14px}
 <div id="drawingModal" class="admin-modal" onclick="closeDrawingModal(event)">
   <div class="admin-modal-card" style="max-width:760px" onclick="event.stopPropagation()">
     <div class="admin-modal-head"><div><div id="drawingModalTitle" class="admin-modal-title">Add Drawing</div><div class="app-subtitle">Store the register information and the Google Drive / PDF link.</div></div><button class="modal-close" onclick="closeDrawingModal()">Close</button></div>
-    <div class="admin-modal-body"><div class="drawing-form-grid">
+    <div class="admin-modal-body"><input id="drawingId" type="hidden"><div class="drawing-form-grid">
       <div><label>Project *</label><input id="drawingProject"></div><div><label>Tower / Area *</label><input id="drawingArea"></div>
       <div><label>Drawing No. *</label><input id="drawingNo"></div><div><label>Revision *</label><input id="drawingRevision" placeholder="e.g. R0, R1, Rev-A"></div>
       <div class="full-width"><label>Drawing Title *</label><input id="drawingTitle"></div>
       <div><label>Discipline *</label><select id="drawingDiscipline"><option value="">Select</option><option>Architectural</option><option>Structural</option><option>MEP</option><option>Electrical</option><option>Plumbing</option><option>HVAC</option><option>Fire Fighting</option><option>Landscape</option><option>Interior</option><option>Shop Drawing</option><option>As-Built</option><option>Other</option></select></div>
-      <div><label>Status *</label><select id="drawingStatus"><option value="">Select</option><option>Approved</option><option>Approved with Comments</option><option>Under Review</option><option>Superseded</option><option>For Construction</option><option>As-Built</option></select></div>
+      <div><label>Status *</label><select id="drawingStatus"><option value="">Select</option><option>Approved</option><option>Approved with Comments</option><option>Under Review</option><option>Superseded</option><option>For Information</option><option>For Construction</option><option>As-Built</option></select></div>
       <div><label>Date Issued *</label><input id="drawingDate" type="date"></div><div><label>Consultant / Issuer</label><input id="drawingConsultant"></div>
       <div class="full-width"><label>Google Drive / PDF Link *</label><input id="drawingUrl" type="url" placeholder="https://..."></div>
       <div class="full-width"><label>Remarks</label><textarea id="drawingRemarks"></textarea></div>
-    </div><div class="decision-actions"><button class="decision-save" onclick="saveDrawing()">Save Drawing</button></div><div id="drawingMessage" class="admin-message"></div></div>
+    </div><div class="decision-actions"><button id="drawingSaveButton" class="decision-save" onclick="saveDrawing()">Save Drawing</button></div><div id="drawingMessage" class="admin-message"></div></div>
   </div>
 </div>
 
@@ -4298,29 +4298,190 @@ function saveOwnPasswordChange(){
 }
 
 
-/* ===================== DRAWINGS REGISTER V1 ===================== */
-const DRAWINGS_KEY="UNISON_REPORTING_DRAWINGS_V1";
+/* ===================== DRAWINGS REGISTER V2 – SHARED BACKEND ===================== */
 let drawingsData=[];
-function getStoredDrawings(){try{return JSON.parse(localStorage.getItem(DRAWINGS_KEY)||"[]")}catch(e){return []}}
-function saveStoredDrawings(){localStorage.setItem(DRAWINGS_KEY,JSON.stringify(drawingsData||[]))}
-function drawingUnique(key){return [...new Set((drawingsData||[]).map(x=>String(x[key]||"").trim()).filter(Boolean))].sort()}
-function fillSimpleSelect(id,vals,label){const el=document.getElementById(id),cur=el.value;el.innerHTML='<option value="">'+label+'</option>';vals.forEach(v=>addOption(el,v));if(vals.includes(cur))el.value=cur}
-function openDrawings(){hideAppPages();document.getElementById("drawingsPage").style.display="block";drawingsData=getStoredDrawings();fillDrawingFilters();renderDrawings()}
-function fillDrawingFilters(){fillSimpleSelect("drawingProjectFilter",drawingUnique("project"),"All Projects");fillSimpleSelect("drawingAreaFilter",drawingUnique("area"),"All Towers / Areas");fillSimpleSelect("drawingDisciplineFilter",drawingUnique("discipline"),"All Disciplines")}
-function resetDrawingFilters(){["drawingSearch","drawingProjectFilter","drawingAreaFilter","drawingDisciplineFilter","drawingStatusFilter"].forEach(id=>document.getElementById(id).value="");renderDrawings()}
+
+function drawingUnique(key){
+  return [...new Set((drawingsData||[]).map(x=>String(x[key]||"").trim()).filter(Boolean))].sort();
+}
+function fillSimpleSelect(id,vals,label){
+  const el=document.getElementById(id),cur=el.value;
+  el.innerHTML='<option value="">'+label+'</option>';
+  vals.forEach(v=>addOption(el,v));
+  if(vals.includes(cur))el.value=cur;
+}
+function loadDrawings(){
+  const c=document.getElementById("drawingsContainer");
+  c.className="reports-loading";
+  c.innerText="Loading shared drawing register...";
+
+  google.script.run
+    .withSuccessHandler(function(rows){
+      drawingsData=rows||[];
+      fillDrawingFilters();
+      renderDrawings();
+    })
+    .withFailureHandler(function(e){
+      c.className="empty-state";
+      c.innerText="Unable to load Drawings Register: "+e.message;
+    })
+    .getDrawings(loggedInUser.userId,loggedInUser.username);
+}
+function openDrawings(){
+  hideAppPages();
+  document.getElementById("drawingsPage").style.display="block";
+  loadDrawings();
+}
+function fillDrawingFilters(){
+  fillSimpleSelect("drawingProjectFilter",drawingUnique("project"),"All Projects");
+  fillSimpleSelect("drawingAreaFilter",drawingUnique("area"),"All Towers / Areas");
+  fillSimpleSelect("drawingDisciplineFilter",drawingUnique("discipline"),"All Disciplines");
+}
+function resetDrawingFilters(){
+  ["drawingSearch","drawingProjectFilter","drawingAreaFilter","drawingDisciplineFilter","drawingStatusFilter"].forEach(id=>document.getElementById(id).value="");
+  renderDrawings();
+}
 function drawingStatusClass(v){return String(v||"").toLowerCase().replace(/\s+/g,"-")}
 function renderDrawings(){
-  const q=(document.getElementById("drawingSearch").value||"").toLowerCase().trim(),p=document.getElementById("drawingProjectFilter").value,a=document.getElementById("drawingAreaFilter").value,d=document.getElementById("drawingDisciplineFilter").value,st=document.getElementById("drawingStatusFilter").value;
-  const rows=(drawingsData||[]).filter(r=>{const txt=[r.no,r.title,r.discipline,r.consultant,r.revision].join(" ").toLowerCase();return(!q||txt.includes(q))&&(!p||r.project===p)&&(!a||r.area===a)&&(!d||r.discipline===d)&&(!st||r.status===st)}).sort((x,y)=>String(y.date||"").localeCompare(String(x.date||"")));
-  document.getElementById("drawingCount").innerText=rows.length+" Drawing"+(rows.length===1?"":"s");document.getElementById("drawingLatestCount").innerText=rows.filter(r=>r.status!=="Superseded").length+" Current / Latest";
-  const c=document.getElementById("drawingsContainer");if(!rows.length){c.className="empty-state";c.innerText="No drawings found. Use + Add Drawing to start the register.";return;}
-  c.className="drawings-table-wrap";let h='<table class="drawings-table"><thead><tr><th>Drawing No.</th><th>Title</th><th>Project / Area</th><th>Discipline</th><th>Rev.</th><th>Status</th><th>Date</th><th>Consultant</th><th>File</th><th></th></tr></thead><tbody>';
-  rows.forEach(r=>{h+='<tr><td><b>'+escapeHtml(r.no)+'</b></td><td>'+escapeHtml(r.title)+'</td><td>'+escapeHtml([r.project,r.area].filter(Boolean).join(" / "))+'</td><td>'+escapeHtml(r.discipline)+'</td><td><b>'+escapeHtml(r.revision)+'</b></td><td><span class="drawing-status '+drawingStatusClass(r.status)+'">'+escapeHtml(r.status)+'</span></td><td>'+escapeHtml(r.date)+'</td><td>'+escapeHtml(r.consultant||"-")+'</td><td><a class="drawing-link" href="'+escapeHtml(r.url)+'" target="_blank" rel="noopener">View PDF</a></td><td><button class="drawing-delete" data-id="'+escapeHtml(r.id)+'" onclick="deleteDrawing(this.dataset.id)">Delete</button></td></tr>';});h+='</tbody></table>';c.innerHTML=h;
+  const q=(document.getElementById("drawingSearch").value||"").toLowerCase().trim();
+  const p=document.getElementById("drawingProjectFilter").value;
+  const a=document.getElementById("drawingAreaFilter").value;
+  const d=document.getElementById("drawingDisciplineFilter").value;
+  const st=document.getElementById("drawingStatusFilter").value;
+
+  const rows=(drawingsData||[]).filter(r=>{
+    const txt=[r.drawingNo,r.title,r.discipline,r.consultant,r.revision,r.remarks].join(" ").toLowerCase();
+    return (!q||txt.includes(q))&&(!p||r.project===p)&&(!a||r.area===a)&&(!d||r.discipline===d)&&(!st||r.status===st);
+  }).sort((x,y)=>String(y.issueDate||"").localeCompare(String(x.issueDate||"")));
+
+  document.getElementById("drawingCount").innerText=rows.length+" Drawing"+(rows.length===1?"":"s");
+  document.getElementById("drawingLatestCount").innerText=rows.filter(r=>r.status!=="Superseded").length+" Current / Latest";
+
+  const c=document.getElementById("drawingsContainer");
+  if(!rows.length){
+    c.className="empty-state";
+    c.innerText="No drawings found. Use + Add Drawing to start the shared register.";
+    return;
+  }
+
+  c.className="drawings-table-wrap";
+  let h='<table class="drawings-table"><thead><tr><th>Drawing No.</th><th>Title</th><th>Project / Area</th><th>Discipline</th><th>Rev.</th><th>Status</th><th>Date</th><th>Consultant</th><th>File</th><th></th></tr></thead><tbody>';
+  rows.forEach(r=>{
+    h+='<tr>'+
+      '<td><b>'+escapeHtml(r.drawingNo)+'</b></td>'+
+      '<td>'+escapeHtml(r.title)+'</td>'+
+      '<td>'+escapeHtml([r.project,r.area].filter(Boolean).join(" / "))+'</td>'+
+      '<td>'+escapeHtml(r.discipline)+'</td>'+
+      '<td><b>'+escapeHtml(r.revision)+'</b></td>'+
+      '<td><span class="drawing-status '+drawingStatusClass(r.status)+'">'+escapeHtml(r.status)+'</span></td>'+
+      '<td>'+escapeHtml(r.issueDate)+'</td>'+
+      '<td>'+escapeHtml(r.consultant||"-")+'</td>'+
+      '<td><a class="drawing-link" href="'+escapeHtml(r.link)+'" target="_blank" rel="noopener">View PDF</a></td>'+
+      '<td><button class="view-btn" data-id="'+escapeHtml(r.drawingId)+'" onclick="editDrawing(this.dataset.id)">Edit</button></td>'+
+      '</tr>';
+  });
+  h+='</tbody></table>';
+  c.innerHTML=h;
 }
-function openDrawingModal(){["drawingProject","drawingArea","drawingNo","drawingRevision","drawingTitle","drawingDiscipline","drawingStatus","drawingDate","drawingConsultant","drawingUrl","drawingRemarks"].forEach(id=>{const e=document.getElementById(id);if(e)e.value=""});document.getElementById("drawingDate").value=localToday();document.getElementById("drawingMessage").innerText="";document.getElementById("drawingModal").style.display="block";document.body.style.overflow="hidden"}
-function closeDrawingModal(e){if(e&&e.target!==document.getElementById("drawingModal"))return;document.getElementById("drawingModal").style.display="none";document.body.style.overflow=""}
-function saveDrawing(){const rec={id:"DRW-"+Date.now(),project:value("drawingProject"),area:value("drawingArea"),no:value("drawingNo"),revision:value("drawingRevision"),title:value("drawingTitle"),discipline:value("drawingDiscipline"),status:value("drawingStatus"),date:value("drawingDate"),consultant:value("drawingConsultant"),url:value("drawingUrl"),remarks:value("drawingRemarks"),createdBy:loggedInUser?loggedInUser.username:"",createdAt:new Date().toISOString()};const required=["project","area","no","revision","title","discipline","status","date","url"];if(required.some(k=>!String(rec[k]||"").trim())){const m=document.getElementById("drawingMessage");m.style.color="#dc2626";m.innerText="Please complete all mandatory drawing fields.";return}try{new URL(rec.url)}catch(e){const m=document.getElementById("drawingMessage");m.style.color="#dc2626";m.innerText="Please enter a valid Google Drive / PDF URL.";return}drawingsData=getStoredDrawings();drawingsData.push(rec);saveStoredDrawings();closeDrawingModal();fillDrawingFilters();renderDrawings()}
-function deleteDrawing(id){if(!confirm("Delete this drawing register entry from this device?"))return;drawingsData=getStoredDrawings().filter(x=>String(x.id)!==String(id));saveStoredDrawings();fillDrawingFilters();renderDrawings()}
+function clearDrawingForm(){
+  ["drawingId","drawingProject","drawingArea","drawingNo","drawingRevision","drawingTitle","drawingDiscipline","drawingStatus","drawingDate","drawingConsultant","drawingUrl","drawingRemarks"].forEach(id=>{
+    const e=document.getElementById(id);if(e)e.value="";
+  });
+}
+function openDrawingModal(){
+  clearDrawingForm();
+  document.getElementById("drawingModalTitle").innerText="Add Drawing";
+  document.getElementById("drawingSaveButton").innerText="Save Drawing";
+  document.getElementById("drawingDate").value=localToday();
+  document.getElementById("drawingMessage").innerText="";
+  document.getElementById("drawingModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+function editDrawing(id){
+  const r=(drawingsData||[]).find(x=>String(x.drawingId)===String(id));
+  if(!r)return;
+
+  document.getElementById("drawingId").value=r.drawingId||"";
+  document.getElementById("drawingProject").value=r.project||"";
+  document.getElementById("drawingArea").value=r.area||"";
+  document.getElementById("drawingNo").value=r.drawingNo||"";
+  document.getElementById("drawingRevision").value=r.revision||"";
+  document.getElementById("drawingTitle").value=r.title||"";
+  document.getElementById("drawingDiscipline").value=r.discipline||"";
+  document.getElementById("drawingStatus").value=r.status||"";
+  document.getElementById("drawingDate").value=r.issueDate||"";
+  document.getElementById("drawingConsultant").value=r.consultant||"";
+  document.getElementById("drawingUrl").value=r.link||"";
+  document.getElementById("drawingRemarks").value=r.remarks||"";
+
+  document.getElementById("drawingModalTitle").innerText="Edit Drawing";
+  document.getElementById("drawingSaveButton").innerText="Update Drawing";
+  document.getElementById("drawingMessage").innerText="";
+  document.getElementById("drawingModal").style.display="block";
+  document.body.style.overflow="hidden";
+}
+function closeDrawingModal(e){
+  if(e&&e.target!==document.getElementById("drawingModal"))return;
+  document.getElementById("drawingModal").style.display="none";
+  document.body.style.overflow="";
+}
+function saveDrawing(){
+  const rec={
+    drawingId:value("drawingId"),
+    project:value("drawingProject"),
+    area:value("drawingArea"),
+    drawingNo:value("drawingNo"),
+    revision:value("drawingRevision"),
+    title:value("drawingTitle"),
+    discipline:value("drawingDiscipline"),
+    status:value("drawingStatus"),
+    issueDate:value("drawingDate"),
+    consultant:value("drawingConsultant"),
+    link:value("drawingUrl"),
+    remarks:value("drawingRemarks"),
+    actorUserId:loggedInUser?loggedInUser.userId:"",
+    actorUsername:loggedInUser?loggedInUser.username:""
+  };
+
+  const required=["project","area","drawingNo","revision","title","discipline","status","issueDate","link"];
+  const m=document.getElementById("drawingMessage");
+  const btn=document.getElementById("drawingSaveButton");
+
+  if(required.some(k=>!String(rec[k]||"").trim())){
+    m.style.color="#dc2626";
+    m.innerText="Please complete all mandatory drawing fields.";
+    return;
+  }
+
+  try{new URL(rec.link)}
+  catch(e){
+    m.style.color="#dc2626";
+    m.innerText="Please enter a valid Google Drive / PDF URL.";
+    return;
+  }
+
+  btn.disabled=true;
+  m.style.color="#475569";
+  m.innerText=rec.drawingId?"Updating drawing...":"Saving drawing...";
+
+  google.script.run
+    .withSuccessHandler(function(r){
+      btn.disabled=false;
+      m.style.color="#16a34a";
+      m.innerText=r.message||"Drawing saved successfully.";
+      setTimeout(function(){
+        closeDrawingModal();
+        loadDrawings();
+      },500);
+    })
+    .withFailureHandler(function(e){
+      btn.disabled=false;
+      m.style.color="#dc2626";
+      m.innerText=e.message;
+    })
+    .saveDrawing(rec);
+}
+
 function openPlaceholderModule(icon,title,text){hideAppPages();document.getElementById("placeholderModulePage").style.display="block";document.getElementById("placeholderModuleHeader").innerText=icon+" "+title;document.getElementById("placeholderModuleIcon").innerText=icon;document.getElementById("placeholderModuleTitle").innerText=title;document.getElementById("placeholderModuleText").innerText=text}
 
 function logout(){loggedInUser=null;if(window.LCRG_API&&LCRG_API.clearToken)LCRG_API.clearToken();location.reload()}
