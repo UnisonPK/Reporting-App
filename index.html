@@ -5710,16 +5710,44 @@ function isCashFlowOverallImportValue(v){
     "overall tower","overall towers","overall all"
   ].includes(key);
 }
-function normalizeCashFlowImportTower(v,defaultTower){
+function normalizeCashFlowImportTower(v,defaultTower,project){
   const raw=cashNorm(v);
-  /* User rule:
-     All and Overall are the same scope.
-     If Excel explicitly says All/Overall, preserve that meaning as
-     Overall / All Towers — never force it to Tower I/L1/L2/etc.
-     Default Tower is used only when the workbook Tower cell is blank. */
+  const fallback=cashNorm(defaultTower);
+
   if(isCashFlowOverallImportValue(raw))return "Overall / All Towers";
-  if(!raw)return cashNorm(defaultTower)||"Overall / All Towers";
-  return raw;
+
+  const source=raw||fallback;
+  if(!source)return "Overall / All Towers";
+
+  const key=cashCanon(source);
+
+  const aliasMap={
+    "i":"Tower I",
+    "tower i":"Tower I",
+    "l1":"L1",
+    "l 1":"L1",
+    "tower l1":"L1",
+    "l2":"L2",
+    "l 2":"L2",
+    "tower l2":"L2",
+    "1":"Tower 1",
+    "tower 1":"Tower 1",
+    "2":"Tower 2",
+    "tower 2":"Tower 2",
+    "gf":"Ground Floor",
+    "ground floor":"Ground Floor"
+  };
+
+  const candidate=aliasMap[key]||source;
+
+  /* Use master-data spelling whenever possible. */
+  const projectKey=cashCanon(project);
+  const found=(masterData&&masterData.towers||[]).find(x=>
+    cashCanon(x["Project"])===projectKey &&
+    cashCanon(x["Tower / Block"])===cashCanon(candidate)
+  );
+
+  return found?cashNorm(found["Tower / Block"]):candidate;
 }
 
 const CASH_ALIASES={
@@ -5841,13 +5869,23 @@ function previewCashFlowExcel(){
       const sourceProject=map.project>=0?cashNorm(row[map.project]):"";
       const sourceTower=map.tower>=0?cashNorm(row[map.tower]):"";
       const project=normalizeCashFlowImportProject(sourceProject||defaultProject);
-      const tower=normalizeCashFlowImportTower(sourceTower,defaultTower);
+      const tower=normalizeCashFlowImportTower(sourceTower,defaultTower,project);
 
       if(!serial && !activity && cashNorm(initial)==="" && cashNorm(awarded)==="" && cashNorm(spent)==="" && cashNorm(pending)==="" && cashNorm(actual)==="" && !remarks)continue;
 
       const errors=[];
       if(!project)errors.push("Project required");
       if(!tower)errors.push("Tower required");
+
+      if(
+        tower!=="Overall / All Towers" &&
+        !(masterData&&masterData.towers||[]).some(x=>
+          cashCanon(x["Project"])===cashCanon(project) &&
+          cashCanon(x["Tower / Block"])===cashCanon(tower)
+        )
+      ){
+        errors.push("Tower / Scope not found in master data");
+      }
 
       const initialN=cashNum(initial),awardedN=cashNum(awarded),spentN=cashNum(spent),pendingN=cashNum(pending),actualN=cashPercent(actual);
       if(initialN<0||awardedN<0||spentN<0||pendingN<0)errors.push("Amounts cannot be negative");
@@ -5882,7 +5920,7 @@ function previewCashFlowExcel(){
     h+='</tbody></table></div>';
     document.getElementById("cashFlowImportPreview").innerHTML=h;
     status.style.color=valid.length?"#166534":"#dc2626";
-    status.innerText=valid.length+" valid row(s) ready from worksheet “"+sheetName+"”.";
+    status.innerText=valid.length+" valid row(s) ready from worksheet “"+sheetName+"”. Tower aliases were normalized to master data.";
     document.getElementById("cashFlowImportNowButton").disabled=valid.length===0;
   }catch(e){
     cashFlowImportRows=[];
