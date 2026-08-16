@@ -798,7 +798,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
 /* ===== Cash Flow V1.0 ===== */
 #cashFlowPage{display:none}
-.cashflow-toolbar{display:grid;grid-template-columns:1.4fr 1fr auto;gap:10px;margin:14px 0}
+.cashflow-toolbar{display:grid;grid-template-columns:1.4fr 1fr 1fr auto;gap:10px;margin:14px 0}
 .cashflow-kpis{display:grid;grid-template-columns:repeat(7,minmax(125px,1fr));gap:10px;margin:14px 0 18px}
 .cashflow-kpi{background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:14px;box-shadow:0 3px 12px rgba(15,23,42,.04)}
 .cashflow-kpi-label{font-size:10px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.03em}
@@ -906,7 +906,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
         </div>
       </div>
 
-      <div class="module-note"><b>Cash Flow V1.0:</b> Actual Balance = Awarded Value − Actual Spending. Financial Progress = Actual Spending ÷ Awarded Value × 100. Pending Approval remains separate.</div>
+      <div class="module-note"><b>Cash Flow V1.0:</b> Actual Balance = Awarded Value − Actual Spending. Financial Progress = Actual Spending ÷ Awarded Value × 100. Pending Approval remains separate. <b>Smart Import is duplicate-safe:</b> re-importing the same Project / Tower / S.No. / Activity updates the existing line instead of creating another copy.</div>
 
       <div class="cashflow-kpis">
         <div class="cashflow-kpi"><div class="cashflow-kpi-label">Initial Budget</div><div id="cashKpiInitial" class="cashflow-kpi-value">PKR 0</div><div class="cashflow-kpi-sub">Initial quotation</div></div>
@@ -920,7 +920,14 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
       <div class="cashflow-toolbar">
         <select id="cashProjectFilter" onchange="updateCashFlowTowerFilter();renderCashFlow()"><option value="">All Projects</option></select>
-        <select id="cashTowerFilter" onchange="renderCashFlow()"><option value="">All Towers</option></select>
+        <select id="cashTowerFilter" onchange="renderCashFlow()"><option value="">All Towers / Scopes</option></select>
+        <select id="cashStatusFilter" onchange="renderCashFlow()">
+          <option value="">All Financial Status</option>
+          <option value="awarded">Awarded / Budgeted</option>
+          <option value="spent">Actual Spending</option>
+          <option value="balance">Actual Balance</option>
+          <option value="pending">Pending Approval</option>
+        </select>
         <button class="reset-filter-btn" onclick="resetCashFlowFilters()">Reset</button>
       </div>
 
@@ -5527,13 +5534,41 @@ function resetCashFlowFilters(){
   document.getElementById("cashProjectFilter").value="";
   updateCashFlowTowerFilter();
   document.getElementById("cashTowerFilter").value="";
+  document.getElementById("cashStatusFilter").value="";
   renderCashFlow();
 }
 
 function getFilteredCashFlowRows(){
   const p=document.getElementById("cashProjectFilter").value;
   const t=document.getElementById("cashTowerFilter").value;
-  return (cashFlowData||[]).filter(r=>(!p||r.project===p)&&(!t||r.tower===t));
+  const status=document.getElementById("cashStatusFilter").value;
+
+  const unique=new Map();
+
+  (cashFlowData||[]).forEach(r=>{
+    const key=[
+      String(r.serialNo||"").trim().toLowerCase(),
+      String(r.project||"").trim().toLowerCase(),
+      String(r.tower||"").trim().toLowerCase(),
+      String(r.activity||"").trim().toLowerCase()
+    ].join("||");
+
+    /* If duplicate rows somehow exist in the sheet/API response,
+       display only one logical Cash Flow line. */
+    unique.set(key,r);
+  });
+
+  return Array.from(unique.values()).filter(r=>{
+    if(p&&r.project!==p)return false;
+    if(t&&r.tower!==t)return false;
+
+    if(status==="awarded" && cashNum(r.awardedValue)<=0)return false;
+    if(status==="spent" && cashNum(r.actualSpending)<=0)return false;
+    if(status==="balance" && cashNum(r.actualBalance)<=0)return false;
+    if(status==="pending" && cashNum(r.pendingApproval)<=0)return false;
+
+    return true;
+  });
 }
 
 function renderCashFlow(){
@@ -5555,7 +5590,10 @@ function renderCashFlow(){
   document.getElementById("cashKpiPending").innerText=formatCashPKR(pending);
   document.getElementById("cashKpiActualProgress").innerText=(Math.round(actualWeighted*10)/10)+"%";
   document.getElementById("cashKpiFinancialProgress").innerText=(Math.round(financial*10)/10)+"%";
-  document.getElementById("cashFlowCount").innerText=rows.length+" Record"+(rows.length===1?"":"s");
+  const activeStatus=document.getElementById("cashStatusFilter").value;
+  document.getElementById("cashFlowCount").innerText=
+    rows.length+" Record"+(rows.length===1?"":"")+
+    (activeStatus?" • filtered by financial status":"");
 
   const c=document.getElementById("cashFlowContainer");
   if(!rows.length){
