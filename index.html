@@ -1929,7 +1929,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 <script src="api-shim.js?v=20260816-7"></script>
 <!-- BOQ Smart Import V2 embedded -->
 <script>
-/* Reporting App - BOQ Smart Import V2.1 - Code / QTY row selection */
+/* Reporting App - BOQ Smart Import V2.2 - Code/QTY selection + 2-decimal Rate/Amount */
 (function(){
   "use strict";
 
@@ -2074,14 +2074,18 @@ label{color:#344054;font-size:13px;margin-top:14px}
       if(!codeOnlyRow&&(!Number.isFinite(rate)||rate<0))errors.push("Rate must be a non-negative number");
       if(r.project&&!projectExists(r.project))errors.push("Invalid Project");if(r.project&&r.tower&&!towerExists(r.project,r.tower))errors.push("Invalid Tower/Block for Project");if(r.project&&r.tower&&r.floor&&!floorExists(r.project,r.tower,r.floor))errors.push("Invalid Floor/Area");
       const key=[r.project,r.tower,r.floor,r.itemNo].map(x=>norm(x).toLowerCase()).join("||");if(seen.has(key))errors.push("Duplicate within Excel file");seen.add(key);
-      r.contractQty=Number.isFinite(qty)?qty:0;r.rate=Number.isFinite(rate)?rate:0;r.amount=Math.round(r.contractQty*r.rate*100)/100;r._errors=errors;return r;});
+      r.contractQty=Number.isFinite(qty)?qty:0;
+      r.rate=Number.isFinite(rate)?Math.round(rate*100)/100:0;
+      r.amount=Math.round(r.contractQty*r.rate*100)/100;
+      r._errors=errors;
+      return r;});
   }
 
   function renderPreview(){
     const valid=importRows.filter(r=>!r._errors.length).length,invalid=importRows.length-valid,total=importRows.reduce((s,r)=>s+(r._errors.length?0:r.amount),0);
-    document.getElementById("boqBulkSummary").innerHTML=`<span class="boq-import-chip">Rows: ${importRows.length}</span><span class="boq-import-chip">Valid: ${valid}</span><span class="boq-import-chip">Errors: ${invalid}</span><span class="boq-import-chip">Valid Amount: PKR ${total.toLocaleString(undefined,{maximumFractionDigits:2})}</span>`;
+    document.getElementById("boqBulkSummary").innerHTML=`<span class="boq-import-chip">Rows: ${importRows.length}</span><span class="boq-import-chip">Valid: ${valid}</span><span class="boq-import-chip">Errors: ${invalid}</span><span class="boq-import-chip">Valid Amount: PKR ${total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</span>`;
     let h='<div class="boq-import-table-wrap"><table class="boq-import-table"><thead><tr><th>Excel Row</th><th>Code</th><th>Description</th><th>Tower</th><th>Floor</th><th>Qty</th><th>Unit</th><th>Rate</th><th>Amount</th><th>Project</th><th>Package</th><th>Validation</th></tr></thead><tbody>';
-    importRows.forEach(r=>{h+=`<tr class="${r._errors.length?"boq-import-error":"boq-import-valid"}"><td>${r._row}</td><td><b>${safe(r.itemNo)}</b></td><td>${safe(r.description)}</td><td>${safe(r.tower)}</td><td>${safe(r.floor)}</td><td>${r.contractQty}</td><td>${safe(r.unit)}</td><td>${r.rate}</td><td>${r.amount.toLocaleString()}</td><td>${safe(r.project)}</td><td>${safe(r.workPackage)}</td><td>${r._errors.length?safe(r._errors.join("; ")):"Ready"}</td></tr>`;});
+    importRows.forEach(r=>{h+=`<tr class="${r._errors.length?"boq-import-error":"boq-import-valid"}"><td>${r._row}</td><td><b>${safe(r.itemNo)}</b></td><td>${safe(r.description)}</td><td>${safe(r.tower)}</td><td>${safe(r.floor)}</td><td>${r.contractQty}</td><td>${safe(r.unit)}</td><td>${Number(r.rate||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td>${Number(r.amount||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td>${safe(r.project)}</td><td>${safe(r.workPackage)}</td><td>${r._errors.length?safe(r._errors.join("; ")):"Ready"}</td></tr>`;});
     document.getElementById("boqBulkPreview").innerHTML=h+'</tbody></table></div>';
   }
 
