@@ -759,6 +759,12 @@ label{color:#344054;font-size:13px;margin-top:14px}
 @media(max-width:1000px){.dashboard-section .menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.drawings-toolbar{grid-template-columns:1fr 1fr}.drawings-toolbar .drawing-search{grid-column:1/-1}.drawings-toolbar .reset-filter-btn{grid-column:1/-1}}
 @media(max-width:650px){.dashboard-section{margin:18px 0 22px}.dashboard-section .menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-section-title{font-size:13px}.drawings-toolbar{grid-template-columns:1fr}.drawings-toolbar .drawing-search,.drawings-toolbar .reset-filter-btn{grid-column:auto}.drawing-form-grid{grid-template-columns:1fr}.drawing-form-grid .full-width{grid-column:auto}}
 
+
+.drawing-existing-link{display:inline-block;padding:8px 10px;border-radius:8px;background:#eff6ff;color:#1d4ed8;text-decoration:none;font-size:12px;font-weight:800}
+.drawing-file-selected{margin-top:6px;font-size:12px;color:#166534;font-weight:700}
+@media(max-width:1050px){.drawings-toolbar{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.drawings-toolbar{grid-template-columns:1fr}}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div id="dashboardManagementAttention" class="dashboard-management-attention" style="display:none"><div class="dashboard-attention-head"><div><b>🚨 Management Attention</b><span>Today's constraints, holds and rectification items</span></div><button onclick="openDailySummary()">View Daily Summary</button></div><div id="dashboardAttentionList" class="dashboard-attention-list"><div class="summary-empty">Loading...</div></div></div><div class="dashboard-section">
@@ -802,11 +808,12 @@ label{color:#344054;font-size:13px;margin-top:14px}
   <div class="header"><div><div class="app-name">📐 Drawings Register</div><div class="app-subtitle">Controlled drawing register, revisions, status and document links</div></div><button class="back-button" onclick="showDashboard()">Back</button></div>
   <div class="container"><div class="form-card">
     <div class="admin-toolbar"><div><div class="step-title">Project Drawings</div><div class="step-subtitle">Search the current register and open the latest linked drawing file.</div></div><button class="admin-primary-btn" onclick="openDrawingModal()">+ Add Drawing</button></div>
-    <div class="module-note"><b>Live Shared Register:</b> Drawings are now stored centrally in Google Sheets. The drawing/PDF file remains in Google Drive and the register stores its controlled link, revision, status and issue information for all logged-in users.</div>
+    <div class="module-note"><b>Live Shared Register:</b> Project, Tower and Floor are selected from existing master data. Drawing PDFs upload directly to Google Drive and the shared register stores the controlled revision, status and file link.</div>
     <div class="drawings-toolbar">
       <input id="drawingSearch" class="drawing-search" placeholder="Search Drawing No., title, discipline or consultant..." oninput="renderDrawings()">
-      <select id="drawingProjectFilter" onchange="renderDrawings()"><option value="">All Projects</option></select>
-      <select id="drawingAreaFilter" onchange="renderDrawings()"><option value="">All Towers / Areas</option></select>
+      <select id="drawingProjectFilter" onchange="updateDrawingFilterTowers();renderDrawings()"><option value="">All Projects</option></select>
+      <select id="drawingTowerFilter" onchange="updateDrawingFilterFloors();renderDrawings()"><option value="">All Towers / Blocks</option></select>
+      <select id="drawingFloorFilter" onchange="renderDrawings()"><option value="">All Floors / Areas</option></select>
       <select id="drawingDisciplineFilter" onchange="renderDrawings()"><option value="">All Disciplines</option></select>
       <select id="drawingStatusFilter" onchange="renderDrawings()"><option value="">All Statuses</option><option>Approved</option><option>Approved with Comments</option><option>Under Review</option><option>Superseded</option><option>For Information</option><option>For Construction</option><option>As-Built</option></select>
       <button class="reset-filter-btn" onclick="resetDrawingFilters()">Reset</button>
@@ -818,15 +825,22 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
 <div id="drawingModal" class="admin-modal" onclick="closeDrawingModal(event)">
   <div class="admin-modal-card" style="max-width:760px" onclick="event.stopPropagation()">
-    <div class="admin-modal-head"><div><div id="drawingModalTitle" class="admin-modal-title">Add Drawing</div><div class="app-subtitle">Store the register information and the Google Drive / PDF link.</div></div><button class="modal-close" onclick="closeDrawingModal()">Close</button></div>
+    <div class="admin-modal-head"><div><div id="drawingModalTitle" class="admin-modal-title">Add Drawing</div><div class="app-subtitle">Select the project hierarchy from master data and upload the drawing PDF directly to Google Drive.</div></div><button class="modal-close" onclick="closeDrawingModal()">Close</button></div>
     <div class="admin-modal-body"><input id="drawingId" type="hidden"><div class="drawing-form-grid">
-      <div><label>Project *</label><input id="drawingProject"></div><div><label>Tower / Area *</label><input id="drawingArea"></div>
+      <div><label>Project *</label><select id="drawingProject" onchange="updateDrawingTowers()"><option value="">Select Project</option></select></div>
+      <div><label>Tower / Block *</label><select id="drawingTower" onchange="updateDrawingFloors()"><option value="">Select Tower / Block</option></select></div>
+      <div><label>Floor / Area *</label><select id="drawingFloor"><option value="">Select Floor / Area</option></select></div>
       <div><label>Drawing No. *</label><input id="drawingNo"></div><div><label>Revision *</label><input id="drawingRevision" placeholder="e.g. R0, R1, Rev-A"></div>
       <div class="full-width"><label>Drawing Title *</label><input id="drawingTitle"></div>
       <div><label>Discipline *</label><select id="drawingDiscipline"><option value="">Select</option><option>Architectural</option><option>Structural</option><option>MEP</option><option>Electrical</option><option>Plumbing</option><option>HVAC</option><option>Fire Fighting</option><option>Landscape</option><option>Interior</option><option>Shop Drawing</option><option>As-Built</option><option>Other</option></select></div>
       <div><label>Status *</label><select id="drawingStatus"><option value="">Select</option><option>Approved</option><option>Approved with Comments</option><option>Under Review</option><option>Superseded</option><option>For Information</option><option>For Construction</option><option>As-Built</option></select></div>
       <div><label>Date Issued *</label><input id="drawingDate" type="date"></div><div><label>Consultant / Issuer</label><input id="drawingConsultant"></div>
-      <div class="full-width"><label>Google Drive / PDF Link *</label><input id="drawingUrl" type="url" placeholder="https://..."></div>
+      <div class="full-width">
+        <label>Drawing PDF <span id="drawingPdfReq">*</span></label>
+        <input id="drawingPdf" type="file" accept="application/pdf,.pdf" onchange="updateDrawingPdfName()">
+        <div id="drawingPdfNote" class="upload-note">Select the PDF file. It will upload automatically to Google Drive when you save.</div>
+        <div id="drawingExistingFile" style="display:none;margin-top:8px"></div>
+      </div>
       <div class="full-width"><label>Remarks</label><textarea id="drawingRemarks"></textarea></div>
     </div><div class="decision-actions"><button id="drawingSaveButton" class="decision-save" onclick="saveDrawing()">Save Drawing</button></div><div id="drawingMessage" class="admin-message"></div></div>
   </div>
@@ -4298,7 +4312,7 @@ function saveOwnPasswordChange(){
 }
 
 
-/* ===================== DRAWINGS REGISTER V2 – SHARED BACKEND ===================== */
+/* ===================== DRAWINGS REGISTER V3 – MASTER DATA + PDF UPLOAD ===================== */
 let drawingsData=[];
 
 function drawingUnique(key){
@@ -4309,6 +4323,22 @@ function fillSimpleSelect(id,vals,label){
   el.innerHTML='<option value="">'+label+'</option>';
   vals.forEach(v=>addOption(el,v));
   if(vals.includes(cur))el.value=cur;
+}
+function ensureDrawingMasterData(done){
+  if(masterData){
+    if(done)done();
+    return;
+  }
+  google.script.run
+    .withSuccessHandler(function(d){
+      masterData=d;
+      if(done)done();
+    })
+    .withFailureHandler(function(e){
+      const c=document.getElementById("drawingsContainer");
+      if(c){c.className="empty-state";c.innerText="Unable to load Project / Tower / Floor master data: "+e.message;}
+    })
+    .getMasterData();
 }
 function loadDrawings(){
   const c=document.getElementById("drawingsContainer");
@@ -4330,28 +4360,52 @@ function loadDrawings(){
 function openDrawings(){
   hideAppPages();
   document.getElementById("drawingsPage").style.display="block";
-  loadDrawings();
+  ensureDrawingMasterData(function(){
+    loadDrawings();
+  });
 }
 function fillDrawingFilters(){
-  fillSimpleSelect("drawingProjectFilter",drawingUnique("project"),"All Projects");
-  fillSimpleSelect("drawingAreaFilter",drawingUnique("area"),"All Towers / Areas");
+  const projects=(masterData&&masterData.projects||[]).map(x=>x["Project Name"]).filter(Boolean);
+  fillSimpleSelect("drawingProjectFilter",[...new Set(projects)].sort(),"All Projects");
+  updateDrawingFilterTowers();
   fillSimpleSelect("drawingDisciplineFilter",drawingUnique("discipline"),"All Disciplines");
 }
+function updateDrawingFilterTowers(){
+  const p=document.getElementById("drawingProjectFilter").value;
+  let towers=(masterData&&masterData.towers||[]);
+  if(p)towers=towers.filter(x=>String(x["Project"]||"")===p);
+  const vals=[...new Set(towers.map(x=>x["Tower / Block"]).filter(Boolean))].sort();
+  fillSimpleSelect("drawingTowerFilter",vals,"All Towers / Blocks");
+  updateDrawingFilterFloors();
+}
+function updateDrawingFilterFloors(){
+  const p=document.getElementById("drawingProjectFilter").value;
+  const t=document.getElementById("drawingTowerFilter").value;
+  let floors=(masterData&&masterData.floors||[]);
+  if(t)floors=floors.filter(x=>String(x["Tower / Block"]||"")===t);
+  if(p)floors=floors.filter(x=>!x["Project"]||String(x["Project"])===p);
+  const vals=[...new Set(floors.map(x=>x["Floor"]).filter(Boolean))].sort();
+  fillSimpleSelect("drawingFloorFilter",vals,"All Floors / Areas");
+}
 function resetDrawingFilters(){
-  ["drawingSearch","drawingProjectFilter","drawingAreaFilter","drawingDisciplineFilter","drawingStatusFilter"].forEach(id=>document.getElementById(id).value="");
+  ["drawingSearch","drawingProjectFilter","drawingTowerFilter","drawingFloorFilter","drawingDisciplineFilter","drawingStatusFilter"].forEach(id=>{
+    const e=document.getElementById(id);if(e)e.value="";
+  });
+  updateDrawingFilterTowers();
   renderDrawings();
 }
 function drawingStatusClass(v){return String(v||"").toLowerCase().replace(/\s+/g,"-")}
 function renderDrawings(){
   const q=(document.getElementById("drawingSearch").value||"").toLowerCase().trim();
   const p=document.getElementById("drawingProjectFilter").value;
-  const a=document.getElementById("drawingAreaFilter").value;
+  const t=document.getElementById("drawingTowerFilter").value;
+  const f=document.getElementById("drawingFloorFilter").value;
   const d=document.getElementById("drawingDisciplineFilter").value;
   const st=document.getElementById("drawingStatusFilter").value;
 
   const rows=(drawingsData||[]).filter(r=>{
-    const txt=[r.drawingNo,r.title,r.discipline,r.consultant,r.revision,r.remarks].join(" ").toLowerCase();
-    return (!q||txt.includes(q))&&(!p||r.project===p)&&(!a||r.area===a)&&(!d||r.discipline===d)&&(!st||r.status===st);
+    const txt=[r.drawingNo,r.title,r.discipline,r.consultant,r.revision,r.remarks,r.project,r.tower,r.floor].join(" ").toLowerCase();
+    return (!q||txt.includes(q))&&(!p||r.project===p)&&(!t||r.tower===t)&&(!f||r.floor===f)&&(!d||r.discipline===d)&&(!st||r.status===st);
   }).sort((x,y)=>String(y.issueDate||"").localeCompare(String(x.issueDate||"")));
 
   document.getElementById("drawingCount").innerText=rows.length+" Drawing"+(rows.length===1?"":"s");
@@ -4365,12 +4419,12 @@ function renderDrawings(){
   }
 
   c.className="drawings-table-wrap";
-  let h='<table class="drawings-table"><thead><tr><th>Drawing No.</th><th>Title</th><th>Project / Area</th><th>Discipline</th><th>Rev.</th><th>Status</th><th>Date</th><th>Consultant</th><th>File</th><th></th></tr></thead><tbody>';
+  let h='<table class="drawings-table"><thead><tr><th>Drawing No.</th><th>Title</th><th>Project / Tower / Floor</th><th>Discipline</th><th>Rev.</th><th>Status</th><th>Date</th><th>Consultant</th><th>File</th><th></th></tr></thead><tbody>';
   rows.forEach(r=>{
     h+='<tr>'+
       '<td><b>'+escapeHtml(r.drawingNo)+'</b></td>'+
       '<td>'+escapeHtml(r.title)+'</td>'+
-      '<td>'+escapeHtml([r.project,r.area].filter(Boolean).join(" / "))+'</td>'+
+      '<td>'+escapeHtml([r.project,r.tower,r.floor].filter(Boolean).join(" / "))+'</td>'+
       '<td>'+escapeHtml(r.discipline)+'</td>'+
       '<td><b>'+escapeHtml(r.revision)+'</b></td>'+
       '<td><span class="drawing-status '+drawingStatusClass(r.status)+'">'+escapeHtml(r.status)+'</span></td>'+
@@ -4383,53 +4437,132 @@ function renderDrawings(){
   h+='</tbody></table>';
   c.innerHTML=h;
 }
+function populateDrawingProjects(){
+  const p=document.getElementById("drawingProject");
+  const current=p.value;
+  p.innerHTML='<option value="">Select Project</option>';
+  (masterData&&masterData.projects||[]).forEach(x=>addOption(p,x["Project Name"]));
+  if(current)p.value=current;
+}
+function updateDrawingTowers(){
+  const p=value("drawingProject");
+  const t=document.getElementById("drawingTower");
+  const current=t.value;
+  t.innerHTML='<option value="">Select Tower / Block</option>';
+  (masterData&&masterData.towers||[])
+    .filter(x=>String(x["Project"]||"")===p)
+    .forEach(x=>addOption(t,x["Tower / Block"]));
+  if(Array.from(t.options).some(o=>o.value===current))t.value=current;
+  updateDrawingFloors();
+}
+function updateDrawingFloors(){
+  const p=value("drawingProject"),t=value("drawingTower");
+  const f=document.getElementById("drawingFloor");
+  const current=f.value;
+  f.innerHTML='<option value="">Select Floor / Area</option>';
+  (masterData&&masterData.floors||[])
+    .filter(x=>String(x["Tower / Block"]||"")===t && (!x["Project"]||String(x["Project"])===p))
+    .forEach(x=>addOption(f,x["Floor"]));
+  if(Array.from(f.options).some(o=>o.value===current))f.value=current;
+}
 function clearDrawingForm(){
-  ["drawingId","drawingProject","drawingArea","drawingNo","drawingRevision","drawingTitle","drawingDiscipline","drawingStatus","drawingDate","drawingConsultant","drawingUrl","drawingRemarks"].forEach(id=>{
+  ["drawingId","drawingNo","drawingRevision","drawingTitle","drawingDiscipline","drawingStatus","drawingDate","drawingConsultant","drawingRemarks"].forEach(id=>{
     const e=document.getElementById(id);if(e)e.value="";
   });
+  document.getElementById("drawingPdf").value="";
+  document.getElementById("drawingExistingFile").style.display="none";
+  document.getElementById("drawingExistingFile").innerHTML="";
+  document.getElementById("drawingPdfReq").innerText="*";
+  document.getElementById("drawingPdfNote").className="upload-note";
+  document.getElementById("drawingPdfNote").innerText="Select the PDF file. It will upload automatically to Google Drive when you save.";
+  populateDrawingProjects();
+  document.getElementById("drawingProject").value="";
+  updateDrawingTowers();
 }
 function openDrawingModal(){
-  clearDrawingForm();
-  document.getElementById("drawingModalTitle").innerText="Add Drawing";
-  document.getElementById("drawingSaveButton").innerText="Save Drawing";
-  document.getElementById("drawingDate").value=localToday();
-  document.getElementById("drawingMessage").innerText="";
-  document.getElementById("drawingModal").style.display="block";
-  document.body.style.overflow="hidden";
+  ensureDrawingMasterData(function(){
+    clearDrawingForm();
+    document.getElementById("drawingModalTitle").innerText="Add Drawing";
+    document.getElementById("drawingSaveButton").innerText="Upload & Save Drawing";
+    document.getElementById("drawingDate").value=localToday();
+    document.getElementById("drawingMessage").innerText="";
+    document.getElementById("drawingModal").style.display="block";
+    document.body.style.overflow="hidden";
+  });
 }
 function editDrawing(id){
   const r=(drawingsData||[]).find(x=>String(x.drawingId)===String(id));
   if(!r)return;
 
-  document.getElementById("drawingId").value=r.drawingId||"";
-  document.getElementById("drawingProject").value=r.project||"";
-  document.getElementById("drawingArea").value=r.area||"";
-  document.getElementById("drawingNo").value=r.drawingNo||"";
-  document.getElementById("drawingRevision").value=r.revision||"";
-  document.getElementById("drawingTitle").value=r.title||"";
-  document.getElementById("drawingDiscipline").value=r.discipline||"";
-  document.getElementById("drawingStatus").value=r.status||"";
-  document.getElementById("drawingDate").value=r.issueDate||"";
-  document.getElementById("drawingConsultant").value=r.consultant||"";
-  document.getElementById("drawingUrl").value=r.link||"";
-  document.getElementById("drawingRemarks").value=r.remarks||"";
+  ensureDrawingMasterData(function(){
+    clearDrawingForm();
 
-  document.getElementById("drawingModalTitle").innerText="Edit Drawing";
-  document.getElementById("drawingSaveButton").innerText="Update Drawing";
-  document.getElementById("drawingMessage").innerText="";
-  document.getElementById("drawingModal").style.display="block";
-  document.body.style.overflow="hidden";
+    document.getElementById("drawingId").value=r.drawingId||"";
+    populateDrawingProjects();
+    document.getElementById("drawingProject").value=r.project||"";
+    updateDrawingTowers();
+    document.getElementById("drawingTower").value=r.tower||"";
+    updateDrawingFloors();
+    document.getElementById("drawingFloor").value=r.floor||"";
+
+    document.getElementById("drawingNo").value=r.drawingNo||"";
+    document.getElementById("drawingRevision").value=r.revision||"";
+    document.getElementById("drawingTitle").value=r.title||"";
+    document.getElementById("drawingDiscipline").value=r.discipline||"";
+    document.getElementById("drawingStatus").value=r.status||"";
+    document.getElementById("drawingDate").value=r.issueDate||"";
+    document.getElementById("drawingConsultant").value=r.consultant||"";
+    document.getElementById("drawingRemarks").value=r.remarks||"";
+
+    document.getElementById("drawingPdfReq").innerText="(optional replacement)";
+    document.getElementById("drawingPdfNote").innerText="Leave this blank to keep the existing PDF, or select a new PDF to replace the register link.";
+    const ex=document.getElementById("drawingExistingFile");
+    ex.style.display="block";
+    ex.innerHTML='<a class="drawing-existing-link" href="'+escapeHtml(r.link)+'" target="_blank" rel="noopener">Open Existing PDF</a>';
+
+    document.getElementById("drawingModalTitle").innerText="Edit Drawing";
+    document.getElementById("drawingSaveButton").innerText="Update Drawing";
+    document.getElementById("drawingMessage").innerText="";
+    document.getElementById("drawingModal").style.display="block";
+    document.body.style.overflow="hidden";
+  });
 }
 function closeDrawingModal(e){
   if(e&&e.target!==document.getElementById("drawingModal"))return;
   document.getElementById("drawingModal").style.display="none";
   document.body.style.overflow="";
 }
-function saveDrawing(){
-  const rec={
+function updateDrawingPdfName(){
+  const input=document.getElementById("drawingPdf");
+  const note=document.getElementById("drawingPdfNote");
+  if(input.files&&input.files[0]){
+    note.className="drawing-file-selected";
+    note.innerText="Selected: "+input.files[0].name;
+  }
+}
+function pdfFileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    if(!file){resolve(null);return;}
+    if(file.type!=="application/pdf" && !/\.pdf$/i.test(file.name||"")){
+      reject(new Error("Please select a PDF file only."));
+      return;
+    }
+    const reader=new FileReader();
+    reader.onload=e=>resolve({
+      base64:e.target.result.split(",")[1],
+      mimeType:file.type||"application/pdf",
+      name:file.name||"drawing.pdf"
+    });
+    reader.onerror=()=>reject(new Error("Unable to read the selected PDF."));
+    reader.readAsDataURL(file);
+  });
+}
+async function saveDrawing(){
+  const record={
     drawingId:value("drawingId"),
     project:value("drawingProject"),
-    area:value("drawingArea"),
+    tower:value("drawingTower"),
+    floor:value("drawingFloor"),
     drawingNo:value("drawingNo"),
     revision:value("drawingRevision"),
     title:value("drawingTitle"),
@@ -4437,49 +4570,59 @@ function saveDrawing(){
     status:value("drawingStatus"),
     issueDate:value("drawingDate"),
     consultant:value("drawingConsultant"),
-    link:value("drawingUrl"),
     remarks:value("drawingRemarks"),
     actorUserId:loggedInUser?loggedInUser.userId:"",
     actorUsername:loggedInUser?loggedInUser.username:""
   };
 
-  const required=["project","area","drawingNo","revision","title","discipline","status","issueDate","link"];
+  const required=["project","tower","floor","drawingNo","revision","title","discipline","status","issueDate"];
   const m=document.getElementById("drawingMessage");
   const btn=document.getElementById("drawingSaveButton");
+  const file=document.getElementById("drawingPdf").files[0]||null;
 
-  if(required.some(k=>!String(rec[k]||"").trim())){
+  if(required.some(k=>!String(record[k]||"").trim())){
     m.style.color="#dc2626";
-    m.innerText="Please complete all mandatory drawing fields.";
+    m.innerText="Please complete Project, Tower, Floor and all mandatory drawing fields.";
     return;
   }
 
-  try{new URL(rec.link)}
-  catch(e){
+  if(!record.drawingId && !file){
     m.style.color="#dc2626";
-    m.innerText="Please enter a valid Google Drive / PDF URL.";
+    m.innerText="Please select the drawing PDF file.";
     return;
   }
 
-  btn.disabled=true;
-  m.style.color="#475569";
-  m.innerText=rec.drawingId?"Updating drawing...":"Saving drawing...";
+  try{
+    btn.disabled=true;
+    m.style.color="#475569";
+    m.innerText=file?"Preparing PDF for upload...":"Updating drawing register...";
 
-  google.script.run
-    .withSuccessHandler(function(r){
-      btn.disabled=false;
-      m.style.color="#16a34a";
-      m.innerText=r.message||"Drawing saved successfully.";
-      setTimeout(function(){
-        closeDrawingModal();
-        loadDrawings();
-      },500);
-    })
-    .withFailureHandler(function(e){
-      btn.disabled=false;
-      m.style.color="#dc2626";
-      m.innerText=e.message;
-    })
-    .saveDrawing(rec);
+    const pdf=await pdfFileToBase64(file);
+
+    m.innerText=file?"Uploading PDF to Google Drive...":"Updating drawing register...";
+
+    google.script.run
+      .withSuccessHandler(function(r){
+        btn.disabled=false;
+        m.style.color="#16a34a";
+        m.innerText=r.message||"Drawing saved successfully.";
+        setTimeout(function(){
+          closeDrawingModal();
+          loadDrawings();
+        },650);
+      })
+      .withFailureHandler(function(e){
+        btn.disabled=false;
+        m.style.color="#dc2626";
+        m.innerText=e.message;
+      })
+      .saveDrawingWithPdf({record:record,pdf:pdf});
+
+  }catch(e){
+    btn.disabled=false;
+    m.style.color="#dc2626";
+    m.innerText=e.message;
+  }
 }
 
 function openPlaceholderModule(icon,title,text){hideAppPages();document.getElementById("placeholderModulePage").style.display="block";document.getElementById("placeholderModuleHeader").innerText=icon+" "+title;document.getElementById("placeholderModuleIcon").innerText=icon;document.getElementById("placeholderModuleTitle").innerText=title;document.getElementById("placeholderModuleText").innerText=text}
