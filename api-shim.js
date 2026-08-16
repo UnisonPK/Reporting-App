@@ -1,4 +1,4 @@
-/* Reporting App API Shim - cache refresh build 2026-08-16.3 */
+/* Reporting App API Shim - BOQ & Cost V1 build 2026-08-16.4 */
 
 (function () {
   "use strict";
@@ -74,11 +74,8 @@
     let json;
 
     try {
-
       json = JSON.parse(text);
-
     } catch (e) {
-
       throw new Error(
         "The Apps Script API did not return JSON. " +
         "Check the deployment access and /exec URL."
@@ -105,7 +102,7 @@
 
 
   /* =========================================================
-     FRONTEND METHOD → API ACTION
+     FRONTEND METHOD -> API ACTION
   ========================================================= */
 
   function methodToRequest(method, args) {
@@ -258,6 +255,26 @@
 
 
       /* =====================================================
+         BOQ & COST V1
+      ===================================================== */
+
+      case "getBOQCostRows":
+
+        return {
+          action: "boqCost",
+          data: {}
+        };
+
+
+      case "saveBOQCostItem":
+
+        return {
+          action: "saveBOQCostItem",
+          data: args[0] || {}
+        };
+
+
+      /* =====================================================
          DRAWINGS V3
       ===================================================== */
 
@@ -368,7 +385,7 @@
 
 
   /* =========================================================
-     GOOGLE.SCRIPT.RUN COMPATIBILITY
+     GOOGLE.SCRIPT.RUN COMPATIBILITY LAYER
   ========================================================= */
 
   function createRunner(
