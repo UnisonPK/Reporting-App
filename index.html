@@ -795,6 +795,54 @@ label{color:#344054;font-size:13px;margin-top:14px}
 @media(max-width:1100px){.boq-kpis{grid-template-columns:repeat(4,1fr)}.boq-toolbar{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.boq-kpis{grid-template-columns:repeat(2,1fr)}.boq-toolbar,.boq-form-grid{grid-template-columns:1fr}.boq-form-grid .full-width{grid-column:auto}.boq-calc-preview{grid-template-columns:repeat(2,1fr)}}
 
+
+/* ===== Cash Flow V1.0 ===== */
+#cashFlowPage{display:none}
+.cashflow-toolbar{display:grid;grid-template-columns:1.4fr 1fr auto;gap:10px;margin:14px 0}
+.cashflow-kpis{display:grid;grid-template-columns:repeat(7,minmax(125px,1fr));gap:10px;margin:14px 0 18px}
+.cashflow-kpi{background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:14px;box-shadow:0 3px 12px rgba(15,23,42,.04)}
+.cashflow-kpi-label{font-size:10px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.03em}
+.cashflow-kpi-value{font-size:19px;font-weight:900;color:#172b4d;margin-top:6px;word-break:break-word}
+.cashflow-kpi-sub{font-size:10px;color:#94a3b8;margin-top:4px}
+.cashflow-table-wrap{overflow-x:auto;border:1px solid #e5e7eb;border-radius:12px}
+.cashflow-table{width:100%;border-collapse:collapse;min-width:1350px}
+.cashflow-table th,.cashflow-table td{padding:10px 9px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top;font-size:12px}
+.cashflow-table th{background:#f8fafc;color:#475569;white-space:nowrap}
+.cashflow-money{text-align:right!important;white-space:nowrap;font-variant-numeric:tabular-nums}
+.cashflow-percent{white-space:nowrap;font-weight:800}
+.cashflow-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.cashflow-form-grid .full-width{grid-column:1/-1}
+.cashflow-calc-note{background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:11px 12px;margin-top:12px;font-size:12px;color:#475569}
+.cashflow-calc-preview{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.cashflow-calc-box{background:#fff;border:1px solid #e5e7eb;border-radius:9px;padding:9px}
+.cashflow-calc-box span{display:block;font-size:10px;color:#64748b;font-weight:800;text-transform:uppercase}
+.cashflow-calc-box b{display:block;margin-top:4px;color:#0891b2}
+.cashflow-progress-wrap{display:flex;align-items:center;gap:8px;min-width:130px}
+.cashflow-progress-track{height:7px;background:#e5e7eb;border-radius:999px;overflow:hidden;flex:1}
+.cashflow-progress-fill{height:100%;background:#0891b2;border-radius:999px}
+.cashflow-import-modal{display:none;position:fixed;inset:0;z-index:1700;background:rgba(15,23,42,.62);padding:20px;overflow:auto}
+.cashflow-import-card{max-width:1150px;margin:20px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.cashflow-import-head{padding:20px 22px;background:#f8fafc;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:15px;align-items:flex-start}
+.cashflow-import-body{padding:20px 22px}
+.cashflow-import-actions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0;align-items:center}
+.cashflow-import-defaults{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0;padding:14px;border:1px solid #e5e7eb;border-radius:12px;background:#f8fafc}
+.cashflow-import-status{margin:12px 0;font-weight:700}
+.cashflow-import-summary{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.cashflow-import-chip{padding:7px 11px;border-radius:999px;background:#ecfeff;color:#155e75;font-size:12px;font-weight:800}
+.cashflow-import-table-wrap{overflow:auto;border:1px solid #e5e7eb;border-radius:10px;max-height:430px}
+.cashflow-import-table{width:100%;border-collapse:collapse;min-width:1150px}
+.cashflow-import-table th,.cashflow-import-table td{padding:8px 9px;border-bottom:1px solid #e5e7eb;font-size:12px;text-align:left}
+.cashflow-import-table th{position:sticky;top:0;background:#f8fafc;z-index:2}
+.cashflow-import-error{background:#fef2f2}
+.cashflow-import-valid{background:#f0fdf4}
+@media(max-width:1100px){.cashflow-kpis{grid-template-columns:repeat(4,1fr)}.cashflow-toolbar{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){
+  .cashflow-kpis{grid-template-columns:repeat(2,1fr)}
+  .cashflow-toolbar,.cashflow-form-grid,.cashflow-import-defaults{grid-template-columns:1fr}
+  .cashflow-form-grid .full-width{grid-column:auto}
+  .cashflow-import-modal{padding:0}.cashflow-import-card{margin:0;min-height:100vh;border-radius:0}
+}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div id="dashboardManagementAttention" class="dashboard-management-attention" style="display:none"><div class="dashboard-attention-head"><div><b>🚨 Management Attention</b><span>Today's constraints, holds and rectification items</span></div><button onclick="openDailySummary()">View Daily Summary</button></div><div id="dashboardAttentionList" class="dashboard-attention-list"><div class="summary-empty">Loading...</div></div></div><div class="dashboard-section">
@@ -811,7 +859,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
   <div class="menu-grid">
     <div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div>
     <div class="menu-card cost" onclick="openBOQCost()"><div class="icon">💰</div><div class="menu-title">BOQ & Cost</div><div class="menu-stat">Contract value, certification, payment and balance</div></div>
-    <div class="menu-card cashflow coming-soon" onclick="openPlaceholderModule('💵','Cash Flow','Planned, certified and paid monthly cash flow with cumulative variance will be managed here.')"><span class="coming-soon-pill">Next Phase</span><div class="icon">💵</div><div class="menu-title">Cash Flow</div><div class="menu-stat">Planned vs actual cash flow</div></div>
+    <div class="menu-card cashflow" onclick="openCashFlow()"><div class="icon">💵</div><div class="menu-title">Cash Flow</div><div class="menu-stat">Budget, awarded value, spending, balance and progress</div></div>
   </div>
 </div>
 <div class="dashboard-section">
@@ -833,6 +881,124 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
 
 
+
+
+
+<div id="cashFlowPage">
+  <div class="header">
+    <div>
+      <div class="app-name">💵 Cash Flow</div>
+      <div class="app-subtitle">Budget, awarded value, spending, balance, approvals and progress</div>
+    </div>
+    <button class="back-button" onclick="showDashboard()">Back</button>
+  </div>
+
+  <div class="container">
+    <div class="form-card">
+      <div class="admin-toolbar">
+        <div>
+          <div class="step-title">Cash Flow Register</div>
+          <div class="step-subtitle">Current project / tower financial position using the simplified 11-field structure.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="admin-primary-btn" onclick="openCashFlowModal()">+ Add / Update</button>
+          <button type="button" onclick="openCashFlowImport()" style="border:0;background:#0891b2;color:white;padding:11px 15px;border-radius:8px;font-weight:800;cursor:pointer">⇧ Smart Excel Import</button>
+        </div>
+      </div>
+
+      <div class="module-note"><b>Cash Flow V1.0:</b> Actual Balance = Awarded Value − Actual Spending. Financial Progress = Actual Spending ÷ Awarded Value × 100. Pending Approval remains separate.</div>
+
+      <div class="cashflow-kpis">
+        <div class="cashflow-kpi"><div class="cashflow-kpi-label">Initial Budget</div><div id="cashKpiInitial" class="cashflow-kpi-value">PKR 0</div><div class="cashflow-kpi-sub">Initial quotation</div></div>
+        <div class="cashflow-kpi"><div class="cashflow-kpi-label">Awarded Value</div><div id="cashKpiAwarded" class="cashflow-kpi-value">PKR 0</div><div class="cashflow-kpi-sub">Budgeted / awarded</div></div>
+        <div class="cashflow-kpi"><div class="cashflow-kpi-label">Actual Spending</div><div id="cashKpiSpent" class="cashflow-kpi-value">PKR 0</div><div class="cashflow-kpi-sub">Spent to date</div></div>
+        <div class="cashflow-kpi"><div class="cashflow-kpi-label">Actual Balance</div><div id="cashKpiBalance" class="cashflow-kpi-value">PKR 0</div><div class="cashflow-kpi-sub">Awarded − spending</div></div>
+        <div class="cashflow-kpi"><div class="cashflow-kpi-label">Pending Approval</div><div id="cashKpiPending" class="cashflow-kpi-value">PKR 0</div><div class="cashflow-kpi-sub">Separate from balance</div></div>
+        <div class="cashflow-kpi"><div class="cashflow-kpi-label">Actual Progress</div><div id="cashKpiActualProgress" class="cashflow-kpi-value">0%</div><div class="cashflow-kpi-sub">Award-weighted physical</div></div>
+        <div class="cashflow-kpi"><div class="cashflow-kpi-label">Financial Progress</div><div id="cashKpiFinancialProgress" class="cashflow-kpi-value">0%</div><div class="cashflow-kpi-sub">Spending / awarded</div></div>
+      </div>
+
+      <div class="cashflow-toolbar">
+        <select id="cashProjectFilter" onchange="updateCashFlowTowerFilter();renderCashFlow()"><option value="">All Projects</option></select>
+        <select id="cashTowerFilter" onchange="renderCashFlow()"><option value="">All Towers</option></select>
+        <button class="reset-filter-btn" onclick="resetCashFlowFilters()">Reset</button>
+      </div>
+
+      <div id="cashFlowCount" class="reports-count">0 Records</div>
+      <div id="cashFlowContainer" class="reports-loading">Loading Cash Flow register...</div>
+    </div>
+  </div>
+</div>
+
+<div id="cashFlowModal" class="admin-modal" onclick="closeCashFlowModal(event)">
+  <div class="admin-modal-card" style="max-width:820px" onclick="event.stopPropagation()">
+    <div class="admin-modal-head">
+      <div>
+        <div id="cashFlowModalTitle" class="admin-modal-title">Add / Update Cash Flow</div>
+        <div class="app-subtitle">Project / Tower financial position</div>
+      </div>
+      <button class="modal-close" onclick="closeCashFlowModal()">Close</button>
+    </div>
+    <div class="admin-modal-body">
+      <input id="cashFlowId" type="hidden">
+      <div class="cashflow-form-grid">
+        <div><label>S.No.</label><input id="cashSerialNo" placeholder="e.g. 1"></div>
+        <div><label>Project *</label><select id="cashProject" onchange="updateCashFlowFormTowers()"><option value="">Select Project</option></select></div>
+        <div><label>Tower *</label><select id="cashTower"><option value="">Select Tower</option></select></div>
+        <div><label>Budget as per Initial Quotation (PKR)</label><input id="cashInitialBudget" type="number" step="any" inputmode="decimal"></div>
+        <div><label>Awarded Value / Budgeted Value (PKR)</label><input id="cashAwardedValue" type="number" step="any" inputmode="decimal" oninput="updateCashFlowCalcPreview()"></div>
+        <div><label>Actual Spending (PKR)</label><input id="cashActualSpending" type="number" step="any" inputmode="decimal" oninput="updateCashFlowCalcPreview()"></div>
+        <div><label>Pending Approval (PKR)</label><input id="cashPendingApproval" type="number" step="any" inputmode="decimal"></div>
+        <div><label>Actual Progress (%)</label><input id="cashActualProgress" type="number" min="0" max="100" step="0.01" inputmode="decimal"></div>
+        <div class="full-width"><label>Remarks</label><textarea id="cashRemarks"></textarea></div>
+      </div>
+
+      <div class="cashflow-calc-note">
+        Calculated automatically when saved.
+        <div class="cashflow-calc-preview">
+          <div class="cashflow-calc-box"><span>Actual Balance</span><b id="cashPreviewBalance">PKR 0</b></div>
+          <div class="cashflow-calc-box"><span>Financial Progress</span><b id="cashPreviewFinancial">0%</b></div>
+        </div>
+      </div>
+
+      <div class="decision-actions">
+        <button id="cashFlowSaveButton" class="decision-save" onclick="saveCashFlowRecord()">Save Cash Flow</button>
+      </div>
+      <div id="cashFlowMessage" class="admin-message"></div>
+    </div>
+  </div>
+</div>
+
+<div id="cashFlowImportModal" class="cashflow-import-modal">
+  <div class="cashflow-import-card">
+    <div class="cashflow-import-head">
+      <div>
+        <div style="font-size:22px;font-weight:900">Cash Flow Smart Excel Import V1.0</div>
+        <div style="color:#64748b;margin-top:4px">Import one worksheet at a time and map it to the correct Project / Tower when those fields are not present in Excel.</div>
+      </div>
+      <button class="modal-close" type="button" onclick="closeCashFlowImport()">Close</button>
+    </div>
+    <div class="cashflow-import-body">
+      <div class="module-note"><b>Accepted fields:</b> S.No., Project, Tower, Budget as per Initial Quotation, Awarded Value / Budgeted Value, Actual Spending, Pending Approval, Actual Progress, Financial Progress and Remarks. Balance and Financial Progress are recalculated by the backend.</div>
+
+      <div class="cashflow-import-actions">
+        <input id="cashFlowImportFile" type="file" accept=".xlsx,.xls" style="max-width:430px" onchange="loadCashFlowWorkbook()">
+        <button id="cashFlowDetectButton" type="button" style="border:0;background:#0891b2;color:white;padding:10px 14px;border-radius:8px;font-weight:800;cursor:pointer" onclick="previewCashFlowExcel()">Detect & Preview</button>
+        <button id="cashFlowImportNowButton" type="button" style="border:0;background:#0b3f88;color:white;padding:10px 14px;border-radius:8px;font-weight:800;cursor:pointer" onclick="commitCashFlowImport()" disabled>Import Valid Rows</button>
+      </div>
+
+      <div class="cashflow-import-defaults">
+        <div><label>Worksheet *</label><select id="cashFlowImportSheet"><option value="">Select worksheet</option></select></div>
+        <div><label>Default Project *</label><select id="cashFlowImportProject" onchange="updateCashFlowImportTowers()"><option value="">Select Project</option></select></div>
+        <div><label>Default Tower *</label><select id="cashFlowImportTower"><option value="">Select Tower</option></select></div>
+      </div>
+
+      <div id="cashFlowImportStatus" class="cashflow-import-status"></div>
+      <div id="cashFlowImportSummary" class="cashflow-import-summary"></div>
+      <div id="cashFlowImportPreview"></div>
+    </div>
+  </div>
+</div>
 
 
 <div id="boqCostPage">
@@ -2729,7 +2895,7 @@ function applyRoleAccess(){
 }
 
 function hideAppPages(){
-  ["loginPage","dashboardPage","activityPage","myReportsPage","pendingInspectionsPage","dailySummaryPage","administrationPage","executiveReportPage","boqCostPage","drawingsPage","placeholderModulePage"].forEach(function(id){
+  ["loginPage","dashboardPage","activityPage","myReportsPage","pendingInspectionsPage","dailySummaryPage","administrationPage","executiveReportPage","cashFlowPage","boqCostPage","drawingsPage","placeholderModulePage"].forEach(function(id){
     const el=document.getElementById(id);
     if(el)el.style.display="none";
   });
@@ -5212,6 +5378,500 @@ function saveOwnPasswordChange(){
     });
 }
 
+
+
+
+/* ===================== CASH FLOW V1.0 ===================== */
+let cashFlowData=[];
+let cashFlowWorkbook=null;
+let cashFlowImportRows=[];
+
+function cashNum(v){
+  if(v===null||v===undefined||v==="")return 0;
+  if(typeof v==="number")return isFinite(v)?v:0;
+  let s=String(v).trim();
+  if(!s)return 0;
+  const neg=/^\(.*\)$/.test(s);
+  s=s.replace(/[(),]/g,"").replace(/%/g,"").replace(/PKR/ig,"").replace(/Rs\.?/ig,"").replace(/[^\d.\-]/g,"");
+  let n=Number(s);
+  if(!isFinite(n))n=0;
+  if(neg&&n>0)n=-n;
+  return n;
+}
+
+function cashPercent(v){
+  let n=cashNum(v);
+  if(n>0&&n<=1)n*=100;
+  return Math.max(0,Math.min(100,n));
+}
+
+function formatCashPKR(v){
+  return "PKR "+Math.round(cashNum(v)).toLocaleString();
+}
+
+function cashFlowApi(action,data){
+  data=data||{};
+  if(window.LCRG_API&&typeof window.LCRG_API.call==="function"){
+    return window.LCRG_API.call(action,data);
+  }
+  return new Promise(function(resolve,reject){
+    if(!window.google||!google.script||!google.script.run){
+      reject(new Error("Reporting App API is not available."));
+      return;
+    }
+    const runner=google.script.run.withSuccessHandler(resolve).withFailureHandler(reject);
+    const map={
+      cashFlow:"getCashFlowRows",
+      saveCashFlow:"saveCashFlowItem",
+      deleteCashFlow:"deleteCashFlowItem",
+      bulkImportCashFlow:"bulkImportCashFlowItems"
+    };
+    const fn=map[action];
+    if(!fn||typeof runner[fn]!=="function"){
+      reject(new Error("Cash Flow API method is not available."));
+      return;
+    }
+    if(action==="cashFlow")runner[fn](loggedInUser.userId,loggedInUser.username);
+    else{
+      data.actorUserId=loggedInUser.userId;
+      data.actorUsername=loggedInUser.username;
+      runner[fn](data);
+    }
+  });
+}
+
+function ensureCashFlowMasterData(cb){
+  if(masterData){if(cb)cb();return;}
+  google.script.run
+    .withSuccessHandler(function(md){masterData=md||{};if(cb)cb();})
+    .withFailureHandler(function(e){alert("Unable to load master data: "+e.message);})
+    .getMasterData();
+}
+
+function openCashFlow(){
+  if(!hasExecutiveAccess()){
+    alert("Cash Flow is available to CEO and Project Manager only.");
+    return;
+  }
+  hideAppPages();
+  document.getElementById("cashFlowPage").style.display="block";
+  ensureCashFlowMasterData(function(){
+    populateCashFlowProjectOptions();
+    loadCashFlow();
+  });
+}
+
+function loadCashFlow(){
+  const c=document.getElementById("cashFlowContainer");
+  c.className="reports-loading";
+  c.innerText="Loading Cash Flow register...";
+  cashFlowApi("cashFlow",{})
+    .then(function(rows){
+      cashFlowData=rows||[];
+      populateCashFlowProjectOptions();
+      updateCashFlowTowerFilter();
+      renderCashFlow();
+    })
+    .catch(function(e){
+      c.className="empty-state";
+      c.innerText="Unable to load Cash Flow: "+e.message;
+    });
+}
+
+function populateCashFlowProjectOptions(){
+  const projects=[...new Set((masterData&&masterData.projects||[]).map(x=>x["Project Name"]).filter(Boolean))].sort();
+  fillSimpleSelect("cashProjectFilter",projects,"All Projects");
+  fillSimpleSelect("cashProject",projects,"Select Project");
+  fillSimpleSelect("cashFlowImportProject",projects,"Select Project");
+}
+
+function updateCashFlowTowerFilter(){
+  const p=document.getElementById("cashProjectFilter").value;
+  let towers=(masterData&&masterData.towers||[]);
+  if(p)towers=towers.filter(x=>String(x["Project"]||"")===p);
+  const vals=[...new Set(towers.map(x=>x["Tower / Block"]).filter(Boolean))].sort();
+  const current=document.getElementById("cashTowerFilter").value;
+  fillSimpleSelect("cashTowerFilter",vals,"All Towers");
+  if(vals.includes(current))document.getElementById("cashTowerFilter").value=current;
+}
+
+function updateCashFlowFormTowers(){
+  const p=document.getElementById("cashProject").value;
+  const vals=(masterData&&masterData.towers||[])
+    .filter(x=>String(x["Project"]||"")===p)
+    .map(x=>x["Tower / Block"])
+    .filter(Boolean);
+  const current=document.getElementById("cashTower").value;
+  fillSimpleSelect("cashTower",[...new Set(vals)].sort(),"Select Tower");
+  if(vals.includes(current))document.getElementById("cashTower").value=current;
+}
+
+function updateCashFlowImportTowers(){
+  const p=document.getElementById("cashFlowImportProject").value;
+  const vals=(masterData&&masterData.towers||[])
+    .filter(x=>String(x["Project"]||"")===p)
+    .map(x=>x["Tower / Block"])
+    .filter(Boolean);
+  const current=document.getElementById("cashFlowImportTower").value;
+  fillSimpleSelect("cashFlowImportTower",[...new Set(vals)].sort(),"Select Tower");
+  if(vals.includes(current))document.getElementById("cashFlowImportTower").value=current;
+}
+
+function resetCashFlowFilters(){
+  document.getElementById("cashProjectFilter").value="";
+  updateCashFlowTowerFilter();
+  document.getElementById("cashTowerFilter").value="";
+  renderCashFlow();
+}
+
+function getFilteredCashFlowRows(){
+  const p=document.getElementById("cashProjectFilter").value;
+  const t=document.getElementById("cashTowerFilter").value;
+  return (cashFlowData||[]).filter(r=>(!p||r.project===p)&&(!t||r.tower===t));
+}
+
+function renderCashFlow(){
+  const rows=getFilteredCashFlowRows();
+  const sum=key=>rows.reduce((a,r)=>a+cashNum(r[key]),0);
+
+  const initial=sum("initialBudget");
+  const awarded=sum("awardedValue");
+  const spent=sum("actualSpending");
+  const balance=sum("actualBalance");
+  const pending=sum("pendingApproval");
+  const actualWeighted=awarded?rows.reduce((a,r)=>a+(cashNum(r.awardedValue)*cashPercent(r.actualProgress)),0)/awarded:0;
+  const financial=awarded?(spent/awarded)*100:0;
+
+  document.getElementById("cashKpiInitial").innerText=formatCashPKR(initial);
+  document.getElementById("cashKpiAwarded").innerText=formatCashPKR(awarded);
+  document.getElementById("cashKpiSpent").innerText=formatCashPKR(spent);
+  document.getElementById("cashKpiBalance").innerText=formatCashPKR(balance);
+  document.getElementById("cashKpiPending").innerText=formatCashPKR(pending);
+  document.getElementById("cashKpiActualProgress").innerText=(Math.round(actualWeighted*10)/10)+"%";
+  document.getElementById("cashKpiFinancialProgress").innerText=(Math.round(financial*10)/10)+"%";
+  document.getElementById("cashFlowCount").innerText=rows.length+" Record"+(rows.length===1?"":"s");
+
+  const c=document.getElementById("cashFlowContainer");
+  if(!rows.length){
+    c.className="empty-state";
+    c.innerText="No Cash Flow records found. Use + Add / Update or Smart Excel Import.";
+    return;
+  }
+
+  c.className="cashflow-table-wrap";
+  let h='<table class="cashflow-table"><thead><tr>'+
+    '<th>S.No.</th><th>Project</th><th>Tower</th><th>Initial Budget</th><th>Awarded Value</th>'+
+    '<th>Actual Spending</th><th>Actual Balance</th><th>Pending Approval</th><th>Actual Progress</th><th>Financial Progress</th><th>Remarks</th><th></th>'+
+    '</tr></thead><tbody>';
+
+  rows.forEach(r=>{
+    const ap=Math.max(0,Math.min(100,cashPercent(r.actualProgress)));
+    const fp=Math.max(0,Math.min(100,cashPercent(r.financialProgress)));
+    h+='<tr>'+
+      '<td>'+escapeHtml(String(r.serialNo||""))+'</td>'+
+      '<td>'+escapeHtml(r.project||"")+'</td>'+
+      '<td><b>'+escapeHtml(r.tower||"")+'</b></td>'+
+      '<td class="cashflow-money">'+escapeHtml(formatCashPKR(r.initialBudget))+'</td>'+
+      '<td class="cashflow-money"><b>'+escapeHtml(formatCashPKR(r.awardedValue))+'</b></td>'+
+      '<td class="cashflow-money">'+escapeHtml(formatCashPKR(r.actualSpending))+'</td>'+
+      '<td class="cashflow-money"><b>'+escapeHtml(formatCashPKR(r.actualBalance))+'</b></td>'+
+      '<td class="cashflow-money">'+escapeHtml(formatCashPKR(r.pendingApproval))+'</td>'+
+      '<td><div class="cashflow-progress-wrap"><div class="cashflow-progress-track"><div class="cashflow-progress-fill" style="width:'+ap+'%"></div></div><span class="cashflow-percent">'+(Math.round(ap*10)/10)+'%</span></div></td>'+
+      '<td><div class="cashflow-progress-wrap"><div class="cashflow-progress-track"><div class="cashflow-progress-fill" style="width:'+fp+'%"></div></div><span class="cashflow-percent">'+(Math.round(fp*10)/10)+'%</span></div></td>'+
+      '<td>'+escapeHtml(r.remarks||"")+'</td>'+
+      '<td><button class="view-btn" data-id="'+escapeHtml(r.cashFlowId)+'" onclick="editCashFlowRecord(this.dataset.id)">Edit</button></td>'+
+      '</tr>';
+  });
+
+  h+='</tbody></table>';
+  c.innerHTML=h;
+}
+
+function clearCashFlowForm(){
+  ["cashFlowId","cashSerialNo","cashInitialBudget","cashAwardedValue","cashActualSpending","cashPendingApproval","cashActualProgress","cashRemarks"].forEach(id=>{
+    const e=document.getElementById(id);if(e)e.value="";
+  });
+  populateCashFlowProjectOptions();
+  document.getElementById("cashProject").value="";
+  updateCashFlowFormTowers();
+  updateCashFlowCalcPreview();
+  document.getElementById("cashFlowMessage").innerText="";
+}
+
+function openCashFlowModal(){
+  if(!hasExecutiveAccess()){alert("Cash Flow is available to CEO and Project Manager only.");return;}
+  ensureCashFlowMasterData(function(){
+    clearCashFlowForm();
+    document.getElementById("cashFlowModalTitle").innerText="Add / Update Cash Flow";
+    document.getElementById("cashFlowModal").style.display="block";
+  });
+}
+
+function closeCashFlowModal(e){
+  if(e&&e.target!==document.getElementById("cashFlowModal"))return;
+  document.getElementById("cashFlowModal").style.display="none";
+}
+
+function editCashFlowRecord(id){
+  const r=(cashFlowData||[]).find(x=>String(x.cashFlowId)===String(id));
+  if(!r)return;
+  ensureCashFlowMasterData(function(){
+    populateCashFlowProjectOptions();
+    document.getElementById("cashFlowId").value=r.cashFlowId||"";
+    document.getElementById("cashSerialNo").value=r.serialNo||"";
+    document.getElementById("cashProject").value=r.project||"";
+    updateCashFlowFormTowers();
+    document.getElementById("cashTower").value=r.tower||"";
+    document.getElementById("cashInitialBudget").value=cashNum(r.initialBudget);
+    document.getElementById("cashAwardedValue").value=cashNum(r.awardedValue);
+    document.getElementById("cashActualSpending").value=cashNum(r.actualSpending);
+    document.getElementById("cashPendingApproval").value=cashNum(r.pendingApproval);
+    document.getElementById("cashActualProgress").value=cashPercent(r.actualProgress);
+    document.getElementById("cashRemarks").value=r.remarks||"";
+    document.getElementById("cashFlowModalTitle").innerText="Update Cash Flow";
+    document.getElementById("cashFlowMessage").innerText="";
+    updateCashFlowCalcPreview();
+    document.getElementById("cashFlowModal").style.display="block";
+  });
+}
+
+function updateCashFlowCalcPreview(){
+  const awarded=cashNum(document.getElementById("cashAwardedValue").value);
+  const spent=cashNum(document.getElementById("cashActualSpending").value);
+  const bal=awarded-spent;
+  const pct=awarded?(spent/awarded)*100:0;
+  document.getElementById("cashPreviewBalance").innerText=formatCashPKR(bal);
+  document.getElementById("cashPreviewFinancial").innerText=(Math.round(pct*100)/100)+"%";
+}
+
+function saveCashFlowRecord(){
+  const btn=document.getElementById("cashFlowSaveButton");
+  const m=document.getElementById("cashFlowMessage");
+  const project=document.getElementById("cashProject").value;
+  const tower=document.getElementById("cashTower").value;
+
+  if(!project||!tower){
+    m.style.color="#dc2626";m.innerText="Project and Tower are required.";return;
+  }
+
+  const payload={
+    cashFlowId:document.getElementById("cashFlowId").value,
+    serialNo:document.getElementById("cashSerialNo").value.trim(),
+    project:project,
+    tower:tower,
+    initialBudget:cashNum(document.getElementById("cashInitialBudget").value),
+    awardedValue:cashNum(document.getElementById("cashAwardedValue").value),
+    actualSpending:cashNum(document.getElementById("cashActualSpending").value),
+    pendingApproval:cashNum(document.getElementById("cashPendingApproval").value),
+    actualProgress:cashPercent(document.getElementById("cashActualProgress").value),
+    remarks:document.getElementById("cashRemarks").value.trim()
+  };
+
+  btn.disabled=true;
+  m.style.color="#475569";m.innerText="Saving Cash Flow...";
+  cashFlowApi("saveCashFlow",payload)
+    .then(function(r){
+      btn.disabled=false;
+      m.style.color="#16a34a";m.innerText=r.message||"Cash Flow saved.";
+      setTimeout(function(){closeCashFlowModal();loadCashFlow();},550);
+    })
+    .catch(function(e){
+      btn.disabled=false;
+      m.style.color="#dc2626";m.innerText=e.message;
+    });
+}
+
+/* Cash Flow Excel Import */
+function cashCanon(v){
+  return String(v==null?"":v).replace(/\s+/g," ").trim().toLowerCase().replace(/[_-]+/g," ").replace(/[.:]+$/g,"");
+}
+function cashNorm(v){return String(v==null?"":v).replace(/\s+/g," ").trim();}
+const CASH_ALIASES={
+  serialNo:["s.no","s no","s.no.","sno","serial no","sr no","sr. no."],
+  project:["project","project name"],
+  tower:["tower","tower / block","tower/block","block"],
+  initialBudget:["budget as per initial quotation","budget as per initial quotation received","first quotation received","initial quotation","initial budget"],
+  awardedValue:["awarded value / budgeted value","awarded value","budgeted value","awarded valuue"],
+  actualSpending:["actual spending","actual spent","spending","actual expenditure"],
+  actualBalance:["actual balance amount","actual balance","balance amount"],
+  pendingApproval:["pending approval","pending approvals"],
+  actualProgress:["actual progress","physical progress"],
+  financialProgress:["financial progress","finance progress"],
+  remarks:["remarks","remark","reason for balance","reason for balance amount"]
+};
+function cashAliasMatch(h,aliases){
+  const c=cashCanon(h);
+  return aliases.some(a=>{const x=cashCanon(a);return c===x||c.indexOf(x)!==-1;});
+}
+function cashFindColumn(headers,aliases){
+  for(let i=0;i<headers.length;i++)if(cashAliasMatch(headers[i],aliases))return i;
+  return -1;
+}
+function cashMapColumns(headers){
+  const m={};Object.keys(CASH_ALIASES).forEach(k=>m[k]=cashFindColumn(headers,CASH_ALIASES[k]));return m;
+}
+function cashHeaderScore(headers){
+  const m=cashMapColumns(headers);
+  let s=0;
+  ["initialBudget","awardedValue","actualSpending"].forEach(k=>{if(m[k]>=0)s+=3;});
+  ["serialNo","pendingApproval","actualProgress","financialProgress","remarks","project","tower"].forEach(k=>{if(m[k]>=0)s+=1;});
+  return s;
+}
+function cashDetectHeader(rows){
+  let best={score:-1,rowIndex:-1,headers:[]};
+  const max=Math.min(rows.length,30);
+  for(let r=0;r<max;r++){
+    const h=(rows[r]||[]).map(cashNorm);
+    const s=cashHeaderScore(h);
+    if(s>best.score)best={score:s,rowIndex:r,headers:h};
+  }
+  if(best.score<7)throw new Error("Could not detect Cash Flow headers in the selected worksheet.");
+  return best;
+}
+function injectCashFlowSheetJs(){
+  if(window.XLSX)return Promise.resolve();
+  return new Promise((resolve,reject)=>{
+    const s=document.createElement("script");
+    s.src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+    s.onload=resolve;s.onerror=()=>reject(new Error("Unable to load Excel reader library."));
+    document.head.appendChild(s);
+  });
+}
+async function loadCashFlowWorkbook(){
+  const file=document.getElementById("cashFlowImportFile").files[0];
+  const status=document.getElementById("cashFlowImportStatus");
+  if(!file)return;
+  try{
+    status.style.color="#475569";status.innerText="Reading workbook...";
+    await injectCashFlowSheetJs();
+    const buf=await file.arrayBuffer();
+    cashFlowWorkbook=XLSX.read(buf,{type:"array",cellDates:false});
+    const sel=document.getElementById("cashFlowImportSheet");
+    sel.innerHTML='<option value="">Select worksheet</option>';
+    cashFlowWorkbook.SheetNames.forEach(n=>addOption(sel,n));
+    if(cashFlowWorkbook.SheetNames.length)sel.value=cashFlowWorkbook.SheetNames[0];
+    status.style.color="#166534";status.innerText="Workbook loaded. Select worksheet, Project and Tower, then Detect & Preview.";
+  }catch(e){
+    cashFlowWorkbook=null;status.style.color="#dc2626";status.innerText=e.message;
+  }
+}
+function openCashFlowImport(){
+  if(!hasExecutiveAccess()){alert("Cash Flow is available to CEO and Project Manager only.");return;}
+  ensureCashFlowMasterData(function(){
+    populateCashFlowProjectOptions();
+    updateCashFlowImportTowers();
+    cashFlowWorkbook=null;cashFlowImportRows=[];
+    document.getElementById("cashFlowImportFile").value="";
+    document.getElementById("cashFlowImportSheet").innerHTML='<option value="">Select worksheet</option>';
+    document.getElementById("cashFlowImportStatus").innerText="";
+    document.getElementById("cashFlowImportSummary").innerHTML="";
+    document.getElementById("cashFlowImportPreview").innerHTML="";
+    document.getElementById("cashFlowImportNowButton").disabled=true;
+    document.getElementById("cashFlowImportModal").style.display="block";
+    document.body.style.overflow="hidden";
+  });
+}
+function closeCashFlowImport(){
+  document.getElementById("cashFlowImportModal").style.display="none";
+  document.body.style.overflow="";
+}
+function previewCashFlowExcel(){
+  const status=document.getElementById("cashFlowImportStatus");
+  const sheetName=document.getElementById("cashFlowImportSheet").value;
+  const defaultProject=document.getElementById("cashFlowImportProject").value;
+  const defaultTower=document.getElementById("cashFlowImportTower").value;
+  if(!cashFlowWorkbook){status.style.color="#dc2626";status.innerText="Select an Excel file first.";return;}
+  if(!sheetName){status.style.color="#dc2626";status.innerText="Select a worksheet.";return;}
+  if(!defaultProject||!defaultTower){status.style.color="#dc2626";status.innerText="Select the default Project and Tower.";return;}
+
+  try{
+    const ws=cashFlowWorkbook.Sheets[sheetName];
+    const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:"",raw:true});
+    const detected=cashDetectHeader(rows);
+    const map=cashMapColumns(detected.headers);
+    const out=[];
+
+    for(let r=detected.rowIndex+1;r<rows.length;r++){
+      const row=rows[r]||[];
+      const serial=map.serialNo>=0?cashNorm(row[map.serialNo]):"";
+      const initial=map.initialBudget>=0?row[map.initialBudget]:"";
+      const awarded=map.awardedValue>=0?row[map.awardedValue]:"";
+      const spent=map.actualSpending>=0?row[map.actualSpending]:"";
+      const pending=map.pendingApproval>=0?row[map.pendingApproval]:"";
+      const actual=map.actualProgress>=0?row[map.actualProgress]:"";
+      const remarks=map.remarks>=0?cashNorm(row[map.remarks]):"";
+      const project=(map.project>=0?cashNorm(row[map.project]):"")||defaultProject;
+      const tower=(map.tower>=0?cashNorm(row[map.tower]):"")||defaultTower;
+
+      if(!serial && cashNorm(initial)==="" && cashNorm(awarded)==="" && cashNorm(spent)==="" && cashNorm(pending)==="" && cashNorm(actual)==="" && !remarks)continue;
+
+      const errors=[];
+      if(!project)errors.push("Project required");
+      if(!tower)errors.push("Tower required");
+
+      const initialN=cashNum(initial),awardedN=cashNum(awarded),spentN=cashNum(spent),pendingN=cashNum(pending),actualN=cashPercent(actual);
+      if(initialN<0||awardedN<0||spentN<0||pendingN<0)errors.push("Amounts cannot be negative");
+
+      out.push({
+        _row:r+1,_errors:errors,
+        serialNo:serial,project:project,tower:tower,
+        initialBudget:initialN,awardedValue:awardedN,actualSpending:spentN,
+        pendingApproval:pendingN,actualProgress:actualN,remarks:remarks
+      });
+    }
+
+    cashFlowImportRows=out;
+    const valid=out.filter(x=>!x._errors.length);
+    document.getElementById("cashFlowImportSummary").innerHTML=
+      '<span class="cashflow-import-chip">Rows: '+out.length+'</span>'+
+      '<span class="cashflow-import-chip">Valid: '+valid.length+'</span>'+
+      '<span class="cashflow-import-chip">Errors: '+(out.length-valid.length)+'</span>'+
+      '<span class="cashflow-import-chip">Awarded: '+formatCashPKR(valid.reduce((a,x)=>a+x.awardedValue,0))+'</span>';
+
+    let h='<div class="cashflow-import-table-wrap"><table class="cashflow-import-table"><thead><tr>'+
+      '<th>Excel Row</th><th>S.No.</th><th>Project</th><th>Tower</th><th>Initial Budget</th><th>Awarded</th><th>Actual Spending</th><th>Balance</th><th>Pending Approval</th><th>Actual Progress</th><th>Financial Progress</th><th>Remarks</th><th>Validation</th>'+
+      '</tr></thead><tbody>';
+    out.forEach(x=>{
+      const bal=x.awardedValue-x.actualSpending;
+      const fp=x.awardedValue?(x.actualSpending/x.awardedValue)*100:0;
+      h+='<tr class="'+(x._errors.length?"cashflow-import-error":"cashflow-import-valid")+'">'+
+        '<td>'+x._row+'</td><td>'+escapeHtml(x.serialNo)+'</td><td>'+escapeHtml(x.project)+'</td><td>'+escapeHtml(x.tower)+'</td>'+
+        '<td>'+escapeHtml(formatCashPKR(x.initialBudget))+'</td><td>'+escapeHtml(formatCashPKR(x.awardedValue))+'</td><td>'+escapeHtml(formatCashPKR(x.actualSpending))+'</td><td>'+escapeHtml(formatCashPKR(bal))+'</td>'+
+        '<td>'+escapeHtml(formatCashPKR(x.pendingApproval))+'</td><td>'+x.actualProgress.toFixed(2)+'%</td><td>'+fp.toFixed(2)+'%</td><td>'+escapeHtml(x.remarks)+'</td><td>'+(x._errors.length?escapeHtml(x._errors.join("; ")):"Ready")+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+    document.getElementById("cashFlowImportPreview").innerHTML=h;
+    status.style.color=valid.length?"#166534":"#dc2626";
+    status.innerText=valid.length+" valid row(s) ready from worksheet “"+sheetName+"”.";
+    document.getElementById("cashFlowImportNowButton").disabled=valid.length===0;
+  }catch(e){
+    cashFlowImportRows=[];
+    document.getElementById("cashFlowImportNowButton").disabled=true;
+    status.style.color="#dc2626";status.innerText=e.message;
+  }
+}
+function commitCashFlowImport(){
+  const valid=cashFlowImportRows.filter(x=>!x._errors.length).map(x=>({
+    serialNo:x.serialNo,project:x.project,tower:x.tower,
+    initialBudget:x.initialBudget,awardedValue:x.awardedValue,
+    actualSpending:x.actualSpending,pendingApproval:x.pendingApproval,
+    actualProgress:x.actualProgress,remarks:x.remarks
+  }));
+  if(!valid.length)return;
+  const btn=document.getElementById("cashFlowImportNowButton");
+  const status=document.getElementById("cashFlowImportStatus");
+  btn.disabled=true;status.style.color="#475569";status.innerText="Importing Cash Flow rows...";
+  cashFlowApi("bulkImportCashFlow",{rows:valid})
+    .then(function(r){
+      btn.disabled=false;
+      status.style.color=(r.errors&&r.errors.length)?"#b45309":"#166534";
+      status.innerText=r.message||"Cash Flow import complete.";
+      loadCashFlow();
+    })
+    .catch(function(e){
+      btn.disabled=false;status.style.color="#dc2626";status.innerText=e.message;
+    });
+}
 
 
 /* ===================== BOQ & COST CONTROL V2 ===================== */
