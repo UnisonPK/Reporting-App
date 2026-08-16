@@ -1929,7 +1929,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 <script src="api-shim.js?v=20260816-7"></script>
 <!-- BOQ Smart Import V2 embedded -->
 <script>
-/* Reporting App - BOQ Smart Import V2.9 - remeasurable duplicates allowed */
+/* Reporting App - BOQ Smart Import V3.0 - Work Package totals */
 (function(){
   "use strict";
 
@@ -2129,6 +2129,14 @@ label{color:#344054;font-size:13px;margin-top:14px}
     .boq-import-defaults{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0;padding:14px;border:1px solid #e5e7eb;border-radius:12px;background:#f8fafc}
     .boq-import-defaults label{margin-top:0}.boq-import-status{margin:12px 0;font-weight:700}.boq-import-summary{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
     .boq-import-chip{padding:7px 11px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:800}.boq-detected{padding:10px 12px;border-radius:10px;background:#ecfdf5;color:#166534;font-size:12px;margin:10px 0}
+    .boq-package-summary{margin:12px 0 16px;border:1px solid #dbe3ef;border-radius:12px;overflow:hidden;background:#fff}
+    .boq-package-summary-title{padding:10px 12px;background:#f8fafc;border-bottom:1px solid #e5e7eb;font-weight:900;color:#334155}
+    .boq-package-summary-table{width:100%;border-collapse:collapse}
+    .boq-package-summary-table th,.boq-package-summary-table td{padding:9px 12px;border-bottom:1px solid #eef2f7;font-size:12px;text-align:left}
+    .boq-package-summary-table th{background:#fbfcfe;color:#64748b;font-weight:800}
+    .boq-package-summary-table td:last-child,.boq-package-summary-table th:last-child{text-align:right}
+    .boq-package-summary-table tr:last-child td{border-bottom:0}
+    .boq-package-total-row td{font-weight:900;background:#f8fafc;color:#0b3f88}
     .boq-import-table-wrap{overflow:auto;border:1px solid #e5e7eb;border-radius:10px;max-height:430px}.boq-import-table{width:100%;border-collapse:collapse;min-width:1150px}
     .boq-import-table th,.boq-import-table td{padding:8px 9px;border-bottom:1px solid #e5e7eb;font-size:12px;text-align:left}.boq-import-table th{position:sticky;top:0;background:#f8fafc;z-index:2}
     .boq-import-error{background:#fef2f2;color:#991b1b}.boq-import-valid{background:#f0fdf4}
@@ -2142,11 +2150,11 @@ label{color:#344054;font-size:13px;margin-top:14px}
     addStyle();
     if(!document.getElementById("boqBulkImportModal")){
       const modal=document.createElement("div");modal.id="boqBulkImportModal";modal.className="boq-import-modal";
-      modal.innerHTML=`<div class="boq-import-card"><div class="boq-import-head"><div><div style="font-size:22px;font-weight:900">BOQ Smart Excel Import V2.9</div><div style="color:#64748b;margin-top:4px">Automatically detects project BOQ layouts, two-line headers and common column names.</div></div><button class="modal-close" type="button" onclick="closeBOQBulkImport()">Close</button></div>
-      <div class="boq-import-body"><div class="module-note"><b>Smart Import V2.9:</b> Mandatory measurable fields remain Code, Description, Work Package, QTY, Unit, Rate and Amount. Project, Tower / Block, Floor / Area and Contractor are optional. Repeated / duplicate measurable BOQ rows are allowed because remeasurable BOQ items may legitimately repeat across floors or locations.</div>
+      modal.innerHTML=`<div class="boq-import-card"><div class="boq-import-head"><div><div style="font-size:22px;font-weight:900">BOQ Smart Excel Import V3.0</div><div style="color:#64748b;margin-top:4px">Automatically detects project BOQ layouts, two-line headers and common column names.</div></div><button class="modal-close" type="button" onclick="closeBOQBulkImport()">Close</button></div>
+      <div class="boq-import-body"><div class="module-note"><b>Smart Import V3.0:</b> Mandatory measurable fields remain Code, Description, Work Package, QTY, Unit, Rate and Amount. Project, Tower / Block, Floor / Area and Contractor are optional. Repeated remeasurable rows are retained. The preview now also shows a Work Package Summary with BOQ item count and total amount for each package.</div>
       <div class="boq-import-actions"><input id="boqBulkFile" type="file" accept=".xlsx,.xls" style="max-width:430px"><button class="boq-import-btn" type="button" onclick="previewBOQExcel()">Detect & Preview</button><button id="boqBulkImportNow" class="boq-import-btn" type="button" onclick="commitBOQBulkImport()" disabled>Import Valid Rows</button></div>
       <div class="boq-import-defaults"><div><label>Default Project <span style="font-weight:400;color:#64748b">(optional)</span></label><select id="boqImportProject"><option value="">Auto-detect / Select Project</option></select></div><div><label>Work Package / Category * <span style="font-weight:400;color:#64748b">(used when Excel is blank)</span></label><input id="boqImportPackage" placeholder="e.g. Structural Works"></div><div><label>Contractor</label><input id="boqImportContractor" placeholder="Not Assigned"></div></div>
-      <div id="boqDetectedInfo"></div><div id="boqBulkStatus" class="boq-import-status"></div><div id="boqBulkSummary" class="boq-import-summary"></div><div id="boqBulkPreview"></div></div></div>`;
+      <div id="boqDetectedInfo"></div><div id="boqBulkStatus" class="boq-import-status"></div><div id="boqBulkSummary" class="boq-import-summary"></div><div id="boqWorkPackageSummary"></div><div id="boqBulkPreview"></div></div></div>`;
       document.body.appendChild(modal);
     }
   }
@@ -2560,6 +2568,68 @@ label{color:#344054;font-size:13px;margin-top:14px}
     });
   }
 
+  function renderWorkPackageSummary(){
+    const container=document.getElementById("boqWorkPackageSummary");
+    if(!container)return;
+
+    const packageMap={};
+
+    importRows
+      .filter(r=>!r._codeOnly && !r._errors.length)
+      .forEach(r=>{
+        const pkg=norm(r.workPackage)||"Unassigned";
+        if(!packageMap[pkg]){
+          packageMap[pkg]={
+            count:0,
+            qty:0,
+            amount:0
+          };
+        }
+
+        packageMap[pkg].count++;
+        packageMap[pkg].qty+=(Number(r.contractQty)||0);
+        packageMap[pkg].amount+=(Number(r.amount)||0);
+      });
+
+    const packages=Object.keys(packageMap).sort((a,b)=>a.localeCompare(b));
+
+    if(!packages.length){
+      container.innerHTML="";
+      return;
+    }
+
+    let grandCount=0;
+    let grandAmount=0;
+
+    let html='<div class="boq-package-summary">';
+    html+='<div class="boq-package-summary-title">Work Package Summary</div>';
+    html+='<table class="boq-package-summary-table"><thead><tr>';
+    html+='<th>Work Package</th><th>BOQ Items</th><th>Total Amount (PKR)</th>';
+    html+='</tr></thead><tbody>';
+
+    packages.forEach(pkg=>{
+      const x=packageMap[pkg];
+      grandCount+=x.count;
+      grandAmount+=x.amount;
+
+      html+='<tr>';
+      html+='<td>'+safe(pkg)+'</td>';
+      html+='<td>'+x.count.toLocaleString()+'</td>';
+      html+='<td>'+x.amount.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</td>';
+      html+='</tr>';
+    });
+
+    html+='<tr class="boq-package-total-row">';
+    html+='<td>GRAND TOTAL</td>';
+    html+='<td>'+grandCount.toLocaleString()+'</td>';
+    html+='<td>'+grandAmount.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</td>';
+    html+='</tr>';
+
+    html+='</tbody></table></div>';
+
+    container.innerHTML=html;
+  }
+
   function renderPreview(){
     const headings=importRows.filter(r=>r._codeOnly).length;
     const measurable=importRows.filter(r=>!r._codeOnly);
@@ -2567,6 +2637,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
     const invalid=measurable.filter(r=>r._errors.length).length;
     const total=measurable.reduce((s,r)=>s+(r._errors.length?0:(Number(r.amount)||0)),0);
     document.getElementById("boqBulkSummary").innerHTML=`<span class="boq-import-chip">Rows: ${importRows.length}</span><span class="boq-import-chip">Headings: ${headings}</span><span class="boq-import-chip">Valid Measurable: ${valid}</span><span class="boq-import-chip">Errors: ${invalid}</span><span class="boq-import-chip">Valid Amount: PKR ${total.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</span>`;
+    renderWorkPackageSummary();
     let h='<div class="boq-import-table-wrap"><table class="boq-import-table"><thead><tr><th>Excel Row</th><th>Code</th><th>Description</th><th>Tower</th><th>Floor</th><th>Qty</th><th>Unit</th><th>Rate</th><th>Amount</th><th>Project</th><th>Package</th><th>Validation</th></tr></thead><tbody>';
     importRows.forEach(r=>{
       const codeOnly=!!r._codeOnly;
@@ -2582,7 +2653,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
     document.getElementById("boqBulkPreview").innerHTML=h+'</tbody></table></div>';
   }
 
-  window.openBOQBulkImport=function(){if(typeof hasExecutiveAccess==="function"&&!hasExecutiveAccess()){alert("BOQ & Cost is available to CEO and Project Manager only.");return;}injectUi();populateProjectDefaults();importRows=[];detectedInfo=null;["boqBulkStatus","boqDetectedInfo"].forEach(id=>document.getElementById(id).textContent="");document.getElementById("boqBulkSummary").innerHTML="";document.getElementById("boqBulkPreview").innerHTML="";document.getElementById("boqBulkImportNow").disabled=true;document.getElementById("boqBulkImportModal").style.display="block";document.body.style.overflow="hidden";};
+  window.openBOQBulkImport=function(){if(typeof hasExecutiveAccess==="function"&&!hasExecutiveAccess()){alert("BOQ & Cost is available to CEO and Project Manager only.");return;}injectUi();populateProjectDefaults();importRows=[];detectedInfo=null;["boqBulkStatus","boqDetectedInfo"].forEach(id=>document.getElementById(id).textContent="");document.getElementById("boqBulkSummary").innerHTML="";document.getElementById("boqWorkPackageSummary").innerHTML="";document.getElementById("boqBulkPreview").innerHTML="";document.getElementById("boqBulkImportNow").disabled=true;document.getElementById("boqBulkImportModal").style.display="block";document.body.style.overflow="hidden";};
   window.closeBOQBulkImport=function(){const m=document.getElementById("boqBulkImportModal");if(m)m.style.display="none";document.body.style.overflow="";};
 
   window.previewBOQExcel=async function(){
