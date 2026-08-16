@@ -2043,22 +2043,35 @@ label{color:#344054;font-size:13px;margin-top:14px}
     for(let r=start;r<rawRows.length;r++){
       const row=rawRows[r]||[];if(!isLikelyDataRow(row,map))continue;
       const comp=buildComponentRemark(row,map);
+      const code=map.itemNo>=0?norm(row[map.itemNo]):"";
+      const qtyRaw=map.contractQty>=0?norm(row[map.contractQty]):"";
+      const codeOnlyRow=code!=="" && qtyRaw==="";
+
       out.push({
-        _row:r+1,itemNo:map.itemNo>=0?norm(row[map.itemNo]):"",description:map.description>=0?norm(row[map.description]):"",unit:map.unit>=0?norm(row[map.unit]):"",
-        contractQty:map.contractQty>=0?row[map.contractQty]:"",rate:map.rate>=0?row[map.rate]:"",sourceAmount:map.amount>=0?row[map.amount]:"",
-        project:defaults.project,tower:map.tower>=0?norm(row[map.tower]):"",floor:map.floor>=0?norm(row[map.floor]):"",workPackage:defaults.workPackage,contractor:defaults.contractor||"Not Assigned",
-        remarks:["Imported by BOQ Smart Import V2",comp].filter(Boolean).join(" | ")
+        _row:r+1,
+        itemNo:code,
+        description:map.description>=0?norm(row[map.description]):"",
+        unit:codeOnlyRow?"":(map.unit>=0?norm(row[map.unit]):""),
+        contractQty:codeOnlyRow?"":(map.contractQty>=0?row[map.contractQty]:""),
+        rate:codeOnlyRow?"":(map.rate>=0?row[map.rate]:""),
+        sourceAmount:codeOnlyRow?"":(map.amount>=0?row[map.amount]:""),
+        project:codeOnlyRow?"":defaults.project,
+        tower:codeOnlyRow?"":(map.tower>=0?norm(row[map.tower]):""),
+        floor:map.floor>=0?norm(row[map.floor]):"",
+        workPackage:codeOnlyRow?"":defaults.workPackage,
+        contractor:codeOnlyRow?"":(defaults.contractor||"Not Assigned"),
+        remarks:codeOnlyRow?"":["Imported by BOQ Smart Import V2",comp].filter(Boolean).join(" | ")
       });
     }return out;
   }
 
   function validateRows(rows){
-    const seen=new Set();return rows.map(r=>{const errors=[];if(!r.itemNo)errors.push("BOQ Code is required");if(!r.description)errors.push("Description is required");if(!r.unit)errors.push("Unit is required");if(!r.project)errors.push("Project is required");if(!r.tower)errors.push("Tower/Block is required");if(!r.floor)r.floor="Overall / All Floors";if(!r.workPackage)errors.push("Work Package is required");
+    const seen=new Set();return rows.map(r=>{const errors=[];const codeOnlyRow=!!r.itemNo&&norm(r.contractQty)==="";if(!r.itemNo)errors.push("BOQ Code is required");if(!r.description)errors.push("Description is required");if(!codeOnlyRow&&!r.unit)errors.push("Unit is required");if(!codeOnlyRow&&!r.project)errors.push("Project is required");if(!codeOnlyRow&&!r.tower)errors.push("Tower/Block is required");if(!r.floor)r.floor="Overall / All Floors";if(!r.workPackage)errors.push("Work Package is required");
       const qtyRaw=norm(r.contractQty);
       const qty=qtyRaw===""?0:num(r.contractQty);
       const rate=num(r.rate);
       if(qtyRaw!==""&&(!Number.isFinite(qty)||qty<0))errors.push("Qty must be a non-negative number");
-      if(!Number.isFinite(rate)||rate<0)errors.push("Rate must be a non-negative number");
+      if(!codeOnlyRow&&(!Number.isFinite(rate)||rate<0))errors.push("Rate must be a non-negative number");
       if(r.project&&!projectExists(r.project))errors.push("Invalid Project");if(r.project&&r.tower&&!towerExists(r.project,r.tower))errors.push("Invalid Tower/Block for Project");if(r.project&&r.tower&&r.floor&&!floorExists(r.project,r.tower,r.floor))errors.push("Invalid Floor/Area");
       const key=[r.project,r.tower,r.floor,r.itemNo].map(x=>norm(x).toLowerCase()).join("||");if(seen.has(key))errors.push("Duplicate within Excel file");seen.add(key);
       r.contractQty=Number.isFinite(qty)?qty:0;r.rate=Number.isFinite(rate)?rate:0;r.amount=Math.round(r.contractQty*r.rate*100)/100;r._errors=errors;return r;});
