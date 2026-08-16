@@ -1,4 +1,4 @@
-/* Reporting App API Shim - BOQ & Cost V1 build 2026-08-16.4 */
+/* Reporting App API Shim - BOQ cache refresh build 2026-08-16.5 */
 
 (function () {
   "use strict";
@@ -385,7 +385,7 @@
 
 
   /* =========================================================
-     GOOGLE.SCRIPT.RUN COMPATIBILITY LAYER
+     GOOGLE.SCRIPT.RUN COMPATIBILITY
   ========================================================= */
 
   function createRunner(
@@ -398,9 +398,7 @@
       get: function (_target, prop) {
 
 
-        /* -----------------------------------------------
-           SUCCESS HANDLER
-        ----------------------------------------------- */
+        /* SUCCESS HANDLER */
 
         if (prop === "withSuccessHandler") {
 
@@ -415,9 +413,7 @@
         }
 
 
-        /* -----------------------------------------------
-           FAILURE HANDLER
-        ----------------------------------------------- */
+        /* FAILURE HANDLER */
 
         if (prop === "withFailureHandler") {
 
@@ -432,9 +428,7 @@
         }
 
 
-        /* -----------------------------------------------
-           ACTUAL API METHOD
-        ----------------------------------------------- */
+        /* ACTUAL API METHOD */
 
         return function () {
 
@@ -477,9 +471,7 @@
             .then(function (data) {
 
 
-              /* =========================================
-                 LOGIN HANDLING
-              ========================================= */
+              /* LOGIN */
 
               if (req.login) {
 
@@ -502,9 +494,7 @@
               }
 
 
-              /* =========================================
-                 NORMAL SUCCESS
-              ========================================= */
+              /* NORMAL SUCCESS */
 
               if (successHandler) {
 
@@ -518,9 +508,7 @@
             .catch(function (err) {
 
 
-              /* =========================================
-                 LOGIN FAILURE
-              ========================================= */
+              /* LOGIN FAILURE */
 
               if (
                 req.login &&
@@ -536,9 +524,7 @@
               }
 
 
-              /* =========================================
-                 NORMAL FAILURE
-              ========================================= */
+              /* NORMAL FAILURE */
 
               if (failureHandler) {
 
