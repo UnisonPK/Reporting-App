@@ -1927,7 +1927,165 @@ label{color:#344054;font-size:13px;margin-top:14px}
 </div>
 <script src="app-config.js?v=20260816-7"></script>
 <script src="api-shim.js?v=20260816-7"></script>
-<script src="boq-bulk-import-v1.js?v=20260816-3"></script>
+<!-- BOQ Bulk Import V1.2 embedded to avoid external JS loading/cache issues -->
+<script>
+/* Reporting App - BOQ Bulk Import V1
+   Drop-in frontend module for BOQ & Cost V2.1.
+*/
+(function(){
+  "use strict";
+  const REQUIRED_HEADERS=["BOQ Code","Description","Unit","Qty","Rate","Project","Tower/Block","Floor/Area","Category"];
+  let importRows=[];
+
+  function addStyle(){
+    if(document.getElementById("boqBulkImportStyle"))return;
+    const s=document.createElement("style");
+    s.id="boqBulkImportStyle";
+    s.textContent=`
+    .boq-import-btn{border:0;background:#0b3f88;color:#fff;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer;margin-left:8px}
+    .boq-import-modal{display:none;position:fixed;inset:0;z-index:1600;background:rgba(15,23,42,.62);padding:20px;overflow:auto}
+    .boq-import-card{max-width:1100px;margin:20px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+    .boq-import-head{padding:20px 22px;background:#f8fafc;border-bottom:1px solid #e5e7eb;display:flex;justify-content:space-between;gap:15px;align-items:flex-start}
+    .boq-import-body{padding:20px 22px}.boq-import-actions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+    .boq-import-status{margin:12px 0;font-weight:700}.boq-import-summary{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+    .boq-import-chip{padding:7px 11px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:800}
+    .boq-import-table-wrap{overflow:auto;border:1px solid #e5e7eb;border-radius:10px;max-height:430px}
+    .boq-import-table{width:100%;border-collapse:collapse;min-width:1100px}
+    .boq-import-table th,.boq-import-table td{padding:8px 9px;border-bottom:1px solid #e5e7eb;font-size:12px;text-align:left}
+    .boq-import-table th{position:sticky;top:0;background:#f8fafc;z-index:2}
+    .boq-import-error{background:#fef2f2;color:#991b1b}.boq-import-valid{background:#f0fdf4}
+    @media(max-width:700px){.boq-import-modal{padding:0}.boq-import-card{margin:0;min-height:100vh;border-radius:0}}`;
+    document.head.appendChild(s);
+  }
+
+  function injectSheetJs(){
+    if(window.XLSX)return Promise.resolve();
+    return new Promise((resolve,reject)=>{
+      const s=document.createElement("script");
+      s.src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+      s.onload=resolve;
+      s.onerror=()=>reject(new Error("Unable to load Excel reader library."));
+      document.head.appendChild(s);
+    });
+  }
+
+  function injectUi(){
+    addStyle();
+    const toolbar=document.querySelector("#boqCostPage .admin-toolbar");
+    if(toolbar&&!document.getElementById("boqBulkImportButton")){
+      const btn=document.createElement("button");
+      btn.id="boqBulkImportButton";
+      btn.className="boq-import-btn";
+      btn.type="button";
+      btn.textContent="⇧ Bulk Excel Import";
+      btn.onclick=openBOQBulkImport;
+      toolbar.appendChild(btn);
+    }
+    if(!document.getElementById("boqBulkImportModal")){
+      const modal=document.createElement("div");
+      modal.id="boqBulkImportModal";
+      modal.className="boq-import-modal";
+      modal.innerHTML=`<div class="boq-import-card">
+      <div class="boq-import-head"><div><div style="font-size:22px;font-weight:800">BOQ Bulk Excel Import</div>
+      <div style="color:#64748b;margin-top:4px">Preview, validate, detect duplicates and import BOQ rows.</div></div>
+      <button class="modal-close" onclick="closeBOQBulkImport()">Close</button></div>
+      <div class="boq-import-body">
+      <div class="module-note">Required: <b>BOQ Code, Description, Unit, Qty, Rate, Project, Tower/Block, Floor/Area, Category</b>. Amount is recalculated as Qty × Rate. Duplicate key = Project + Tower/Block + Floor/Area + BOQ Code.</div>
+      <div class="boq-import-actions"><input id="boqBulkFile" type="file" accept=".xlsx,.xls" style="max-width:420px">
+      <button class="boq-import-btn" onclick="previewBOQExcel()">Preview & Validate</button>
+      <button id="boqBulkImportNow" class="boq-import-btn" onclick="commitBOQBulkImport()" disabled>Import Valid Rows</button></div>
+      <div id="boqBulkStatus" class="boq-import-status"></div><div id="boqBulkSummary" class="boq-import-summary"></div><div id="boqBulkPreview"></div>
+      </div></div>`;
+      document.body.appendChild(modal);
+    }
+  }
+
+  const norm=v=>String(v==null?"":v).trim();
+  function num(v){if(typeof v==="number")return v;const n=Number(norm(v).replace(/,/g,""));return Number.isFinite(n)?n:NaN;}
+  const keyOf=r=>[r.project,r.tower,r.floor,r.itemNo].map(x=>norm(x).toLowerCase()).join("||");
+  const projectExists=p=>(masterData&&masterData.projects||[]).some(x=>norm(x["Project Name"])===p);
+  const towerExists=(p,t)=>(masterData&&masterData.towers||[]).some(x=>norm(x["Project"])===p&&norm(x["Tower / Block"])===t);
+  function floorExists(p,t,f){
+    if(f==="Overall / All Floors")return true;
+    return (masterData&&masterData.floors||[]).some(x=>norm(x["Tower / Block"])===t&&(!norm(x["Project"])||norm(x["Project"])===p)&&norm(x["Floor"])===f);
+  }
+
+  function validateRows(rows){
+    const seen=new Set();
+    return rows.map((r,i)=>{
+      const errors=[];
+      [["BOQ Code","itemNo"],["Description","description"],["Unit","unit"],["Qty","contractQty"],["Rate","rate"],["Project","project"],["Tower/Block","tower"],["Floor/Area","floor"],["Category","workPackage"]]
+      .forEach(([h,k])=>{if(!norm(r[k]))errors.push(h+" is required");});
+      const qty=num(r.contractQty),rate=num(r.rate);
+      if(!Number.isFinite(qty)||qty<0)errors.push("Qty must be a non-negative number");
+      if(!Number.isFinite(rate)||rate<0)errors.push("Rate must be a non-negative number");
+      if(r.project&&!projectExists(r.project))errors.push("Invalid Project");
+      if(r.project&&r.tower&&!towerExists(r.project,r.tower))errors.push("Tower/Block does not belong to Project");
+      if(r.project&&r.tower&&r.floor&&!floorExists(r.project,r.tower,r.floor))errors.push("Invalid Floor/Area");
+      const k=keyOf(r);if(seen.has(k))errors.push("Duplicate within Excel file");seen.add(k);
+      r._row=i+2;r._errors=errors;r.contractQty=Number.isFinite(qty)?qty:0;r.rate=Number.isFinite(rate)?rate:0;
+      r.amount=Math.round(r.contractQty*r.rate*100)/100;r.contractor=norm(r.contractor)||"Not Assigned";
+      r.status="Active";r.remarks="Imported from BOQ Bulk Excel";return r;
+    });
+  }
+
+  function readWorkbook(file){
+    return new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:"array"});const ws=wb.Sheets[wb.SheetNames[0]];resolve(XLSX.utils.sheet_to_json(ws,{defval:""}));}catch(err){reject(err);}};
+      reader.onerror=()=>reject(new Error("Unable to read Excel file."));
+      reader.readAsArrayBuffer(file);
+    });
+  }
+
+  function mapExcelRows(data){return data.map(x=>({
+    itemNo:norm(x["BOQ Code"]),description:norm(x["Description"]),unit:norm(x["Unit"]),contractQty:x["Qty"],rate:x["Rate"],
+    project:norm(x["Project"]),tower:norm(x["Tower/Block"]),floor:norm(x["Floor/Area"]),workPackage:norm(x["Category"]),contractor:norm(x["Contractor"]||"")
+  }));}
+
+  window.openBOQBulkImport=function(){
+    if(!hasExecutiveAccess()){alert("BOQ & Cost is available to CEO and Project Manager only.");return;}
+    injectUi();document.getElementById("boqBulkStatus").textContent="";document.getElementById("boqBulkSummary").innerHTML="";
+    document.getElementById("boqBulkPreview").innerHTML="";document.getElementById("boqBulkImportNow").disabled=true;
+    document.getElementById("boqBulkImportModal").style.display="block";document.body.style.overflow="hidden";
+  };
+  window.closeBOQBulkImport=function(){document.getElementById("boqBulkImportModal").style.display="none";document.body.style.overflow="";};
+
+  window.previewBOQExcel=async function(){
+    const file=document.getElementById("boqBulkFile").files[0],status=document.getElementById("boqBulkStatus");
+    if(!file){status.style.color="#dc2626";status.textContent="Select an Excel file first.";return;}
+    try{
+      status.style.color="#475569";status.textContent="Reading and validating Excel file...";await injectSheetJs();
+      const raw=await readWorkbook(file);if(!raw.length)throw new Error("The first worksheet contains no data.");
+      const headers=Object.keys(raw[0]||{}),missing=REQUIRED_HEADERS.filter(h=>!headers.includes(h));
+      if(missing.length)throw new Error("Missing required column(s): "+missing.join(", "));
+      importRows=validateRows(mapExcelRows(raw));renderPreview();
+      const valid=importRows.filter(r=>!r._errors.length).length,invalid=importRows.length-valid;
+      status.style.color=invalid?"#b45309":"#166534";
+      status.textContent=invalid?`${valid} valid row(s), ${invalid} row(s) need correction.`:`${valid} row(s) validated and ready to import.`;
+      document.getElementById("boqBulkImportNow").disabled=valid===0;
+    }catch(err){importRows=[];status.style.color="#dc2626";status.textContent=err.message;document.getElementById("boqBulkImportNow").disabled=true;}
+  };
+
+  function renderPreview(){
+    const valid=importRows.filter(r=>!r._errors.length).length,invalid=importRows.length-valid,total=importRows.reduce((s,r)=>s+(r._errors.length?0:r.amount),0);
+    document.getElementById("boqBulkSummary").innerHTML=`<span class="boq-import-chip">Rows: ${importRows.length}</span><span class="boq-import-chip">Valid: ${valid}</span><span class="boq-import-chip">Errors: ${invalid}</span><span class="boq-import-chip">Valid Amount: PKR ${total.toLocaleString(undefined,{maximumFractionDigits:2})}</span>`;
+    let h=`<div class="boq-import-table-wrap"><table class="boq-import-table"><thead><tr><th>Row</th><th>BOQ Code</th><th>Description</th><th>Unit</th><th>Qty</th><th>Rate</th><th>Amount</th><th>Project</th><th>Tower/Block</th><th>Floor/Area</th><th>Category</th><th>Validation</th></tr></thead><tbody>`;
+    importRows.forEach(r=>{h+=`<tr class="${r._errors.length?"boq-import-error":"boq-import-valid"}"><td>${r._row}</td><td><b>${escapeHtml(r.itemNo)}</b></td><td>${escapeHtml(r.description)}</td><td>${escapeHtml(r.unit)}</td><td>${r.contractQty}</td><td>${r.rate}</td><td>${r.amount.toLocaleString()}</td><td>${escapeHtml(r.project)}</td><td>${escapeHtml(r.tower)}</td><td>${escapeHtml(r.floor)}</td><td>${escapeHtml(r.workPackage)}</td><td>${r._errors.length?escapeHtml(r._errors.join("; ")):"Ready"}</td></tr>`;});
+    document.getElementById("boqBulkPreview").innerHTML=h+"</tbody></table></div>";
+  }
+
+  window.commitBOQBulkImport=function(){
+    const validRows=importRows.filter(r=>!r._errors.length).map(r=>({itemNo:r.itemNo,description:r.description,unit:r.unit,contractQty:r.contractQty,rate:r.rate,project:r.project,tower:r.tower,floor:r.floor,workPackage:r.workPackage,contractor:r.contractor,status:"Active",certifiedQty:0,paidAmount:0,variationAmount:0,remarks:r.remarks}));
+    if(!validRows.length)return;
+    const btn=document.getElementById("boqBulkImportNow"),status=document.getElementById("boqBulkStatus");btn.disabled=true;status.style.color="#475569";status.textContent="Importing validated BOQ rows...";
+    window.LCRG_API.call("bulkImportBOQ",{rows:validRows}).then(result=>{status.style.color=result.skipped>0?"#b45309":"#166534";status.textContent=`Import complete: ${result.imported} imported, ${result.skipped} duplicate/skipped.`;btn.disabled=false;loadBOQCost();})
+    .catch(err=>{btn.disabled=false;status.style.color="#dc2626";status.textContent=err.message;});
+  };
+
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",injectUi);else injectUi();
+})();
+</script>
 <script>
 let loggedInUser=null,masterData=null,currentStep=0,myReportsData=[],currentReportActivityId="";
 
