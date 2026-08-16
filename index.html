@@ -766,9 +766,9 @@ label{color:#344054;font-size:13px;margin-top:14px}
 @media(max-width:700px){.drawings-toolbar{grid-template-columns:1fr}}
 
 
-/* ===== BOQ & Cost Control V1 ===== */
+/* ===== BOQ & Cost Control V2 ===== */
 #boqCostPage{display:none}
-.boq-toolbar{display:grid;grid-template-columns:1.5fr repeat(4,1fr) auto;gap:10px;margin:14px 0}
+.boq-toolbar{display:grid;grid-template-columns:1.5fr repeat(6,1fr) auto;gap:10px;margin:14px 0}
 .boq-kpis{display:grid;grid-template-columns:repeat(7,minmax(125px,1fr));gap:10px;margin:14px 0 18px}
 .boq-kpi{background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:14px;box-shadow:0 3px 12px rgba(15,23,42,.04)}
 .boq-kpi-label{font-size:10px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.03em}
@@ -854,7 +854,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
         <button class="admin-primary-btn" onclick="openBOQModal()">+ Add BOQ Item</button>
       </div>
 
-      <div class="module-note"><b>Cost Control V1:</b> Contract and certified values are calculated from Qty × Rate. Approved Variation is maintained separately. Revised Value = Contract Amount + Variation.</div>
+      <div class="module-note"><b>Cost Control V2:</b> BOQ items are linked to the existing Project → Tower / Block → Floor / Area master hierarchy. Contract and certified values are calculated from Qty × Rate. Revised Value = Contract Amount + Variation.</div>
 
       <div class="boq-kpis">
         <div class="boq-kpi"><div class="boq-kpi-label">Original Contract</div><div id="boqKpiContract" class="boq-kpi-value">PKR 0</div><div class="boq-kpi-sub">Base BOQ value</div></div>
@@ -868,7 +868,9 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
       <div class="boq-toolbar">
         <input id="boqSearch" placeholder="Search item no., description, contractor..." oninput="renderBOQCost()">
-        <select id="boqProjectFilter" onchange="renderBOQCost()"><option value="">All Projects</option></select>
+        <select id="boqProjectFilter" onchange="updateBOQFilterTowers();renderBOQCost()"><option value="">All Projects</option></select>
+        <select id="boqTowerFilter" onchange="updateBOQFilterFloors();renderBOQCost()"><option value="">All Towers / Blocks</option></select>
+        <select id="boqFloorFilter" onchange="renderBOQCost()"><option value="">All Floors / Areas</option></select>
         <select id="boqContractorFilter" onchange="renderBOQCost()"><option value="">All Contractors</option></select>
         <select id="boqPackageFilter" onchange="renderBOQCost()"><option value="">All Work Packages</option></select>
         <select id="boqStatusFilter" onchange="renderBOQCost()">
@@ -900,7 +902,9 @@ label{color:#344054;font-size:13px;margin-top:14px}
       <input id="boqId" type="hidden">
 
       <div class="boq-form-grid">
-        <div><label>Project *</label><select id="boqProject"><option value="">Select Project</option></select></div>
+        <div><label>Project *</label><select id="boqProject" onchange="updateBOQTowers()"><option value="">Select Project</option></select></div>
+        <div><label>Tower / Block *</label><select id="boqTower" onchange="updateBOQFloors()"><option value="">Select Tower / Block</option></select></div>
+        <div><label>Floor / Area *</label><select id="boqFloor"><option value="">Select Floor / Area</option></select></div>
         <div><label>Work Package *</label><input id="boqWorkPackage" placeholder="e.g. Structural Works, Finishes, MEP"></div>
 
         <div><label>BOQ Item No. *</label><input id="boqItemNo"></div>
@@ -1918,8 +1922,8 @@ label{color:#344054;font-size:13px;margin-top:14px}
     </div>
   </div>
 </div>
-<script src="app-config.js?v=20260816-5"></script>
-<script src="api-shim.js?v=20260816-5"></script>
+<script src="app-config.js?v=20260816-6"></script>
+<script src="api-shim.js?v=20260816-6"></script>
 <script>
 let loggedInUser=null,masterData=null,currentStep=0,myReportsData=[],currentReportActivityId="";
 
@@ -4456,7 +4460,7 @@ function saveOwnPasswordChange(){
 
 
 
-/* ===================== BOQ & COST CONTROL V1 ===================== */
+/* ===================== BOQ & COST CONTROL V2 ===================== */
 let boqCostData=[];
 
 function boqNum(v){
@@ -4513,28 +4517,51 @@ function fillBOQFilters(){
     "All Projects"
   );
 
+  updateBOQFilterTowers();
   fillSimpleSelect("boqContractorFilter",unique("contractor"),"All Contractors");
   fillSimpleSelect("boqPackageFilter",unique("workPackage"),"All Work Packages");
 }
 
+function updateBOQFilterTowers(){
+  const p=document.getElementById("boqProjectFilter").value;
+  let towers=(masterData&&masterData.towers||[]);
+  if(p)towers=towers.filter(x=>String(x["Project"]||"")===p);
+  const vals=[...new Set(towers.map(x=>x["Tower / Block"]).filter(Boolean))].sort();
+  fillSimpleSelect("boqTowerFilter",vals,"All Towers / Blocks");
+  updateBOQFilterFloors();
+}
+
+function updateBOQFilterFloors(){
+  const p=document.getElementById("boqProjectFilter").value;
+  const t=document.getElementById("boqTowerFilter").value;
+  let floors=(masterData&&masterData.floors||[]);
+  if(t)floors=floors.filter(x=>String(x["Tower / Block"]||"")===t);
+  if(p)floors=floors.filter(x=>!x["Project"]||String(x["Project"])===p);
+  const vals=[...new Set(floors.map(x=>x["Floor"]).filter(Boolean))].sort();
+  fillSimpleSelect("boqFloorFilter",vals,"All Floors / Areas");
+}
+
 function resetBOQFilters(){
-  ["boqSearch","boqProjectFilter","boqContractorFilter","boqPackageFilter","boqStatusFilter"].forEach(id=>{
+  ["boqSearch","boqProjectFilter","boqTowerFilter","boqFloorFilter","boqContractorFilter","boqPackageFilter","boqStatusFilter"].forEach(id=>{
     const e=document.getElementById(id);
     if(e)e.value="";
   });
+  updateBOQFilterTowers();
   renderBOQCost();
 }
 
 function getFilteredBOQRows(){
   const q=(document.getElementById("boqSearch").value||"").toLowerCase().trim();
   const p=document.getElementById("boqProjectFilter").value;
+  const t=document.getElementById("boqTowerFilter").value;
+  const f=document.getElementById("boqFloorFilter").value;
   const c=document.getElementById("boqContractorFilter").value;
   const w=document.getElementById("boqPackageFilter").value;
   const s=document.getElementById("boqStatusFilter").value;
 
   return (boqCostData||[]).filter(r=>{
-    const txt=[r.itemNo,r.description,r.contractor,r.workPackage,r.unit,r.remarks].join(" ").toLowerCase();
-    return (!q||txt.includes(q))&&(!p||r.project===p)&&(!c||r.contractor===c)&&(!w||r.workPackage===w)&&(!s||r.status===s);
+    const txt=[r.itemNo,r.description,r.contractor,r.workPackage,r.unit,r.remarks,r.project,r.tower,r.floor].join(" ").toLowerCase();
+    return (!q||txt.includes(q))&&(!p||r.project===p)&&(!t||r.tower===t)&&(!f||r.floor===f)&&(!c||r.contractor===c)&&(!w||r.workPackage===w)&&(!s||r.status===s);
   });
 }
 
@@ -4570,32 +4597,34 @@ function renderBOQCost(){
   c.className="boq-table-wrap";
 
   let h='<table class="boq-table"><thead><tr>'+
-    '<th>Item No.</th><th>Description</th><th>Project</th><th>Work Package</th><th>Contractor</th>'+
+    '<th>Item No.</th><th>Description</th><th>Project</th><th>Tower / Block</th><th>Floor / Area</th><th>Work Package</th><th>Contractor</th>'+
     '<th>Unit</th><th>Contract Qty</th><th>Rate</th><th>Contract Amount</th>'+
     '<th>Certified Qty</th><th>Certified Amount</th><th>Paid</th><th>Variation</th>'+
     '<th>Revised</th><th>Balance Qty</th><th>Balance Cost</th><th>Status</th><th></th>'+
     '</tr></thead><tbody>';
 
   rows.forEach(r=>{
-    h+='<tr>'+
-      '<td><b>'+escapeHtml(r.itemNo)+'</b></td>'+
-      '<td>'+escapeHtml(r.description)+'</td>'+
-      '<td>'+escapeHtml(r.project)+'</td>'+
-      '<td>'+escapeHtml(r.workPackage)+'</td>'+
-      '<td>'+escapeHtml(r.contractor)+'</td>'+
-      '<td>'+escapeHtml(r.unit)+'</td>'+
-      '<td class="boq-qty">'+escapeHtml(String(r.contractQty))+'</td>'+
-      '<td class="boq-money">'+escapeHtml(formatPKR(r.rate))+'</td>'+
-      '<td class="boq-money"><b>'+escapeHtml(formatPKR(r.contractAmount))+'</b></td>'+
-      '<td class="boq-qty">'+escapeHtml(String(r.certifiedQty))+'</td>'+
-      '<td class="boq-money">'+escapeHtml(formatPKR(r.certifiedAmount))+'</td>'+
-      '<td class="boq-money">'+escapeHtml(formatPKR(r.paidAmount))+'</td>'+
-      '<td class="boq-money">'+escapeHtml(formatPKR(r.variationAmount))+'</td>'+
-      '<td class="boq-money"><b>'+escapeHtml(formatPKR(r.revisedAmount))+'</b></td>'+
-      '<td class="boq-qty">'+escapeHtml(String(r.balanceQty))+'</td>'+
-      '<td class="boq-money"><b>'+escapeHtml(formatPKR(r.balanceCost))+'</b></td>'+
-      '<td><span class="boq-status '+boqStatusClass(r.status)+'">'+escapeHtml(r.status)+'</span></td>'+
-      '<td><button class="view-btn" data-id="'+escapeHtml(r.boqId)+'" onclick="editBOQItem(this.dataset.id)">Edit</button></td>'+
+    h+='<tr>'+ 
+      '<td><b>'+escapeHtml(r.itemNo)+'</b></td>'+ 
+      '<td>'+escapeHtml(r.description)+'</td>'+ 
+      '<td>'+escapeHtml(r.project)+'</td>'+ 
+      '<td>'+escapeHtml(r.tower||"-")+'</td>'+ 
+      '<td>'+escapeHtml(r.floor||"-")+'</td>'+ 
+      '<td>'+escapeHtml(r.workPackage)+'</td>'+ 
+      '<td>'+escapeHtml(r.contractor)+'</td>'+ 
+      '<td>'+escapeHtml(r.unit)+'</td>'+ 
+      '<td class="boq-qty">'+escapeHtml(String(r.contractQty))+'</td>'+ 
+      '<td class="boq-money">'+escapeHtml(formatPKR(r.rate))+'</td>'+ 
+      '<td class="boq-money"><b>'+escapeHtml(formatPKR(r.contractAmount))+'</b></td>'+ 
+      '<td class="boq-qty">'+escapeHtml(String(r.certifiedQty))+'</td>'+ 
+      '<td class="boq-money">'+escapeHtml(formatPKR(r.certifiedAmount))+'</td>'+ 
+      '<td class="boq-money">'+escapeHtml(formatPKR(r.paidAmount))+'</td>'+ 
+      '<td class="boq-money">'+escapeHtml(formatPKR(r.variationAmount))+'</td>'+ 
+      '<td class="boq-money"><b>'+escapeHtml(formatPKR(r.revisedAmount))+'</b></td>'+ 
+      '<td class="boq-qty">'+escapeHtml(String(r.balanceQty))+'</td>'+ 
+      '<td class="boq-money"><b>'+escapeHtml(formatPKR(r.balanceCost))+'</b></td>'+ 
+      '<td><span class="boq-status '+boqStatusClass(r.status)+'">'+escapeHtml(r.status)+'</span></td>'+ 
+      '<td><button class="view-btn" data-id="'+escapeHtml(r.boqId)+'" onclick="editBOQItem(this.dataset.id)">Edit</button></td>'+ 
       '</tr>';
   });
 
@@ -4606,7 +4635,6 @@ function renderBOQCost(){
 function populateBOQMasterDropdowns(){
   const p=document.getElementById("boqProject");
   const u=document.getElementById("boqUnit");
-
   const currentP=p.value,currentU=u.value;
 
   p.innerHTML='<option value="">Select Project</option>';
@@ -4617,6 +4645,33 @@ function populateBOQMasterDropdowns(){
 
   if(currentP)p.value=currentP;
   if(currentU)u.value=currentU;
+}
+
+function updateBOQTowers(){
+  const p=value("boqProject");
+  const t=document.getElementById("boqTower");
+  const current=t.value;
+  t.innerHTML='<option value="">Select Tower / Block</option>';
+
+  (masterData&&masterData.towers||[])
+    .filter(x=>String(x["Project"]||"")===p)
+    .forEach(x=>addOption(t,x["Tower / Block"]));
+
+  if(Array.from(t.options).some(o=>o.value===current))t.value=current;
+  updateBOQFloors();
+}
+
+function updateBOQFloors(){
+  const p=value("boqProject"),t=value("boqTower");
+  const f=document.getElementById("boqFloor");
+  const current=f.value;
+  f.innerHTML='<option value="">Select Floor / Area</option>';
+
+  (masterData&&masterData.floors||[])
+    .filter(x=>String(x["Tower / Block"]||"")===t && (!x["Project"]||String(x["Project"])===p))
+    .forEach(x=>addOption(f,x["Floor"]));
+
+  if(Array.from(f.options).some(o=>o.value===current))f.value=current;
 }
 
 function clearBOQForm(){
@@ -4633,6 +4688,7 @@ function clearBOQForm(){
   populateBOQMasterDropdowns();
   document.getElementById("boqProject").value="";
   document.getElementById("boqUnit").value="";
+  updateBOQTowers();
   updateBOQCalcPreview();
 }
 
@@ -4663,6 +4719,19 @@ function editBOQItem(id){
     populateBOQMasterDropdowns();
 
     document.getElementById("boqProject").value=r.project||"";
+    updateBOQTowers();
+
+    if(r.tower && !Array.from(document.getElementById("boqTower").options).some(o=>o.value===r.tower)){
+      addOption(document.getElementById("boqTower"),r.tower);
+    }
+    document.getElementById("boqTower").value=r.tower||"";
+    updateBOQFloors();
+
+    if(r.floor && !Array.from(document.getElementById("boqFloor").options).some(o=>o.value===r.floor)){
+      addOption(document.getElementById("boqFloor"),r.floor);
+    }
+    document.getElementById("boqFloor").value=r.floor||"";
+
     document.getElementById("boqWorkPackage").value=r.workPackage||"";
     document.getElementById("boqItemNo").value=r.itemNo||"";
     document.getElementById("boqDescription").value=r.description||"";
@@ -4713,6 +4782,8 @@ function saveBOQItem(){
   const payload={
     boqId:value("boqId"),
     project:value("boqProject"),
+    tower:value("boqTower"),
+    floor:value("boqFloor"),
     workPackage:value("boqWorkPackage"),
     itemNo:value("boqItemNo"),
     description:value("boqDescription"),
@@ -4729,13 +4800,13 @@ function saveBOQItem(){
     actorUsername:loggedInUser?loggedInUser.username:""
   };
 
-  const required=["project","workPackage","itemNo","description","unit","contractQty","rate","contractor","status"];
+  const required=["project","tower","floor","workPackage","itemNo","description","unit","contractQty","rate","contractor","status"];
   const msg=document.getElementById("boqMessage");
   const btn=document.getElementById("boqSaveButton");
 
   if(required.some(k=>String(payload[k]||"").trim()==="")){
     msg.style.color="#dc2626";
-    msg.innerText="Please complete all mandatory BOQ fields.";
+    msg.innerText="Please complete Project, Tower / Block, Floor / Area and all mandatory BOQ fields.";
     return;
   }
 
