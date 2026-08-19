@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html><head><base target="_top"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Project / Site Management System</title>
-<link rel="manifest" href="manifest.webmanifest?v=20260819-2">
+<link rel="manifest" href="manifest.webmanifest?v=20260819-3">
 <meta name="theme-color" content="#0b3f88">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Management System">
-<link rel="icon" type="image/png" sizes="192x192" href="icons/pmc-icon-192.png?v=20260819-2">
-<link rel="apple-touch-icon" href="icons/pmc-icon-192.png?v=20260819-2">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/pmc-icon-192.png?v=20260819-3">
+<link rel="apple-touch-icon" href="icons/pmc-icon-192.png?v=20260819-3">
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8;color:#1f2937}input,select,textarea{width:100%;padding:12px;border:1px solid #d1d5db;border-radius:8px;font-size:14px;background:white}textarea{min-height:90px;resize:vertical}label{display:block;margin-top:15px;margin-bottom:6px;font-size:14px;font-weight:bold}#loginPage{min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}.login-card{width:100%;max-width:380px;background:white;border-radius:16px;padding:32px;box-shadow:0 8px 25px rgba(0,0,0,.12)}.logo{text-align:center;font-size:42px}.title{text-align:center;font-weight:bold;font-size:24px}.subtitle{text-align:center;color:#6b7280;margin:5px 0 25px}.password-wrap{position:relative}.toggle-password{position:absolute;right:14px;top:13px;color:#1a73e8;cursor:pointer;font-weight:bold}.login-button{width:100%;margin-top:22px;padding:14px;border:0;border-radius:8px;background:#1a73e8;color:white;font-weight:bold;cursor:pointer;transition:transform .08s ease,box-shadow .15s ease,background .15s ease,opacity .15s ease}
 .login-button:hover{background:#1765cc;box-shadow:0 4px 12px rgba(26,115,232,.28)}
@@ -249,7 +249,7 @@
 }
 
 
-/* UNISON Branding */
+/* PMC Branding */
 .brand-logo{display:block;max-width:180px;width:62%;height:auto;margin:0 auto 14px;object-fit:contain}
 .header-brand{display:flex;align-items:center;gap:12px;min-width:0}
 .header-logo{width:92px;max-height:34px;object-fit:contain;flex:0 0 auto}
@@ -867,8 +867,8 @@ label{color:#344054;font-size:13px;margin-top:14px}
 @media(max-width:620px){.cockpit-head{flex-direction:column}.cockpit-updated{text-align:left}.cockpit-health{grid-template-columns:repeat(2,1fr);padding:10px}.health-card{min-height:86px;padding:10px}.cockpit-change-strip,.cockpit-attention-grid,.cockpit-snapshot{grid-template-columns:1fr 1fr;padding-left:10px;padding-right:10px}.cockpit-section{padding:14px 10px}.cockpit-action-row{grid-template-columns:1fr}.cockpit-owner,.cockpit-impact{grid-column:auto}.cockpit-action-btn{width:100%}}
 
 </style></head><body>
-<div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="subtitle">Management / Site Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
-<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-subtitle">Management / Site Reporting System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats();loadManagementCockpit()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div>
+<div id="loginPage"><div class="login-card"><img class="brand-logo" src="icons/pmc-icon-192.png?v=20260819-3" alt="PMC"><div class="subtitle">Management / Site Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
+<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="icons/pmc-icon-192.png?v=20260819-3" alt="PMC"><div class="header-brand-text"><div class="app-subtitle">Management / Site Reporting System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats();loadManagementCockpit()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div>
 
 <div id="managementCockpit">
   <div class="cockpit-shell">
