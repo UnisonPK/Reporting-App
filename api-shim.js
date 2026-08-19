@@ -275,6 +275,58 @@
 
 
       /* =====================================================
+         DECISION / ACTION ENGINE — STAGE 1
+      ===================================================== */
+
+      case "getActionRegister":
+
+        return {
+          action: "actionRegister",
+          data: {}
+        };
+
+
+      case "saveActionItem":
+
+        return {
+          action: "saveAction",
+          data: args[0] || {}
+        };
+
+
+      case "addActionUpdate":
+
+        return {
+          action: "updateAction",
+          data: args[0] || {}
+        };
+
+
+      case "getActionHistory":
+
+        return {
+          action: "actionHistory",
+          data: args[0] || {}
+        };
+
+
+      case "closeActionItem":
+
+        return {
+          action: "closeAction",
+          data: args[0] || {}
+        };
+
+
+      case "deleteActionItem":
+
+        return {
+          action: "deleteAction",
+          data: args[0] || {}
+        };
+
+
+      /* =====================================================
          DRAWINGS V3
       ===================================================== */
 
