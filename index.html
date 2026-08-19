@@ -957,121 +957,178 @@ label{color:#344054;font-size:13px;margin-top:14px}
 .action-section-note{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:10px;padding:10px 12px;font-size:12px;margin-bottom:12px}
 @media(max-width:1050px){.action-toolbar{grid-template-columns:1fr 1fr}.action-toolbar .action-search{grid-column:1/-1}.action-kpis{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:700px){.action-toolbar,.action-form-grid{grid-template-columns:1fr}.action-toolbar .action-search,.action-form-grid .full-width{grid-column:auto}.action-kpis{grid-template-columns:repeat(2,1fr)}.action-card-top{flex-direction:column}.action-card-actions .action-btn{flex:1}}
+/* ===== Dashboard Redesign V1 — approved sidebar management layout ===== */
+#dashboardPage{background:#f5f7fb;min-height:100vh}
+#dashboardPage .header,#dashboardPage>.container{display:none!important}
+.pmc-dashboard-shell{min-height:100vh;display:grid;grid-template-columns:238px minmax(0,1fr);background:#f5f7fb}
+.pmc-sidebar{position:sticky;top:0;height:100vh;background:linear-gradient(180deg,#0b2345 0%,#071a34 100%);color:#fff;padding:18px 14px 14px;display:flex;flex-direction:column;z-index:90;box-shadow:8px 0 28px rgba(15,23,42,.08);overflow-y:auto}
+.pmc-sidebar-brand{display:flex;align-items:center;gap:10px;padding:4px 7px 17px;border-bottom:1px solid rgba(255,255,255,.09);margin-bottom:10px}.pmc-sidebar-brand img{width:39px;height:39px;object-fit:contain}.pmc-sidebar-brand b{display:block;font-size:15px;letter-spacing:.025em}.pmc-sidebar-brand span{display:block;color:#b8c6dc;font-size:10px;margin-top:3px;font-weight:700}
+.pmc-nav{display:flex;flex-direction:column;gap:2px;flex:1}.pmc-nav-section{font-size:9px;text-transform:uppercase;letter-spacing:.085em;color:#8fa4c1;font-weight:900;padding:15px 9px 5px}.pmc-nav-item{position:relative;width:100%;display:flex;align-items:center;gap:9px;text-align:left;border:0;background:transparent;color:#dce7f6;border-radius:8px;padding:9px 10px;font-size:12px;font-weight:750;cursor:pointer;transition:.14s}.pmc-nav-item>span{width:20px;text-align:center;font-size:15px;color:#a9c7ff}.pmc-nav-item:hover{background:rgba(255,255,255,.075);color:#fff}.pmc-nav-item.active{background:#155bd7;color:white;box-shadow:0 5px 15px rgba(21,91,215,.28)}.pmc-nav-item.active>span{color:#fff}.pmc-nav-badge{margin-left:auto;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:#dc2626;color:#fff;font-style:normal;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center}.pmc-nav-badge.blue{background:#2563eb}
+.pmc-site-nav{margin-top:auto}.pmc-sidebar-user{margin-top:14px;border:1px solid rgba(255,255,255,.13);border-radius:11px;padding:9px;display:flex;align-items:center;gap:9px;background:rgba(255,255,255,.045)}.pmc-user-avatar{width:34px;height:34px;border-radius:50%;background:#1460d8;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900}.pmc-user-copy{min-width:0;flex:1}.pmc-user-copy b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pmc-user-copy span{display:block;font-size:9px;color:#aabbd2;margin-top:2px}.pmc-sidebar-user button{background:transparent;color:#b8c6dc;border:0;font-weight:900;cursor:pointer}.pmc-mobile-close,.pmc-mobile-menu{display:none}
+.pmc-dashboard-main{min-width:0}.pmc-dashboard-header{min-height:108px;background:#fff;border-bottom:1px solid #e6ebf2;padding:18px 24px;display:flex;align-items:center;gap:20px;position:sticky;top:0;z-index:40}.pmc-welcome-copy{min-width:240px;flex:1}.pmc-welcome-copy h1{font-size:22px;margin:0 0 5px;color:#102445;letter-spacing:-.025em}.pmc-user-role{font-size:11px;color:#52647d}.pmc-date-row{display:flex;gap:7px;align-items:center;font-size:10px;color:#65758c;margin-top:5px}.pmc-live-dot{width:7px;height:7px;border-radius:50%;background:#16a34a;flex:0 0 auto}.pmc-header-controls{display:flex;align-items:flex-end;gap:10px}.pmc-header-controls label{margin:0;font-size:8px;text-transform:uppercase;letter-spacing:.05em;color:#475569;font-weight:900}.pmc-header-controls select{display:block;width:190px;min-height:41px;margin-top:4px;padding:8px 32px 8px 10px;border-radius:8px;font-size:11px;font-weight:700}.pmc-refresh-btn,.pmc-logout-btn{min-height:41px;border-radius:8px;padding:0 13px;font-size:10px;font-weight:900;cursor:pointer}.pmc-refresh-btn{border:1px solid #b9cdf5;background:#f7faff;color:#1254c5}.pmc-logout-btn{border:0;background:#eef2f6;color:#536273}
+.pmc-dashboard-content{padding:18px 20px 30px;max-width:1500px;margin:auto}.pmc-panel{background:#fff;border:1px solid #e1e7ef;border-radius:14px;box-shadow:0 3px 14px rgba(15,23,42,.045);overflow:hidden}.pmc-panel+.pmc-panel{margin-top:0}.pmc-panel-head{padding:14px 16px 10px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.pmc-panel-head h2{margin:0;color:#142949;text-transform:uppercase;font-size:13px;letter-spacing:.02em}.pmc-panel-head p{margin:3px 0 0;font-size:10px;color:#65758c}.pmc-panel-meta{font-size:9px;color:#7b8aa0;white-space:nowrap}.pmc-text-link{border:0;background:transparent;color:#1254c5;font-weight:900;font-size:9px;cursor:pointer}
+.pmc-cockpit-panel{margin-bottom:12px}.pmc-health-grid{grid-template-columns:repeat(7,minmax(0,1fr))!important;padding:3px 14px 12px!important;background:#fff!important;border-bottom:1px solid #edf1f5!important;gap:8px!important}.pmc-health-grid .health-card{min-height:118px!important;padding:11px!important;border-radius:10px!important;box-shadow:none!important}.pmc-health-grid .health-label{font-size:8px!important}.pmc-health-grid .health-status{font-size:12px!important;margin-top:7px!important}.pmc-health-grid .health-detail{font-size:9px!important;line-height:1.45!important}.pmc-overall-hidden{display:none!important}.pmc-change-grid{grid-template-columns:repeat(4,1fr)!important;padding:9px 14px 12px!important;border:0!important;gap:8px!important}.pmc-change-grid .change-item{padding:8px 10px!important;border-radius:8px!important}.pmc-change-grid .change-label{font-size:8px!important}.pmc-change-grid .change-value{font-size:11px!important}.pmc-hidden-cockpit-data{display:none!important}
+.pmc-dashboard-two-col{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(320px,.9fr);gap:12px;margin-bottom:12px}.pmc-control-grid,.pmc-project-controls-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 14px 14px}.pmc-control-card,.pmc-project-card{border:1px solid #e4e9f1;background:#fff;border-radius:11px;min-height:124px;padding:12px;text-align:left;display:flex;gap:11px;cursor:pointer;box-shadow:none;transition:.14s}.pmc-control-card:hover,.pmc-project-card:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(15,23,42,.07)}.pmc-control-card.green{border-left:4px solid #16a34a}.pmc-control-card.blue{border-left:4px solid #2563eb}.pmc-control-card.orange{border-left:4px solid #f59e0b}.pmc-control-icon,.pmc-project-card>span{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:19px;font-weight:900;flex:0 0 auto}.pmc-control-card.green .pmc-control-icon{background:#16a34a}.pmc-control-card.blue .pmc-control-icon{background:#2563eb}.pmc-control-card.orange .pmc-control-icon{background:#f59e0b}.pmc-control-card b,.pmc-project-card b{display:block;color:#142949;font-size:11px}.pmc-control-card strong,.pmc-project-card strong{display:block;font-size:18px;margin:4px 0 1px}.pmc-control-card.green strong{color:#16a34a}.pmc-control-card.blue strong{color:#2563eb}.pmc-control-card.orange strong{color:#f59e0b}.pmc-control-card small,.pmc-project-card small{display:block;color:#344054;font-size:8.5px;font-weight:800}.pmc-control-card p,.pmc-project-card p{margin:5px 0 0;color:#78879a;font-size:8.5px;line-height:1.35}
+.pmc-alert-panel .cockpit-actions{padding:0 14px 14px}.pmc-alert-panel .cockpit-action-row{grid-template-columns:1.25fr .75fr .6fr auto!important;padding:10px!important}.pmc-alert-panel .summary-empty{font-size:10px;padding:22px}.pmc-project-card.teal{border-left:4px solid #0ea5a6}.pmc-project-card.purple{border-left:4px solid #7c3aed}.pmc-project-card.green{border-left:4px solid #16a34a}.pmc-project-card.teal>span{background:#0ea5a6}.pmc-project-card.purple>span{background:#7c3aed}.pmc-project-card.green>span{background:#16a34a}.pmc-project-card.teal strong{color:#0f8e90}.pmc-project-card.purple strong{color:#7c3aed}.pmc-project-card.green strong{color:#16a34a}
+.pmc-snapshot-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;padding:0 14px 14px}.pmc-snapshot-grid .snapshot-card{padding:10px!important;min-height:105px}.pmc-snapshot-grid .snapshot-label{font-size:8px!important}.pmc-snapshot-grid .snapshot-value{font-size:18px!important}.pmc-snapshot-grid .snapshot-sub{font-size:8px!important}
+.pmc-site-operations-strip{margin-top:0}.pmc-site-ops-grid{display:grid;grid-template-columns:repeat(4,1fr);padding:0 14px 14px}.pmc-site-ops-grid button{border:0;border-right:1px solid #e7ebf0;background:transparent;padding:10px 14px;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer}.pmc-site-ops-grid button:last-child{border-right:0}.pmc-site-ops-grid button>span{font-size:27px;color:#155bd7;width:34px}.pmc-site-ops-grid b{display:block;font-size:10px;color:#142949}.pmc-site-ops-grid small{display:block;font-size:8.5px;color:#6c7b90;margin-top:4px;line-height:1.35}.pmc-site-ops-grid small strong{font-size:9px;color:#155bd7}.pmc-legacy-hidden{display:none!important}
+@media(max-width:1180px){.pmc-dashboard-shell{grid-template-columns:205px minmax(0,1fr)}.pmc-dashboard-header{padding:14px 16px}.pmc-header-controls select{width:155px}.pmc-health-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}.pmc-dashboard-two-col{grid-template-columns:1fr}.pmc-alert-panel{min-height:auto}}
+@media(max-width:820px){.pmc-dashboard-shell{display:block}.pmc-sidebar{position:fixed;left:-260px;top:0;width:245px;transition:left .2s ease;box-shadow:14px 0 35px rgba(15,23,42,.22)}.pmc-sidebar.open{left:0}.pmc-mobile-close{display:block;position:absolute;right:10px;top:7px;border:0;background:transparent;color:#dbeafe;font-size:24px;cursor:pointer}.pmc-mobile-menu{display:inline-flex;border:0;background:#eef4ff;color:#154fa8;border-radius:8px;width:40px;height:40px;align-items:center;justify-content:center;font-size:19px;cursor:pointer}.pmc-dashboard-header{position:sticky;min-height:auto;align-items:flex-start;flex-wrap:wrap}.pmc-welcome-copy{min-width:0;flex:1}.pmc-header-controls{width:100%;display:grid;grid-template-columns:1fr 1fr}.pmc-header-controls label select{width:100%}.pmc-refresh-btn,.pmc-logout-btn{width:100%}.pmc-dashboard-content{padding:12px}.pmc-health-grid{grid-template-columns:repeat(2,1fr)!important}.pmc-change-grid{grid-template-columns:repeat(2,1fr)!important}.pmc-control-grid,.pmc-project-controls-grid{grid-template-columns:1fr}.pmc-snapshot-grid{grid-template-columns:repeat(2,1fr)!important}.pmc-site-ops-grid{grid-template-columns:1fr 1fr}.pmc-site-ops-grid button:nth-child(2){border-right:0}.pmc-site-ops-grid button{border-bottom:1px solid #e7ebf0}.pmc-site-ops-grid button:nth-child(3),.pmc-site-ops-grid button:nth-child(4){border-bottom:0}}
+@media(max-width:480px){.pmc-welcome-copy h1{font-size:18px}.pmc-header-controls{grid-template-columns:1fr}.pmc-health-grid,.pmc-change-grid,.pmc-snapshot-grid,.pmc-site-ops-grid{grid-template-columns:1fr!important}.pmc-site-ops-grid button{border-right:0!important;border-bottom:1px solid #e7ebf0!important}.pmc-site-ops-grid button:last-child{border-bottom:0!important}.pmc-panel-head{flex-direction:column}.pmc-panel-meta{white-space:normal}}
+
 </style>
 
 </head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="icons/pmc-app-192-v3.png?v=20260819-6" alt="PMC"><div class="subtitle">Project / Site Management System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
-<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="icons/pmc-app-192-v3.png?v=20260819-6" alt="PMC"><div class="header-brand-text"><div class="app-subtitle">Project / Site Management System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats();loadManagementCockpit()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div>
-
-<div id="managementCockpit">
-  <div class="cockpit-shell">
-    <div class="cockpit-head">
-      <div><div class="cockpit-title">Management Cockpit</div><div class="cockpit-subtitle">What needs my attention? • Project-wise exception-driven management view</div></div>
-      <div class="cockpit-head-controls">
-        <label>Project<select id="cockpitProjectFilter" onchange="cockpitProjectChanged()"><option value="">Loading projects...</option></select></label>
-        <label>Tower / Area<select id="cockpitTowerFilter" onchange="renderManagementCockpitFromCache()"><option value="">All Towers / Areas</option></select></label>
-        <div id="cockpitUpdated" class="cockpit-updated">Connecting live project data...</div>
+<div id="dashboardPage">
+  <div class="pmc-dashboard-shell">
+    <aside class="pmc-sidebar" id="pmcSidebar">
+      <div class="pmc-sidebar-brand">
+        <img src="icons/pmc-app-192-v3.png?v=20260819-6" alt="PMC">
+        <div><b>PMC SYSTEM</b><span>LCRG / OLC</span></div>
       </div>
-    </div>
+      <button class="pmc-mobile-close" onclick="toggleDashboardSidebar(false)">×</button>
+      <nav class="pmc-nav">
+        <button class="pmc-nav-item active" onclick="showDashboard()"><span>⌂</span>Dashboard</button>
 
-    <div class="cockpit-health">
-      <div class="health-card" onclick="openExecutiveReport()"><div class="health-label">Overall</div><div class="health-status"><span id="healthOverallDot" class="health-dot gray"></span><span id="healthOverallText">Loading</span></div><div id="healthOverallDetail" class="health-detail">Calculating project health</div></div>
-      <div class="health-card" onclick="openPlaceholderModule('📅','Programme','Programme control will connect baseline, current and forecast milestone data to the Management Cockpit.')"><div class="health-label">Programme</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Why: Programme data not connected yet</div></div>
-      <div class="health-card" onclick="openCashFlow()"><div class="health-label">Cost</div><div class="health-status"><span id="healthCostDot" class="health-dot gray"></span><span id="healthCostText">Loading</span></div><div id="healthCostDetail" class="health-detail">Reading BOQ / Cash Flow</div></div>
-      <div class="health-card" onclick="openPlaceholderModule('🛒','Procurement','Procurement control will track package award, lead time, required-on-site dates and programme impact.')"><div class="health-label">Procurement</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Why: Procurement data not connected yet</div></div>
-      <div class="health-card" onclick="openDrawings()"><div class="health-label">Design / Technical</div><div class="health-status"><span id="healthTechnicalDot" class="health-dot gray"></span><span id="healthTechnicalText">Loading</span></div><div id="healthTechnicalDetail" class="health-detail">Reading drawing register</div></div>
-      <div class="health-card" onclick="openCashFlow()"><div class="health-label">Approvals</div><div class="health-status"><span id="healthApprovalsDot" class="health-dot gray"></span><span id="healthApprovalsText">Loading</span></div><div id="healthApprovalsDetail" class="health-detail">Reading pending approvals</div></div>
-      <div class="health-card" onclick="openBOQCost()"><div class="health-label">Commercial</div><div class="health-status"><span id="healthCommercialDot" class="health-dot gray"></span><span id="healthCommercialText">Loading</span></div><div id="healthCommercialDetail" class="health-detail">Reading BOQ / certification position</div></div>
-      <div class="health-card" onclick="openDailySummary()"><div class="health-label">Site / Quality</div><div class="health-status"><span id="healthSiteDot" class="health-dot gray"></span><span id="healthSiteText">Loading</span></div><div id="healthSiteDetail" class="health-detail">Reading site & inspections</div></div>
-    </div>
+        <div class="pmc-nav-section">Management Control</div>
+        <button class="pmc-nav-item" onclick="openActionRegister()"><span>☑</span>Action Register <em id="actionNotificationBadge" class="pmc-nav-badge" style="display:none">0</em></button>
+        <button class="pmc-nav-item" onclick="openActionRegister('decision')"><span>◎</span>Decision Centre</button>
+        <button class="pmc-nav-item" onclick="openActionRegister('critical')"><span>⚠</span>Critical Issues</button>
 
-    <div class="cockpit-change-strip">
-      <div class="change-item"><div class="change-label">Since Last Review • Activities</div><div id="changeActivities" class="change-value">—</div></div>
-      <div class="change-item"><div class="change-label">Pending Inspections</div><div id="changeInspections" class="change-value">—</div></div>
-      <div class="change-item"><div class="change-label">Constraints</div><div id="changeConstraints" class="change-value">—</div></div>
-      <div class="change-item"><div class="change-label">Pending Approval</div><div id="changePendingCost" class="change-value">—</div></div>
-    </div>
+        <div id="projectControlsDashboardSection" class="pmc-sidebar-role-section" style="display:none">
+          <div class="pmc-nav-section">Project Controls</div>
+          <button id="executiveReportCard" class="pmc-nav-item" style="display:none" onclick="openExecutiveReport()"><span>▧</span>Executive Report</button>
+          <button class="pmc-nav-item" onclick="openBOQCost()"><span>＄</span>BOQ &amp; Cost</button>
+          <button class="pmc-nav-item" onclick="openCashFlow()"><span>▣</span>Cash Flow</button>
+        </div>
 
-    <div class="cockpit-section">
-      <div class="cockpit-section-title"><span>⚠ Attention Required</span><span class="cockpit-not-connected">Only exceptions are surfaced</span></div>
-      <div class="cockpit-attention-grid">
-        <div class="attention-card info"><div id="cockpitDecisionCount" class="attention-number">—</div><div class="attention-label">Decisions Required</div><div class="attention-impact">Decision Engine will be connected next</div></div>
-        <div class="attention-card critical"><div id="cockpitConstraintCount" class="attention-number">—</div><div class="attention-label">Site Constraints / Holds</div><div id="cockpitConstraintImpact" class="attention-impact">Loading today's exceptions</div></div>
-        <div class="attention-card warning"><div id="cockpitTechnicalCount" class="attention-number">—</div><div class="attention-label">Technical Attention</div><div class="attention-impact">Under review / non-current drawings</div></div>
-        <div class="attention-card warning"><div id="cockpitPendingApproval" class="attention-number" style="font-size:18px">—</div><div class="attention-label">Pending Approval</div><div class="attention-impact">Cash Flow exposure</div></div>
+        <div class="pmc-nav-section">Technical Documents</div>
+        <button class="pmc-nav-item" onclick="openDrawings()"><span>◩</span>Drawings</button>
+        <button class="pmc-nav-item" onclick="openPlaceholderModule('📁','Documents / Submittals','Technical submittals, method statements, material approvals and project documents will be organized here.')"><span>□</span>Documents / Submittals</button>
+
+        <div id="administrationDashboardSection" class="pmc-sidebar-role-section" style="display:none">
+          <div class="pmc-nav-section">Administration</div>
+          <button class="pmc-nav-item" onclick="openAdministrationSection('users')"><span>⚙</span>Administration <em id="adminNotificationBadge" class="pmc-nav-badge" style="display:none">0</em></button>
+        </div>
+
+        <div id="siteOperationsDashboardSection" class="pmc-sidebar-role-section pmc-site-nav">
+          <div class="pmc-nav-section">Site Operations</div>
+          <button class="pmc-nav-item" onclick="openActivityForm()"><span>▤</span>Site Activity <em id="draftNotificationBadge" class="pmc-nav-badge blue" style="display:none">Draft</em></button>
+          <button class="pmc-nav-item" onclick="openMyReports()"><span>▧</span>My Reports</button>
+          <button class="pmc-nav-item" onclick="openPendingInspections()"><span>⌕</span>Pending Inspections <em id="inspectionNotificationBadge" class="pmc-nav-badge" style="display:none">0</em></button>
+          <button class="pmc-nav-item" onclick="openDailySummary()"><span>▥</span>Daily Summary</button>
+        </div>
+      </nav>
+
+      <div class="pmc-sidebar-user">
+        <div id="sidebarUserInitials" class="pmc-user-avatar">U</div>
+        <div class="pmc-user-copy"><b id="sidebarUserName">User</b><span id="sidebarUserRole">Role</span></div>
+        <button onclick="openChangePasswordModal()" title="Change Password">⋮</button>
       </div>
+    </aside>
+
+    <div class="pmc-dashboard-main">
+      <header class="pmc-dashboard-header">
+        <button class="pmc-mobile-menu" onclick="toggleDashboardSidebar(true)">☰</button>
+        <div class="pmc-welcome-copy">
+          <h1 id="welcome">Welcome</h1>
+          <div id="userRole" class="pmc-user-role"></div>
+          <div class="pmc-date-row"><span id="dashboardDate"></span><span class="pmc-live-dot"></span><span id="dashboardStatus">Loading today's site snapshot...</span></div>
+        </div>
+        <div class="pmc-header-controls">
+          <label>Project<select id="cockpitProjectFilter" onchange="cockpitProjectChanged()"><option value="">Loading projects...</option></select></label>
+          <label>Tower / Area<select id="cockpitTowerFilter" onchange="renderManagementCockpitFromCache()"><option value="">All Towers / Areas</option></select></label>
+          <button id="dashboardRefreshButton" class="pmc-refresh-btn" onclick="loadDashboardStats();loadManagementCockpit()">↻ Refresh Dashboard</button>
+          <button class="pmc-logout-btn" onclick="logout()">Logout</button>
+        </div>
+      </header>
+
+      <main class="pmc-dashboard-content">
+        <div id="managementCockpit" class="pmc-panel pmc-cockpit-panel">
+          <div class="pmc-panel-head">
+            <div><h2>Management Cockpit</h2><p>Project-wise exception-driven management view</p></div>
+            <span id="cockpitUpdated" class="pmc-panel-meta">Connecting live project data...</span>
+          </div>
+
+          <div class="cockpit-health pmc-health-grid">
+            <div class="health-card pmc-overall-hidden"><div class="health-label">Overall</div><div class="health-status"><span id="healthOverallDot" class="health-dot gray"></span><span id="healthOverallText">Loading</span></div><div id="healthOverallDetail" class="health-detail">Calculating project health</div></div>
+            <div class="health-card" onclick="openPlaceholderModule('📅','Programme','Programme control will connect baseline, current and forecast milestone data to the Management Cockpit.')"><div class="health-label">Programme</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Programme data not connected yet</div></div>
+            <div class="health-card" onclick="openCashFlow()"><div class="health-label">Cost</div><div class="health-status"><span id="healthCostDot" class="health-dot gray"></span><span id="healthCostText">Loading</span></div><div id="healthCostDetail" class="health-detail">Reading BOQ / Cash Flow</div></div>
+            <div class="health-card" onclick="openPlaceholderModule('🛒','Procurement','Procurement control will track package award, lead time, required-on-site dates and programme impact.')"><div class="health-label">Procurement</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Procurement data not connected yet</div></div>
+            <div class="health-card" onclick="openDrawings()"><div class="health-label">Design / Technical</div><div class="health-status"><span id="healthTechnicalDot" class="health-dot gray"></span><span id="healthTechnicalText">Loading</span></div><div id="healthTechnicalDetail" class="health-detail">Reading drawing register</div></div>
+            <div class="health-card" onclick="openCashFlow()"><div class="health-label">Approvals</div><div class="health-status"><span id="healthApprovalsDot" class="health-dot gray"></span><span id="healthApprovalsText">Loading</span></div><div id="healthApprovalsDetail" class="health-detail">Reading pending approvals</div></div>
+            <div class="health-card" onclick="openBOQCost()"><div class="health-label">Commercial</div><div class="health-status"><span id="healthCommercialDot" class="health-dot gray"></span><span id="healthCommercialText">Loading</span></div><div id="healthCommercialDetail" class="health-detail">Reading BOQ / certification position</div></div>
+            <div class="health-card" onclick="openDailySummary()"><div class="health-label">Site / Quality</div><div class="health-status"><span id="healthSiteDot" class="health-dot gray"></span><span id="healthSiteText">Loading</span></div><div id="healthSiteDetail" class="health-detail">Reading site & inspections</div></div>
+          </div>
+
+          <div class="cockpit-change-strip pmc-change-grid">
+            <div class="change-item"><div class="change-label">Since Last Review · Activities</div><div id="changeActivities" class="change-value">—</div></div>
+            <div class="change-item"><div class="change-label">Pending Inspections</div><div id="changeInspections" class="change-value">—</div></div>
+            <div class="change-item"><div class="change-label">Constraints</div><div id="changeConstraints" class="change-value">—</div></div>
+            <div class="change-item"><div class="change-label">Pending Approval</div><div id="changePendingCost" class="change-value">—</div></div>
+          </div>
+
+          <div class="pmc-hidden-cockpit-data" aria-hidden="true">
+            <div id="cockpitDecisionCount">—</div><div id="cockpitConstraintCount">—</div><div id="cockpitConstraintImpact"></div><div id="cockpitTechnicalCount">—</div><div id="cockpitPendingApproval">—</div><div id="cockpitBriefStatus"></div><div id="cockpitManagementBrief"></div>
+          </div>
+        </div>
+
+        <div class="pmc-dashboard-two-col">
+          <section id="managementControlDashboardSection" class="pmc-panel">
+            <div class="pmc-panel-head"><div><h2>Management Control</h2><p>Decision tracking, accountable actions and closure follow-up</p></div><button class="pmc-text-link" onclick="openActionRegister()">Go to Action Register →</button></div>
+            <div class="pmc-control-grid">
+              <button class="pmc-control-card green" onclick="openActionRegister()"><span class="pmc-control-icon">✓</span><div><b>Action Register</b><strong id="dashOpenActions">—</strong><small>Open Actions</small><p>Track, update and close actions</p></div></button>
+              <button class="pmc-control-card blue" onclick="openActionRegister('decision')"><span class="pmc-control-icon">◎</span><div><b>Decision Centre</b><strong id="dashDecisionActions">0</strong><small>PM / CEO Decisions</small><p>Decisions requiring your attention</p></div></button>
+              <button class="pmc-control-card orange" onclick="openActionRegister('critical')"><span class="pmc-control-icon">!</span><div><b>Critical Issues</b><strong id="dashCriticalActions">0</strong><small>Critical / Overdue</small><p>Immediate management intervention</p></div></button>
+            </div>
+          </section>
+
+          <section class="pmc-panel pmc-alert-panel">
+            <div class="pmc-panel-head"><div><h2>Key Alerts / Decisions</h2></div><span class="pmc-panel-meta">Owner + Action + Impact</span></div>
+            <div id="cockpitActions" class="cockpit-actions pmc-key-alerts"><div class="summary-empty">Loading management attention items...</div></div>
+          </section>
+        </div>
+
+        <div class="pmc-dashboard-two-col">
+          <section class="pmc-panel">
+            <div class="pmc-panel-head"><div><h2>Project Controls</h2><p>Management reporting, cost control and cash planning</p></div></div>
+            <div class="pmc-project-controls-grid">
+              <button class="pmc-project-card teal" onclick="openExecutiveReport()"><span>▧</span><div><b>Executive Report</b><strong id="dashConstraintCardCount">—</strong><small>Constraints Today</small><p>High-level performance overview</p></div></button>
+              <button class="pmc-project-card purple" onclick="openBOQCost()"><span>＄</span><div><b>BOQ &amp; Cost</b><strong id="dashboardBoqValue">View</strong><small>Contract Value / Exposure</small><p>Certification, payments and balance</p></div></button>
+              <button class="pmc-project-card green" onclick="openCashFlow()"><span>▣</span><div><b>Cash Flow</b><strong id="dashboardCashProgress">View</strong><small>Financial Progress</small><p>Budget, spending and balance</p></div></button>
+            </div>
+          </section>
+
+          <section class="pmc-panel">
+            <div class="pmc-panel-head"><div><h2>Project Snapshot</h2></div><span class="pmc-panel-meta">Drill down through the modules</span></div>
+            <div class="cockpit-snapshot pmc-snapshot-grid">
+              <div class="snapshot-card"><div class="snapshot-label">Reported Today</div><div id="cockpitActivities" class="snapshot-value">—</div><div class="snapshot-sub">Site activities</div></div>
+              <div class="snapshot-card"><div class="snapshot-label">Completed Today</div><div id="cockpitCompleted" class="snapshot-value">—</div><div class="snapshot-sub">Completed reports</div></div>
+              <div class="snapshot-card"><div class="snapshot-label">Financial Progress</div><div id="cockpitFinancial" class="snapshot-value">—</div><div class="snapshot-sub">Actual spending / awarded</div></div>
+              <div class="snapshot-card"><div class="snapshot-label">Cost Completion</div><div id="cockpitCostCompletion" class="snapshot-value">—</div><div class="snapshot-sub">Certified / revised BOQ</div></div>
+            </div>
+          </section>
+        </div>
+
+        <section class="pmc-panel pmc-site-operations-strip">
+          <div class="pmc-panel-head"><div><h2>Site Operations</h2><p>Daily site execution and quality management</p></div></div>
+          <div class="pmc-site-ops-grid">
+            <button onclick="openActivityForm()"><span>▤</span><div><b>Site Activity</b><small>Record and track daily site activities</small></div></button>
+            <button onclick="openMyReports()"><span>▧</span><div><b>My Reports</b><small><strong id="dashReportsCardCount">—</strong> reports today</small></div></button>
+            <button onclick="openPendingInspections()"><span>⌕</span><div><b>Pending Inspections</b><small><strong id="dashInspectionCardCount">—</strong> awaiting inspection</small></div></button>
+            <button onclick="openDailySummary()"><span>▥</span><div><b>Daily Summary</b><small><strong id="dashCompletionCardCount">—</strong> completed today</small></div></button>
+          </div>
+        </section>
+
+        <div id="legacyDashboardKpis" class="pmc-legacy-hidden">
+          <span id="dashActivities">—</span><span id="dashProgress">—</span><span id="dashCompleted">—</span><span id="dashPending">—</span><span id="dashConstraints">—</span>
+        </div>
+        <div id="dashboardManagementAttention" class="pmc-legacy-hidden" style="display:none"><div id="dashboardAttentionList"></div></div>
+      </main>
     </div>
-
-    <div class="cockpit-section">
-      <div class="cockpit-section-title"><span>Management Brief</span><span id="cockpitBriefStatus" class="cockpit-not-connected">Live summary</span></div>
-      <div id="cockpitManagementBrief" class="management-brief">Connecting current site, cost and technical information...</div>
-    </div>
-
-    <div class="cockpit-section">
-      <div class="cockpit-section-title"><span>Decisions / Actions</span><span class="cockpit-not-connected">Owner + action + impact</span></div>
-      <div id="cockpitActions" class="cockpit-actions"><div class="summary-empty">Loading management attention items...</div></div>
-    </div>
-
-    <div class="cockpit-section">
-      <div class="cockpit-section-title"><span>Project Snapshot</span><span class="cockpit-not-connected">Drill down through the modules below</span></div>
-      <div class="cockpit-snapshot">
-        <div class="snapshot-card"><div class="snapshot-label">Reported Today</div><div id="cockpitActivities" class="snapshot-value">—</div><div class="snapshot-sub">Site activities</div></div>
-        <div class="snapshot-card"><div class="snapshot-label">Completed Today</div><div id="cockpitCompleted" class="snapshot-value">—</div><div class="snapshot-sub">Completed reports</div></div>
-        <div class="snapshot-card"><div class="snapshot-label">Financial Progress</div><div id="cockpitFinancial" class="snapshot-value">—</div><div class="snapshot-sub">Actual spending / awarded</div></div>
-        <div class="snapshot-card"><div class="snapshot-label">Cost Completion</div><div id="cockpitCostCompletion" class="snapshot-value">—</div><div class="snapshot-sub">Certified / revised BOQ</div></div>
-      </div>
-    </div>
   </div>
 </div>
-
-<div id="legacyDashboardKpis" class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div id="dashboardManagementAttention" class="dashboard-management-attention" style="display:none"><div class="dashboard-attention-head"><div><b>🚨 Management Attention</b><span>Today's constraints, holds and rectification items</span></div><button onclick="openDailySummary()">View Daily Summary</button></div><div id="dashboardAttentionList" class="dashboard-attention-list"><div class="summary-empty">Loading...</div></div></div>
-<div id="managementControlDashboardSection" class="dashboard-section">
-  <div class="dashboard-section-head"><div class="dashboard-section-icon">🎯</div><div><div class="dashboard-section-title">Management Control</div><div class="dashboard-section-subtitle">Decision tracking, accountable actions and closure follow-up</div></div></div>
-  <div class="menu-grid">
-    <div class="menu-card actions" onclick="openActionRegister()"><span id="actionNotificationBadge" class="menu-notification-badge" style="display:none">0</span><div class="icon">✅</div><div class="menu-title">Action Register</div><div class="menu-stat"><strong id="dashOpenActions">—</strong> open actions</div></div>
-    <div class="menu-card coming-soon" onclick="openActionRegister('decision')"><div class="icon">🎯</div><div class="menu-title">Decision Centre</div><div class="menu-stat">PM / CEO decisions requiring attention</div></div>
-    <div class="menu-card coming-soon" onclick="openActionRegister('critical')"><div class="icon">⚠️</div><div class="menu-title">Critical Issues</div><div class="menu-stat">Critical and overdue management items</div></div>
-  </div>
-</div>
-
-<div id="siteOperationsDashboardSection" class="dashboard-section">
-  <div class="dashboard-section-head"><div class="dashboard-section-icon">🏗️</div><div><div class="dashboard-section-title">Site Operations</div><div class="dashboard-section-subtitle">Daily site reporting, inspections and progress monitoring</div></div></div>
-  <div class="menu-grid">
-    <div class="menu-card primary" onclick="openActivityForm()"><span id="draftNotificationBadge" class="menu-notification-badge draft-badge" style="display:none">Draft</span><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div>
-    <div class="menu-card reports" onclick="openMyReports()"><div class="icon">📋</div><div class="menu-title">My Reports</div><div class="menu-stat"><strong id="dashReportsCardCount">—</strong> reports today</div></div>
-    <div class="menu-card inspection" onclick="openPendingInspections()"><span id="inspectionNotificationBadge" class="menu-notification-badge" style="display:none">0</span><div class="icon">🔍</div><div class="menu-title">Pending Inspections</div><div class="menu-stat"><strong id="dashInspectionCardCount">—</strong> awaiting inspection</div></div>
-    <div class="menu-card summary" onclick="openDailySummary()"><div class="icon">📊</div><div class="menu-title">Daily Summary</div><div class="menu-stat"><strong id="dashCompletionCardCount">—</strong> completed today</div></div>
-  </div>
-</div>
-<div id="projectControlsDashboardSection" class="dashboard-section" style="display:none">
-  <div class="dashboard-section-head"><div class="dashboard-section-icon">📈</div><div><div class="dashboard-section-title">Project Controls</div><div class="dashboard-section-subtitle">Management reporting, cost control and cash planning</div></div></div>
-  <div class="menu-grid">
-    <div id="executiveReportCard" class="menu-card executive" style="display:none" onclick="openExecutiveReport()"><div class="icon">📈</div><div class="menu-title">Executive Report</div><div class="menu-stat"><strong id="dashConstraintCardCount">—</strong> constraints today</div></div>
-    <div class="menu-card cost" onclick="openBOQCost()"><div class="icon">💰</div><div class="menu-title">BOQ & Cost</div><div class="menu-stat">Contract value, certification, payment and balance</div></div>
-    <div class="menu-card cashflow" onclick="openCashFlow()"><div class="icon">💵</div><div class="menu-title">Cash Flow</div><div class="menu-stat">Budget, awarded value, spending, balance and progress</div></div>
-  </div>
-</div>
-<div class="dashboard-section">
-  <div class="dashboard-section-head"><div class="dashboard-section-icon">📚</div><div><div class="dashboard-section-title">Technical Documents</div><div class="dashboard-section-subtitle">Controlled access to drawings, documents and submittals</div></div></div>
-  <div class="menu-grid">
-    <div class="menu-card drawings" onclick="openDrawings()"><div class="icon">📐</div><div class="menu-title">Drawings</div><div class="menu-stat">Drawing register, revisions and links</div></div>
-    <div class="menu-card documents coming-soon" onclick="openPlaceholderModule('📁','Documents / Submittals','Technical submittals, method statements, material approvals and project documents will be organized here.')"><span class="coming-soon-pill">Next Phase</span><div class="icon">📁</div><div class="menu-title">Documents / Submittals</div><div class="menu-stat">Technical document register</div></div>
-  </div>
-</div>
-<div id="administrationDashboardSection" class="dashboard-section" style="display:none">
-  <div class="dashboard-section-head"><div class="dashboard-section-icon">⚙️</div><div><div class="dashboard-section-title">Administration</div><div class="dashboard-section-subtitle">Users, master data and application configuration</div></div></div>
-  <div class="menu-grid">
-    <div class="menu-card users" onclick="openAdministrationSection('users')"><span id="adminNotificationBadge" class="menu-notification-badge" style="display:none">0</span><div class="icon">👥</div><div class="menu-title">Users</div><div class="menu-stat">Users, roles and passwords</div></div>
-    <div class="menu-card masterdata" onclick="openAdministrationSection('master')"><div class="icon">🗂️</div><div class="menu-title">Master Data</div><div class="menu-stat">Projects, towers, floors and trades</div></div>
-    <div class="menu-card settings coming-soon" onclick="openPlaceholderModule('⚙️','Settings','Application settings and future configuration options will be managed here.')"><span class="coming-soon-pill">Planned</span><div class="icon">⚙️</div><div class="menu-title">Settings</div><div class="menu-stat">Application configuration</div></div>
-  </div>
-</div></div></div>
-
-
-
-
-
-
 
 <div id="cashFlowPage">
   <div class="header">
@@ -3140,7 +3197,7 @@ function applyRoleAccess(){
   const adminSection=document.getElementById("administrationDashboardSection");
   const siteOperationsSection=document.getElementById("siteOperationsDashboardSection");
   const isCEO=normalizeRole(loggedInUser&&loggedInUser.role)==="ceo";
-  if(siteOperationsSection)siteOperationsSection.style.display=isCEO?"none":"block";
+  if(siteOperationsSection)siteOperationsSection.style.display="block";
   if(adminCard)adminCard.style.display=hasAdministrationAccess()?"block":"none";
   if(adminSection)adminSection.style.display=hasAdministrationAccess()?"block":"none";
   if(projectControlsSection)projectControlsSection.style.display=hasExecutiveAccess()?"block":"none";
@@ -3215,6 +3272,7 @@ function showDashboard(){
   document.getElementById("dashboardPage").style.display="block";
   document.getElementById("welcome").innerText="Welcome, "+loggedInUser.supervisorName;
   document.getElementById("userRole").innerText="Role: "+loggedInUser.role+" | Employee ID: "+loggedInUser.employeeId;
+  syncDashboardSidebarUser();
   applyRoleAccess();
   const attentionBox=document.getElementById("dashboardManagementAttention");
   if(attentionBox)attentionBox.style.display=hasExecutiveAccess()?"block":"none";
@@ -7174,7 +7232,7 @@ function renderActionRegister(){const c=document.getElementById("actionRegisterC
 function updateActionKpis(){const rows=actionRegisterData||[];document.getElementById("actionKpiCritical").innerText=rows.filter(r=>r.priority==="Critical"&&r.status!=="Closed").length;document.getElementById("actionKpiHigh").innerText=rows.filter(r=>r.priority==="High"&&r.status!=="Closed").length;document.getElementById("actionKpiOverdue").innerText=rows.filter(r=>r.isOverdue).length;document.getElementById("actionKpiOpen").innerText=rows.filter(r=>r.status==="Open").length;document.getElementById("actionKpiProgress").innerText=rows.filter(r=>r.status==="In Progress").length;document.getElementById("actionKpiClosed").innerText=rows.filter(r=>r.status==="Closed").length;}
 function setActionQuickFilter(type,val){resetActionFilters(false);if(type==="priority")document.getElementById("actionPriorityFilter").value=val;if(type==="status")document.getElementById("actionStatusFilter").value=val;if(type==="overdue")actionQuickOverdue=true;renderActionRegister()}
 function resetActionFilters(render=true){["actionSearch","actionProjectFilter","actionTowerFilter","actionCategoryFilter","actionPriorityFilter","actionStatusFilter"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});actionQuickOverdue=false;updateActionTowerFilter();if(render)renderActionRegister()}
-function updateActionDashboardBadge(){const open=(actionRegisterData||[]).filter(r=>r.status!=="Closed").length,urgent=(actionRegisterData||[]).filter(r=>r.status!=="Closed"&&(r.priority==="Critical"||r.isOverdue)).length;const n=document.getElementById("dashOpenActions"),b=document.getElementById("actionNotificationBadge");if(n)n.innerText=open;if(b){b.innerText=urgent;b.style.display=urgent?"flex":"none"}}
+function updateActionDashboardBadge(){const rows=(actionRegisterData||[]),open=rows.filter(r=>r.status!=="Closed").length,urgent=rows.filter(r=>r.status!=="Closed"&&(r.priority==="Critical"||r.isOverdue)).length,decisions=rows.filter(r=>r.status!=="Closed"&&String(r.decisionRequired||"").trim()&&String(r.decisionRequired||"").trim()!=="No Decision Required").length;const n=document.getElementById("dashOpenActions"),b=document.getElementById("actionNotificationBadge"),d=document.getElementById("dashDecisionActions"),c=document.getElementById("dashCriticalActions");if(n)n.innerText=open;if(d)d.innerText=decisions;if(c)c.innerText=urgent;if(b){b.innerText=urgent;b.style.display=urgent?"flex":"none"}}
 function loadActionDashboardBadge(){if(!loggedInUser)return;actionApi("actionRegister",{}).then(function(rows){actionRegisterData=rows||[];updateActionDashboardBadge();}).catch(function(){})}
 function openActionDetail(id){currentActionDetailId=id;const r=(actionRegisterData||[]).find(x=>x.actionId===id);if(!r)return;document.getElementById("actionDetailModal").style.display="block";document.getElementById("actionDetailTitle").innerText=r.actionId+" — "+r.category;document.getElementById("actionDetailPath").innerText=[r.project,r.tower,r.floor].filter(Boolean).join(" • ");document.getElementById("actionDetailBody").innerHTML=`<div class="detail-grid"><div class="detail-item"><strong>Issue / Constraint</strong>${esc(r.issue)}</div><div class="detail-item"><strong>Priority</strong>${esc(r.priority)}${r.isOverdue?" • OVERDUE":""}</div><div class="detail-item"><strong>Action Required</strong>${esc(r.actionRequired)}</div><div class="detail-item"><strong>Responsible</strong>${esc(r.responsiblePerson)} • ${esc(r.responsibleParty)}</div><div class="detail-item"><strong>Decision Required</strong>${esc(r.decisionRequired)}</div><div class="detail-item"><strong>Target / Status</strong>${esc(r.targetDate)} • ${esc(r.status)}</div><div class="detail-item"><strong>Raised By</strong>${esc(r.raisedBy)} • ${esc(r.dateRaised)}</div><div class="detail-item"><strong>Source</strong>${esc(r.source||"Manual")}</div></div>`;document.getElementById("actionUpdateText").value="";document.getElementById("actionDetailMessage").innerText="";loadActionHistory(id)}
 function closeActionDetailModal(e){if(e&&e.target!==document.getElementById("actionDetailModal"))return;document.getElementById("actionDetailModal").style.display="none"}
@@ -7184,6 +7242,9 @@ function closeActionRecord(id){const remarks=prompt("Closure remarks for "+id+":
 function deleteActionRecord(id){if(!confirm("Delete "+id+"? This is restricted to Project Manager / Admin and should only be used for erroneous records."))return;actionApi("deleteAction",{actionId:id}).then(function(r){loadActionRegister();alert(r.message||"Action deleted.");}).catch(e=>alert(e.message))}
 
 function openPlaceholderModule(icon,title,text){hideAppPages();document.getElementById("placeholderModulePage").style.display="block";document.getElementById("placeholderModuleHeader").innerText=icon+" "+title;document.getElementById("placeholderModuleIcon").innerText=icon;document.getElementById("placeholderModuleTitle").innerText=title;document.getElementById("placeholderModuleText").innerText=text}
+
+function toggleDashboardSidebar(open){const s=document.getElementById("pmcSidebar");if(!s)return;s.classList.toggle("open",open!==false);}
+function syncDashboardSidebarUser(){if(!loggedInUser)return;const name=document.getElementById("sidebarUserName"),role=document.getElementById("sidebarUserRole"),initials=document.getElementById("sidebarUserInitials");if(name)name.innerText=loggedInUser.supervisorName||loggedInUser.username||"User";if(role)role.innerText=loggedInUser.role||"";if(initials){const parts=String(loggedInUser.supervisorName||loggedInUser.username||"U").trim().split(/\s+/);initials.innerText=(parts[0]?.[0]||"U")+(parts.length>1?(parts[parts.length-1][0]||""):"");}}
 
 function logout(){loggedInUser=null;if(window.LCRG_API&&LCRG_API.clearToken)LCRG_API.clearToken();location.reload()}
 window.onload=function(){let u=localStorage.getItem("rememberedUsername");if(u){document.getElementById("username").value=u;document.getElementById("rememberMe").checked=true}updateStepDisplay();updateNetworkStatus();updateDashboardDraftBadge()}
