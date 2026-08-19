@@ -851,7 +851,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
 .cockpit-shell{background:#fff;border:1px solid #dfe6ef;border-radius:18px;box-shadow:0 8px 26px rgba(16,24,40,.07);overflow:hidden}
 .cockpit-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:18px 20px;border-bottom:1px solid #e8edf3;background:linear-gradient(135deg,#f8fbff,#fff)}
 .cockpit-title{font-size:20px;font-weight:900;color:#172b4d}.cockpit-subtitle{font-size:12px;color:#667085;margin-top:4px}.cockpit-updated{font-size:11px;color:#64748b;text-align:right}
-.cockpit-health{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;padding:14px 16px;background:#fbfcfe;border-bottom:1px solid #edf0f4}
+.cockpit-health{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:10px;padding:14px 16px;background:#fbfcfe;border-bottom:1px solid #edf0f4}
 .health-card{border:1px solid #e4e9f1;border-radius:12px;background:#fff;padding:12px;min-height:92px;cursor:pointer;transition:.15s}
 .health-card:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(16,24,40,.08)}
 .health-label{font-size:10px;color:#667085;text-transform:uppercase;font-weight:900;letter-spacing:.045em}.health-status{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:14px;font-weight:900;color:#1d2939}.health-dot{width:12px;height:12px;border-radius:50%;background:#94a3b8;box-shadow:0 0 0 3px #f1f5f9}.health-dot.green{background:#16a34a;box-shadow:0 0 0 3px #dcfce7}.health-dot.amber{background:#f59e0b;box-shadow:0 0 0 3px #fef3c7}.health-dot.red{background:#dc2626;box-shadow:0 0 0 3px #fee2e2}.health-dot.gray{background:#94a3b8;box-shadow:0 0 0 3px #f1f5f9}.health-detail{font-size:10px;color:#94a3b8;margin-top:5px;line-height:1.25}
@@ -880,7 +880,9 @@ label{color:#344054;font-size:13px;margin-top:14px}
       <div class="health-card" onclick="openPlaceholderModule('📅','Programme','Programme control will connect baseline, current and forecast milestone data to the Management Cockpit.')"><div class="health-label">Programme</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Programme Module • next phase</div></div>
       <div class="health-card" onclick="openCashFlow()"><div class="health-label">Cost</div><div class="health-status"><span id="healthCostDot" class="health-dot gray"></span><span id="healthCostText">Loading</span></div><div id="healthCostDetail" class="health-detail">Reading BOQ / Cash Flow</div></div>
       <div class="health-card" onclick="openPlaceholderModule('🛒','Procurement','Procurement control will track package award, lead time, required-on-site dates and programme impact.')"><div class="health-label">Procurement</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Procurement Module • next phase</div></div>
-      <div class="health-card" onclick="openDrawings()"><div class="health-label">Technical</div><div class="health-status"><span id="healthTechnicalDot" class="health-dot gray"></span><span id="healthTechnicalText">Loading</span></div><div id="healthTechnicalDetail" class="health-detail">Reading drawing register</div></div>
+      <div class="health-card" onclick="openDrawings()"><div class="health-label">Design / Technical</div><div class="health-status"><span id="healthTechnicalDot" class="health-dot gray"></span><span id="healthTechnicalText">Loading</span></div><div id="healthTechnicalDetail" class="health-detail">Reading drawing register</div></div>
+      <div class="health-card" onclick="openCashFlow()"><div class="health-label">Approvals</div><div class="health-status"><span id="healthApprovalsDot" class="health-dot gray"></span><span id="healthApprovalsText">Loading</span></div><div id="healthApprovalsDetail" class="health-detail">Reading pending approvals</div></div>
+      <div class="health-card" onclick="openBOQCost()"><div class="health-label">Commercial</div><div class="health-status"><span id="healthCommercialDot" class="health-dot gray"></span><span id="healthCommercialText">Loading</span></div><div id="healthCommercialDetail" class="health-detail">Reading BOQ / certification position</div></div>
       <div class="health-card" onclick="openDailySummary()"><div class="health-label">Site / Quality</div><div class="health-status"><span id="healthSiteDot" class="health-dot gray"></span><span id="healthSiteText">Loading</span></div><div id="healthSiteDetail" class="health-detail">Reading site & inspections</div></div>
     </div>
 
@@ -3236,6 +3238,9 @@ function loadManagementCockpit(){
 
     const revised=boq.reduce((a,r)=>a+cockpitNum(r.revisedAmount),0);
     const certified=boq.reduce((a,r)=>a+cockpitNum(r.certifiedAmount),0);
+    const paid=boq.reduce((a,r)=>a+cockpitNum(r.paidAmount),0);
+    const variations=boq.reduce((a,r)=>a+cockpitNum(r.variationAmount),0);
+    const certifiedOutstanding=Math.max(certified-paid,0);
     const costCompletion=revised?(certified/revised)*100:0;
 
     const technicalAttention=drawings.filter(r=>{
@@ -3258,8 +3263,19 @@ function loadManagementCockpit(){
     else if(technicalAttention.length)techStatus='amber',techText='Watch';
     setCockpitHealth('Technical',techStatus,techText,technicalAttention.length+' items need review');
 
-    const redCount=[siteStatus,costStatus,techStatus].filter(x=>x==='red').length;
-    const amberCount=[siteStatus,costStatus,techStatus].filter(x=>x==='amber').length;
+    let approvalsStatus='green',approvalsText='Clear';
+    if(initial>0 && pending>initial*0.05)approvalsStatus='red',approvalsText='Critical';
+    else if(pending>0)approvalsStatus='amber',approvalsText='Pending';
+    setCockpitHealth('Approvals',approvalsStatus,approvalsText,pending>0?cockpitMoney(pending)+' awaiting approval':'No financial approvals pending');
+
+    let commercialStatus='green',commercialText='Controlled';
+    const variationRatio=revised?Math.abs(variations)/revised:0;
+    if(variationRatio>0.10)commercialStatus='red',commercialText='Exposure';
+    else if(Math.abs(variations)>0 || certifiedOutstanding>0)commercialStatus='amber',commercialText='Watch';
+    setCockpitHealth('Commercial',commercialStatus,commercialText,cockpitMoney(certifiedOutstanding)+' certified unpaid • '+cockpitMoney(variations)+' variations');
+
+    const redCount=[siteStatus,costStatus,techStatus,approvalsStatus,commercialStatus].filter(x=>x==='red').length;
+    const amberCount=[siteStatus,costStatus,techStatus,approvalsStatus,commercialStatus].filter(x=>x==='amber').length;
     let overall='green',overallText='Stable';
     if(redCount>=2)overall='red',overallText='Critical';
     else if(redCount>=1||amberCount>=2)overall='amber',overallText='Attention';
@@ -3291,7 +3307,9 @@ function loadManagementCockpit(){
     if(constraints.length)brief.push('<b>'+constraints.length+' site constraint'+(constraints.length===1?'':'s')+'</b> currently require follow-up.');
     else brief.push('No site constraints are currently surfaced from today’s reports.');
     if(pending>0)brief.push('<b>'+cockpitMoney(pending)+'</b> is recorded as pending approval in Cash Flow.');
-    if(technicalAttention.length)brief.push(technicalAttention.length+' drawing / technical item'+(technicalAttention.length===1?' requires':'s require')+' attention.');
+    else brief.push('No financial approvals are currently pending.');
+    if(certifiedOutstanding>0||Math.abs(variations)>0)brief.push('Commercial watch: <b>'+cockpitMoney(certifiedOutstanding)+'</b> certified amount remains unpaid and <b>'+cockpitMoney(variations)+'</b> is recorded in variations.');
+    if(technicalAttention.length)brief.push(technicalAttention.length+' design / technical item'+(technicalAttention.length===1?' requires':'s require')+' attention.');
     brief.push('Programme, Procurement and the formal Decision Engine are intentionally shown as not connected until their source modules are built.');
     const be=document.getElementById('cockpitManagementBrief');if(be)be.innerHTML=brief.join(' ');
     setText('cockpitBriefStatus',failed?'Partial live data':'Live connected data');
