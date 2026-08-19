@@ -1,7 +1,7 @@
 {
-  "name": "LCRG / OLC Reporting App",
-  "short_name": "LCRG / OLC",
-  "description": "Site Daily Activity Reporting System",
+  "name": "Project / Site Management System",
+  "short_name": "Management System",
+  "description": "Project Management System",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
