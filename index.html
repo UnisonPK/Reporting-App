@@ -936,6 +936,29 @@ label{color:#344054;font-size:13px;margin-top:14px}
 }
 </style>
 
+
+<style id="actionRegisterStage1Styles">
+/* ===== Decision / Action Engine — Stage 1 ===== */
+#actionRegisterPage{display:none}
+.menu-card.actions:after{background:#be123c}
+.action-toolbar{display:grid;grid-template-columns:1.35fr repeat(5,1fr) auto;gap:10px;margin:14px 0}
+.action-kpis{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:10px;margin:14px 0 18px}
+.action-kpi{background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:14px;box-shadow:0 3px 12px rgba(15,23,42,.04);cursor:pointer}
+.action-kpi-label{font-size:10px;font-weight:900;color:#64748b;text-transform:uppercase;letter-spacing:.035em}
+.action-kpi-value{font-size:24px;font-weight:900;color:#172b4d;margin-top:5px}
+.action-kpi.critical{border-top:4px solid #dc2626}.action-kpi.high{border-top:4px solid #f97316}.action-kpi.overdue{border-top:4px solid #111827}.action-kpi.open{border-top:4px solid #2563eb}.action-kpi.progress{border-top:4px solid #eab308}.action-kpi.closed{border-top:4px solid #16a34a}
+.action-list{display:flex;flex-direction:column;gap:10px}
+.action-card{background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:14px;box-shadow:0 2px 8px rgba(15,23,42,.04);border-left:5px solid #94a3b8}
+.action-card.priority-critical{border-left-color:#dc2626}.action-card.priority-high{border-left-color:#f97316}.action-card.priority-attention{border-left-color:#eab308}.action-card.priority-normal{border-left-color:#16a34a}
+.action-card-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.action-id{font-weight:900;color:#111827}.action-meta{font-size:11px;color:#64748b;margin-top:4px}.action-issue{font-size:14px;font-weight:900;color:#1d2939;margin:10px 0 5px}.action-required{font-size:12px;color:#475467;line-height:1.45}.action-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.action-tag{display:inline-block;padding:5px 8px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:10px;font-weight:900}.action-tag.overdue{background:#111827;color:#fff}.action-tag.decision{background:#ede9fe;color:#6d28d9}.action-tag.status-open{background:#dbeafe;color:#1d4ed8}.action-tag.status-in-progress{background:#fef3c7;color:#92400e}.action-tag.status-on-hold{background:#ffedd5;color:#9a3412}.action-tag.status-closed{background:#dcfce7;color:#166534}
+.action-card-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}.action-btn{border:0;border-radius:8px;padding:8px 10px;font-weight:900;font-size:11px;cursor:pointer}.action-btn.view{background:#0b3f88;color:#fff}.action-btn.update{background:#e8f0fe;color:#0b3f88}.action-btn.close-action{background:#dcfce7;color:#166534}.action-btn.delete-action{background:#fee2e2;color:#991b1b}
+.action-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.action-form-grid .full-width{grid-column:1/-1}
+.action-history{display:flex;flex-direction:column;gap:8px;margin-top:12px}.action-history-item{border-left:3px solid #cbd5e1;background:#f8fafc;border-radius:8px;padding:10px 12px}.action-history-head{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:#64748b}.action-history-text{font-size:12px;color:#334155;margin-top:5px;white-space:pre-wrap}
+.action-section-note{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:10px;padding:10px 12px;font-size:12px;margin-bottom:12px}
+@media(max-width:1050px){.action-toolbar{grid-template-columns:1fr 1fr}.action-toolbar .action-search{grid-column:1/-1}.action-kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.action-toolbar,.action-form-grid{grid-template-columns:1fr}.action-toolbar .action-search,.action-form-grid .full-width{grid-column:auto}.action-kpis{grid-template-columns:repeat(2,1fr)}.action-card-top{flex-direction:column}.action-card-actions .action-btn{flex:1}}
+</style>
+
 </head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="icons/pmc-app-192-v3.png?v=20260819-6" alt="PMC"><div class="subtitle">Project / Site Management System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
 <div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="icons/pmc-app-192-v3.png?v=20260819-6" alt="PMC"><div class="header-brand-text"><div class="app-subtitle">Project / Site Management System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats();loadManagementCockpit()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div>
@@ -1001,7 +1024,17 @@ label{color:#344054;font-size:13px;margin-top:14px}
   </div>
 </div>
 
-<div id="legacyDashboardKpis" class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div id="dashboardManagementAttention" class="dashboard-management-attention" style="display:none"><div class="dashboard-attention-head"><div><b>🚨 Management Attention</b><span>Today's constraints, holds and rectification items</span></div><button onclick="openDailySummary()">View Daily Summary</button></div><div id="dashboardAttentionList" class="dashboard-attention-list"><div class="summary-empty">Loading...</div></div></div><div id="siteOperationsDashboardSection" class="dashboard-section">
+<div id="legacyDashboardKpis" class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div id="dashboardManagementAttention" class="dashboard-management-attention" style="display:none"><div class="dashboard-attention-head"><div><b>🚨 Management Attention</b><span>Today's constraints, holds and rectification items</span></div><button onclick="openDailySummary()">View Daily Summary</button></div><div id="dashboardAttentionList" class="dashboard-attention-list"><div class="summary-empty">Loading...</div></div></div>
+<div id="managementControlDashboardSection" class="dashboard-section">
+  <div class="dashboard-section-head"><div class="dashboard-section-icon">🎯</div><div><div class="dashboard-section-title">Management Control</div><div class="dashboard-section-subtitle">Decision tracking, accountable actions and closure follow-up</div></div></div>
+  <div class="menu-grid">
+    <div class="menu-card actions" onclick="openActionRegister()"><span id="actionNotificationBadge" class="menu-notification-badge" style="display:none">0</span><div class="icon">✅</div><div class="menu-title">Action Register</div><div class="menu-stat"><strong id="dashOpenActions">—</strong> open actions</div></div>
+    <div class="menu-card coming-soon" onclick="openActionRegister('decision')"><div class="icon">🎯</div><div class="menu-title">Decision Centre</div><div class="menu-stat">PM / CEO decisions requiring attention</div></div>
+    <div class="menu-card coming-soon" onclick="openActionRegister('critical')"><div class="icon">⚠️</div><div class="menu-title">Critical Issues</div><div class="menu-stat">Critical and overdue management items</div></div>
+  </div>
+</div>
+
+<div id="siteOperationsDashboardSection" class="dashboard-section">
   <div class="dashboard-section-head"><div class="dashboard-section-icon">🏗️</div><div><div class="dashboard-section-title">Site Operations</div><div class="dashboard-section-subtitle">Daily site reporting, inspections and progress monitoring</div></div></div>
   <div class="menu-grid">
     <div class="menu-card primary" onclick="openActivityForm()"><span id="draftNotificationBadge" class="menu-notification-badge draft-badge" style="display:none">Draft</span><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div>
@@ -1323,6 +1356,66 @@ label{color:#344054;font-size:13px;margin-top:14px}
       </div>
       <div class="full-width"><label>Remarks</label><textarea id="drawingRemarks"></textarea></div>
     </div><div class="decision-actions"><button id="drawingSaveButton" class="decision-save" onclick="saveDrawing()">Save Drawing</button></div><div id="drawingMessage" class="admin-message"></div></div>
+  </div>
+</div>
+
+
+<div id="actionRegisterPage">
+  <div class="header"><div><div class="app-name">✅ Action Register</div><div class="app-subtitle">Decision / Action Engine • Stage 1</div></div><button class="back-button" onclick="showDashboard()">Back</button></div>
+  <div class="container"><div class="form-card">
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap"><div><div class="step-title">Management Actions</div><div class="step-subtitle">Create, assign, update and close project actions with an auditable history.</div></div><button class="admin-primary-btn" onclick="openActionModal()">+ New Action</button></div>
+    <div class="action-kpis">
+      <div class="action-kpi critical" onclick="setActionQuickFilter('priority','Critical')"><div class="action-kpi-label">Critical</div><div id="actionKpiCritical" class="action-kpi-value">0</div></div>
+      <div class="action-kpi high" onclick="setActionQuickFilter('priority','High')"><div class="action-kpi-label">High Priority</div><div id="actionKpiHigh" class="action-kpi-value">0</div></div>
+      <div class="action-kpi overdue" onclick="setActionQuickFilter('overdue','1')"><div class="action-kpi-label">Overdue</div><div id="actionKpiOverdue" class="action-kpi-value">0</div></div>
+      <div class="action-kpi open" onclick="setActionQuickFilter('status','Open')"><div class="action-kpi-label">Open</div><div id="actionKpiOpen" class="action-kpi-value">0</div></div>
+      <div class="action-kpi progress" onclick="setActionQuickFilter('status','In Progress')"><div class="action-kpi-label">In Progress</div><div id="actionKpiProgress" class="action-kpi-value">0</div></div>
+      <div class="action-kpi closed" onclick="setActionQuickFilter('status','Closed')"><div class="action-kpi-label">Closed</div><div id="actionKpiClosed" class="action-kpi-value">0</div></div>
+    </div>
+    <div class="action-toolbar">
+      <input id="actionSearch" class="action-search" placeholder="Search ID, issue, action, owner..." oninput="renderActionRegister()">
+      <select id="actionProjectFilter" onchange="updateActionTowerFilter();renderActionRegister()"><option value="">All Projects</option></select>
+      <select id="actionTowerFilter" onchange="renderActionRegister()"><option value="">All Towers / Areas</option></select>
+      <select id="actionCategoryFilter" onchange="renderActionRegister()"><option value="">All Categories</option></select>
+      <select id="actionPriorityFilter" onchange="renderActionRegister()"><option value="">All Priorities</option><option>Critical</option><option>High</option><option>Attention</option><option>Normal</option></select>
+      <select id="actionStatusFilter" onchange="renderActionRegister()"><option value="">All Statuses</option><option>Open</option><option>In Progress</option><option>On Hold</option><option>Closed</option></select>
+      <button class="reset-filter-btn" onclick="resetActionFilters()">Reset</button>
+    </div>
+    <div id="actionRegisterContainer" class="reports-loading">Loading Action Register...</div>
+  </div></div>
+</div>
+
+<div id="actionModal" class="admin-modal" onclick="closeActionModal(event)">
+  <div class="admin-modal-card" style="max-width:850px" onclick="event.stopPropagation()">
+    <div class="admin-modal-head"><div><div id="actionModalTitle" class="admin-modal-title">New Action</div><div class="app-subtitle">Management accountability record</div></div><button class="modal-close" onclick="closeActionModal()">Close</button></div>
+    <div class="admin-modal-body">
+      <input id="actionId" type="hidden">
+      <div class="action-form-grid">
+        <div><label>Project *</label><select id="actionProject" onchange="actionProjectChanged()"></select></div>
+        <div><label>Tower / Block *</label><select id="actionTower" onchange="actionTowerChanged()"></select></div>
+        <div><label>Floor / Area</label><select id="actionFloor"></select></div>
+        <div><label>Category *</label><select id="actionCategory"><option value="">Select</option><option>Programme</option><option>Design</option><option>Site Execution</option><option>Quality</option><option>Safety</option><option>Cost</option><option>Cash Flow</option><option>Procurement</option><option>Approval</option><option>Commercial</option><option>Drawing</option><option>Submittal</option><option>Client Decision</option><option>Other</option></select></div>
+        <div class="full-width"><label>Issue / Constraint *</label><textarea id="actionIssue" placeholder="State the problem or decision point clearly."></textarea></div>
+        <div class="full-width"><label>Action Required *</label><textarea id="actionRequired" placeholder="State exactly what must be done."></textarea></div>
+        <div><label>Responsible Person *</label><input id="actionResponsible" placeholder="Name / role / organization"></div>
+        <div><label>Responsible Username <span class="optional-note">(optional)</span></label><input id="actionResponsibleUsername" placeholder="App username for assignment"></div>
+        <div><label>Responsible Party *</label><select id="actionResponsibleParty"><option value="">Select</option><option>PMC</option><option>Contractor</option><option>Consultant</option><option>Client</option><option>Supplier</option><option>Other</option></select></div>
+        <div><label>Priority *</label><select id="actionPriority"><option value="">Select</option><option>Critical</option><option>High</option><option>Attention</option><option>Normal</option></select></div>
+        <div><label>Decision Required *</label><select id="actionDecisionRequired"><option>No Decision Required</option><option>PM Decision</option><option>CEO Decision</option><option>Client Decision</option><option>Consultant Decision</option></select></div>
+        <div><label>Target Date *</label><input id="actionTargetDate" type="date"></div>
+        <div><label>Status *</label><select id="actionStatus"><option>Open</option><option>In Progress</option><option>On Hold</option><option>Closed</option></select></div>
+        <div><label>Source</label><select id="actionSource"><option>Manual</option><option>Programme</option><option>Cash Flow</option><option>BOQ</option><option>Drawing</option><option>Site Report</option><option>Submittal</option></select></div>
+        <div class="full-width"><label>Progress / Update</label><textarea id="actionProgressUpdate" placeholder="Optional current progress note"></textarea></div>
+      </div>
+      <div class="decision-actions"><button id="actionSaveButton" class="decision-save" onclick="saveActionRecord()">Save Action</button></div><div id="actionFormMessage" class="admin-message"></div>
+    </div>
+  </div>
+</div>
+
+<div id="actionDetailModal" class="admin-modal" onclick="closeActionDetailModal(event)">
+  <div class="admin-modal-card" style="max-width:850px" onclick="event.stopPropagation()">
+    <div class="admin-modal-head"><div><div id="actionDetailTitle" class="admin-modal-title">Action</div><div id="actionDetailPath" class="app-subtitle"></div></div><button class="modal-close" onclick="closeActionDetailModal()">Close</button></div>
+    <div class="admin-modal-body"><div id="actionDetailBody"></div><div class="action-section-note">Update history is append-only. Closing an action keeps the full audit trail.</div><label>Add Update</label><textarea id="actionUpdateText" placeholder="Enter progress, instruction, decision or follow-up note."></textarea><div class="decision-actions"><button class="decision-save" onclick="appendActionUpdate()">Add Update</button></div><div id="actionDetailMessage" class="admin-message"></div><div id="actionHistoryContainer" class="action-history"></div></div>
   </div>
 </div>
 
@@ -3062,7 +3155,7 @@ function applyRoleAccess(){
 }
 
 function hideAppPages(){
-  ["loginPage","dashboardPage","activityPage","myReportsPage","pendingInspectionsPage","dailySummaryPage","administrationPage","executiveReportPage","cashFlowPage","boqCostPage","drawingsPage","placeholderModulePage"].forEach(function(id){
+  ["loginPage","dashboardPage","activityPage","myReportsPage","pendingInspectionsPage","dailySummaryPage","administrationPage","executiveReportPage","cashFlowPage","boqCostPage","drawingsPage","actionRegisterPage","placeholderModulePage"].forEach(function(id){
     const el=document.getElementById(id);
     if(el)el.style.display="none";
   });
@@ -3127,6 +3220,7 @@ function showDashboard(){
   if(attentionBox)attentionBox.style.display=hasExecutiveAccess()?"block":"none";
   loadDashboardStats();
   loadManagementCockpit();
+  loadActionDashboardBadge();
 }
 function addOption(s,v){if(!v)return;let o=document.createElement("option");o.value=v;o.textContent=v;s.appendChild(o)}
 
@@ -7044,6 +7138,50 @@ async function saveDrawing(){
     m.innerText=e.message;
   }
 }
+
+
+
+/* ===================== DECISION / ACTION ENGINE — STAGE 1 ===================== */
+let actionRegisterData=[];
+let currentActionDetailId="";
+let actionQuickOverdue=false;
+const ACTION_CATEGORIES=["Programme","Design","Site Execution","Quality","Safety","Cost","Cash Flow","Procurement","Approval","Commercial","Drawing","Submittal","Client Decision","Other"];
+
+function actionApi(action,data){
+  data=data||{};
+  if(window.LCRG_API&&typeof window.LCRG_API.call==="function") return window.LCRG_API.call(action,data);
+  return new Promise(function(resolve,reject){
+    const runner=google.script.run.withSuccessHandler(resolve).withFailureHandler(reject);
+    const map={actionRegister:"getActionRegister",saveAction:"saveActionItem",updateAction:"addActionUpdate",closeAction:"closeActionItem",deleteAction:"deleteActionItem",actionHistory:"getActionHistory"};
+    const fn=map[action]; if(!fn){reject(new Error("Action Register API method is not available."));return;}
+    if(action==="actionRegister") runner[fn](loggedInUser.userId,loggedInUser.username); else {data.actorUserId=loggedInUser.userId;data.actorUsername=loggedInUser.username;runner[fn](data);}
+  });
+}
+function actionCanClose(){const r=normalizeRole(loggedInUser&&loggedInUser.role);return ["ceo","project manager","admin"].includes(r)}
+function actionCanDelete(){const r=normalizeRole(loggedInUser&&loggedInUser.role);return ["project manager","admin"].includes(r)}
+function openActionRegister(mode){hideAppPages();document.getElementById("actionRegisterPage").style.display="block";actionQuickOverdue=false;ensureCashFlowMasterData(function(){populateActionFilters();loadActionRegister(function(){if(mode==="decision"){document.getElementById("actionSearch").value="Decision";}if(mode==="critical"){document.getElementById("actionPriorityFilter").value="Critical";}renderActionRegister();});});}
+function loadActionRegister(cb){const c=document.getElementById("actionRegisterContainer");c.className="reports-loading";c.innerText="Loading Action Register...";actionApi("actionRegister",{}).then(function(rows){actionRegisterData=rows||[];renderActionRegister();updateActionDashboardBadge();if(cb)cb();}).catch(function(e){c.className="empty-state";c.innerText="Unable to load Action Register: "+e.message;});}
+function populateActionFilters(){const projects=[...new Set((masterData&&masterData.projects||[]).map(x=>x["Project Name"]).filter(Boolean))].sort();fillSimpleSelect("actionProjectFilter",projects,"All Projects");fillSimpleSelect("actionProject",projects,"Select Project");fillSimpleSelect("actionCategoryFilter",ACTION_CATEGORIES,"All Categories");updateActionTowerFilter();actionProjectChanged();}
+function actionTowersForProject(project){return [...new Set((masterData&&masterData.towers||[]).filter(x=>!project||String(x["Project"]||"")===project).map(x=>x["Tower / Block"]).filter(Boolean))].sort()}
+function updateActionTowerFilter(){const p=value("actionProjectFilter");fillSimpleSelect("actionTowerFilter",actionTowersForProject(p),"All Towers / Areas")}
+function actionProjectChanged(){const p=value("actionProject");fillSimpleSelect("actionTower",actionTowersForProject(p),"Select Tower / Block");fillSimpleSelect("actionFloor",[],"Overall / All")}
+function actionTowerChanged(){const t=value("actionTower");const floors=[...new Set((masterData&&masterData.floors||[]).filter(x=>String(x["Tower / Block"]||"")===t).map(x=>x["Floor"]).filter(Boolean))];fillSimpleSelect("actionFloor",floors,"Overall / All")}
+function openActionModal(id){document.getElementById("actionModal").style.display="block";document.getElementById("actionFormMessage").innerText="";populateActionFilters();const r=(actionRegisterData||[]).find(x=>x.actionId===id);document.getElementById("actionModalTitle").innerText=r?"Edit "+r.actionId:"New Action";document.getElementById("actionId").value=r?r.actionId:"";if(r){document.getElementById("actionProject").value=r.project;actionProjectChanged();document.getElementById("actionTower").value=r.tower;actionTowerChanged();document.getElementById("actionFloor").value=r.floor||"";document.getElementById("actionCategory").value=r.category;document.getElementById("actionIssue").value=r.issue;document.getElementById("actionRequired").value=r.actionRequired;document.getElementById("actionResponsible").value=r.responsiblePerson;document.getElementById("actionResponsibleUsername").value=r.responsibleUsername||"";document.getElementById("actionResponsibleParty").value=r.responsibleParty;document.getElementById("actionPriority").value=r.priority;document.getElementById("actionDecisionRequired").value=r.decisionRequired;document.getElementById("actionTargetDate").value=r.targetDateInput||"";document.getElementById("actionStatus").value=r.status;document.getElementById("actionSource").value=r.source||"Manual";document.getElementById("actionProgressUpdate").value="";}else{["actionIssue","actionRequired","actionResponsible","actionResponsibleUsername","actionProgressUpdate"].forEach(id=>document.getElementById(id).value="");document.getElementById("actionCategory").value="";document.getElementById("actionResponsibleParty").value="";document.getElementById("actionPriority").value="";document.getElementById("actionDecisionRequired").value="No Decision Required";document.getElementById("actionStatus").value="Open";document.getElementById("actionSource").value="Manual";document.getElementById("actionTargetDate").value="";}}
+function closeActionModal(e){if(e&&e.target!==document.getElementById("actionModal"))return;document.getElementById("actionModal").style.display="none"}
+function saveActionRecord(){const btn=document.getElementById("actionSaveButton"),msg=document.getElementById("actionFormMessage");const payload={actionId:value("actionId"),project:value("actionProject"),tower:value("actionTower"),floor:value("actionFloor")||"Overall / All",category:value("actionCategory"),issue:value("actionIssue"),actionRequired:value("actionRequired"),responsiblePerson:value("actionResponsible"),responsibleUsername:value("actionResponsibleUsername"),responsibleParty:value("actionResponsibleParty"),priority:value("actionPriority"),decisionRequired:value("actionDecisionRequired"),targetDate:value("actionTargetDate"),status:value("actionStatus"),source:value("actionSource"),progressUpdate:value("actionProgressUpdate")};btn.disabled=true;msg.style.color="#64748b";msg.innerText="Saving action...";actionApi("saveAction",payload).then(function(r){btn.disabled=false;msg.style.color="#166534";msg.innerText=r.message||"Saved.";loadActionRegister();setTimeout(closeActionModal,700);}).catch(function(e){btn.disabled=false;msg.style.color="#dc2626";msg.innerText=e.message;});}
+function actionIsOverdue(r){return !!r.isOverdue}
+function renderActionRegister(){const c=document.getElementById("actionRegisterContainer");if(!c)return;const q=value("actionSearch").toLowerCase(),p=value("actionProjectFilter"),t=value("actionTowerFilter"),cat=value("actionCategoryFilter"),pri=value("actionPriorityFilter"),st=value("actionStatusFilter");let rows=(actionRegisterData||[]).filter(r=>(!p||r.project===p)&&(!t||r.tower===t)&&(!cat||r.category===cat)&&(!pri||r.priority===pri)&&(!st||r.status===st)&&(!actionQuickOverdue||r.isOverdue)&&(!q||[r.actionId,r.issue,r.actionRequired,r.responsiblePerson,r.responsibleParty,r.decisionRequired,r.category].join(" ").toLowerCase().includes(q)));updateActionKpis();if(!rows.length){c.className="empty-state";c.innerText="No actions match the selected filters.";return;}c.className="action-list";c.innerHTML=rows.map(function(r){const ps=String(r.priority||"Normal").toLowerCase().replace(/\s+/g,"-");const ss=String(r.status||"Open").toLowerCase().replace(/\s+/g,"-");return `<div class="action-card priority-${ps}"><div class="action-card-top"><div><div class="action-id">${esc(r.actionId)} • ${esc(r.category)}</div><div class="action-meta">${esc(r.project)} • ${esc(r.tower)} • ${esc(r.floor||"Overall / All")}</div></div><div class="action-meta">Target: <b>${esc(r.targetDate||"—")}</b></div></div><div class="action-issue">${esc(r.issue)}</div><div class="action-required"><b>Action:</b> ${esc(r.actionRequired)}</div><div class="action-tags"><span class="action-tag">${esc(r.priority)}</span><span class="action-tag status-${ss}">${esc(r.status)}</span>${r.isOverdue?'<span class="action-tag overdue">OVERDUE</span>':''}<span class="action-tag decision">${esc(r.decisionRequired)}</span><span class="action-tag">Owner: ${esc(r.responsiblePerson)}</span></div><div class="action-card-actions"><button class="action-btn view" onclick="openActionDetail('${escAttr(r.actionId)}')">View / History</button><button class="action-btn update" onclick="openActionModal('${escAttr(r.actionId)}')">Edit</button>${actionCanClose()&&r.status!=="Closed"?`<button class="action-btn close-action" onclick="closeActionRecord('${escAttr(r.actionId)}')">Close</button>`:""}${actionCanDelete()?`<button class="action-btn delete-action" onclick="deleteActionRecord('${escAttr(r.actionId)}')">Delete</button>`:""}</div></div>`}).join("");}
+function updateActionKpis(){const rows=actionRegisterData||[];document.getElementById("actionKpiCritical").innerText=rows.filter(r=>r.priority==="Critical"&&r.status!=="Closed").length;document.getElementById("actionKpiHigh").innerText=rows.filter(r=>r.priority==="High"&&r.status!=="Closed").length;document.getElementById("actionKpiOverdue").innerText=rows.filter(r=>r.isOverdue).length;document.getElementById("actionKpiOpen").innerText=rows.filter(r=>r.status==="Open").length;document.getElementById("actionKpiProgress").innerText=rows.filter(r=>r.status==="In Progress").length;document.getElementById("actionKpiClosed").innerText=rows.filter(r=>r.status==="Closed").length;}
+function setActionQuickFilter(type,val){resetActionFilters(false);if(type==="priority")document.getElementById("actionPriorityFilter").value=val;if(type==="status")document.getElementById("actionStatusFilter").value=val;if(type==="overdue")actionQuickOverdue=true;renderActionRegister()}
+function resetActionFilters(render=true){["actionSearch","actionProjectFilter","actionTowerFilter","actionCategoryFilter","actionPriorityFilter","actionStatusFilter"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});actionQuickOverdue=false;updateActionTowerFilter();if(render)renderActionRegister()}
+function updateActionDashboardBadge(){const open=(actionRegisterData||[]).filter(r=>r.status!=="Closed").length,urgent=(actionRegisterData||[]).filter(r=>r.status!=="Closed"&&(r.priority==="Critical"||r.isOverdue)).length;const n=document.getElementById("dashOpenActions"),b=document.getElementById("actionNotificationBadge");if(n)n.innerText=open;if(b){b.innerText=urgent;b.style.display=urgent?"flex":"none"}}
+function loadActionDashboardBadge(){if(!loggedInUser)return;actionApi("actionRegister",{}).then(function(rows){actionRegisterData=rows||[];updateActionDashboardBadge();}).catch(function(){})}
+function openActionDetail(id){currentActionDetailId=id;const r=(actionRegisterData||[]).find(x=>x.actionId===id);if(!r)return;document.getElementById("actionDetailModal").style.display="block";document.getElementById("actionDetailTitle").innerText=r.actionId+" — "+r.category;document.getElementById("actionDetailPath").innerText=[r.project,r.tower,r.floor].filter(Boolean).join(" • ");document.getElementById("actionDetailBody").innerHTML=`<div class="detail-grid"><div class="detail-item"><strong>Issue / Constraint</strong>${esc(r.issue)}</div><div class="detail-item"><strong>Priority</strong>${esc(r.priority)}${r.isOverdue?" • OVERDUE":""}</div><div class="detail-item"><strong>Action Required</strong>${esc(r.actionRequired)}</div><div class="detail-item"><strong>Responsible</strong>${esc(r.responsiblePerson)} • ${esc(r.responsibleParty)}</div><div class="detail-item"><strong>Decision Required</strong>${esc(r.decisionRequired)}</div><div class="detail-item"><strong>Target / Status</strong>${esc(r.targetDate)} • ${esc(r.status)}</div><div class="detail-item"><strong>Raised By</strong>${esc(r.raisedBy)} • ${esc(r.dateRaised)}</div><div class="detail-item"><strong>Source</strong>${esc(r.source||"Manual")}</div></div>`;document.getElementById("actionUpdateText").value="";document.getElementById("actionDetailMessage").innerText="";loadActionHistory(id)}
+function closeActionDetailModal(e){if(e&&e.target!==document.getElementById("actionDetailModal"))return;document.getElementById("actionDetailModal").style.display="none"}
+function loadActionHistory(id){const c=document.getElementById("actionHistoryContainer");c.innerHTML='<div class="reports-loading">Loading history...</div>';actionApi("actionHistory",{actionId:id}).then(function(rows){if(!rows||!rows.length){c.innerHTML='<div class="empty-state">No updates yet.</div>';return;}c.innerHTML=rows.map(x=>`<div class="action-history-item"><div class="action-history-head"><b>${esc(x.updatedBy)}</b><span>${esc(x.updatedAt)}</span></div><div class="action-history-text">${esc(x.updateText)}</div></div>`).join("");}).catch(e=>c.innerHTML='<div class="empty-state">'+esc(e.message)+'</div>')}
+function appendActionUpdate(){const txt=value("actionUpdateText"),msg=document.getElementById("actionDetailMessage");if(!txt){msg.style.color="#dc2626";msg.innerText="Please enter an update.";return;}actionApi("updateAction",{actionId:currentActionDetailId,updateText:txt}).then(function(r){msg.style.color="#166534";msg.innerText=r.message||"Update added.";document.getElementById("actionUpdateText").value="";loadActionHistory(currentActionDetailId);loadActionRegister();}).catch(function(e){msg.style.color="#dc2626";msg.innerText=e.message;})}
+function closeActionRecord(id){const remarks=prompt("Closure remarks for "+id+":");if(remarks===null)return;if(!remarks.trim()){alert("Closure remarks are required.");return;}actionApi("closeAction",{actionId:id,closureRemarks:remarks.trim()}).then(function(r){loadActionRegister();alert(r.message||"Action closed.");}).catch(e=>alert(e.message))}
+function deleteActionRecord(id){if(!confirm("Delete "+id+"? This is restricted to Project Manager / Admin and should only be used for erroneous records."))return;actionApi("deleteAction",{actionId:id}).then(function(r){loadActionRegister();alert(r.message||"Action deleted.");}).catch(e=>alert(e.message))}
 
 function openPlaceholderModule(icon,title,text){hideAppPages();document.getElementById("placeholderModulePage").style.display="block";document.getElementById("placeholderModuleHeader").innerText=icon+" "+title;document.getElementById("placeholderModuleIcon").innerText=icon;document.getElementById("placeholderModuleTitle").innerText=title;document.getElementById("placeholderModuleText").innerText=text}
 
