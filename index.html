@@ -844,9 +844,86 @@ label{color:#344054;font-size:13px;margin-top:14px}
   .cashflow-import-modal{padding:0}.cashflow-import-card{margin:0;min-height:100vh;border-radius:0}
 }
 
+
+
+/* ===== Management Cockpit V1 ===== */
+#managementCockpit{display:none;margin:16px 0 22px}
+.cockpit-shell{background:#fff;border:1px solid #dfe6ef;border-radius:18px;box-shadow:0 8px 26px rgba(16,24,40,.07);overflow:hidden}
+.cockpit-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:18px 20px;border-bottom:1px solid #e8edf3;background:linear-gradient(135deg,#f8fbff,#fff)}
+.cockpit-title{font-size:20px;font-weight:900;color:#172b4d}.cockpit-subtitle{font-size:12px;color:#667085;margin-top:4px}.cockpit-updated{font-size:11px;color:#64748b;text-align:right}
+.cockpit-health{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;padding:14px 16px;background:#fbfcfe;border-bottom:1px solid #edf0f4}
+.health-card{border:1px solid #e4e9f1;border-radius:12px;background:#fff;padding:12px;min-height:92px;cursor:pointer;transition:.15s}
+.health-card:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(16,24,40,.08)}
+.health-label{font-size:10px;color:#667085;text-transform:uppercase;font-weight:900;letter-spacing:.045em}.health-status{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:14px;font-weight:900;color:#1d2939}.health-dot{width:12px;height:12px;border-radius:50%;background:#94a3b8;box-shadow:0 0 0 3px #f1f5f9}.health-dot.green{background:#16a34a;box-shadow:0 0 0 3px #dcfce7}.health-dot.amber{background:#f59e0b;box-shadow:0 0 0 3px #fef3c7}.health-dot.red{background:#dc2626;box-shadow:0 0 0 3px #fee2e2}.health-dot.gray{background:#94a3b8;box-shadow:0 0 0 3px #f1f5f9}.health-detail{font-size:10px;color:#94a3b8;margin-top:5px;line-height:1.25}
+.cockpit-change-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:12px 16px;border-bottom:1px solid #edf0f4}.change-item{background:#f8fafc;border:1px solid #edf0f4;border-radius:10px;padding:9px 11px}.change-label{font-size:9px;color:#667085;text-transform:uppercase;font-weight:900}.change-value{font-size:13px;color:#1d2939;font-weight:900;margin-top:3px}
+.cockpit-section{padding:16px 18px;border-bottom:1px solid #edf0f4}.cockpit-section:last-child{border-bottom:0}.cockpit-section-title{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:13px;font-weight:900;color:#344054;text-transform:uppercase;letter-spacing:.035em;margin-bottom:10px}.cockpit-attention-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.attention-card{border:1px solid #e5e7eb;border-radius:12px;padding:12px;background:#fff}.attention-card.critical{border-left:4px solid #dc2626}.attention-card.warning{border-left:4px solid #f59e0b}.attention-card.info{border-left:4px solid #2563eb}.attention-number{font-size:24px;font-weight:900;color:#111827}.attention-label{font-size:11px;font-weight:800;color:#475467;margin-top:2px}.attention-impact{font-size:10px;color:#98a2b3;margin-top:4px}
+.management-brief{border:1px solid #dbeafe;background:#f8fbff;border-radius:12px;padding:13px 15px;line-height:1.55;color:#344054;font-size:13px}.management-brief b{color:#172b4d}
+.cockpit-actions{display:flex;flex-direction:column;gap:8px}.cockpit-action-row{display:grid;grid-template-columns:1.4fr .8fr .7fr auto;gap:10px;align-items:center;border:1px solid #e7ebf0;border-radius:10px;padding:10px 12px;background:#fff}.cockpit-action-title{font-size:12px;font-weight:900;color:#1d2939}.cockpit-action-meta{font-size:10px;color:#667085;margin-top:2px}.cockpit-owner,.cockpit-impact{font-size:11px;color:#475467}.cockpit-action-btn{border:0;background:#0b3f88;color:#fff;border-radius:8px;padding:8px 10px;font-size:10px;font-weight:900;cursor:pointer;white-space:nowrap}
+.cockpit-snapshot{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.snapshot-card{border:1px solid #e5e7eb;border-radius:11px;padding:11px;background:#fff}.snapshot-label{font-size:9px;color:#667085;text-transform:uppercase;font-weight:900}.snapshot-value{font-size:17px;font-weight:900;color:#172b4d;margin-top:5px}.snapshot-sub{font-size:10px;color:#98a2b3;margin-top:3px}
+.cockpit-not-connected{font-size:10px;color:#98a2b3;font-weight:700}
+@media(max-width:950px){.cockpit-health{grid-template-columns:repeat(3,1fr)}.cockpit-attention-grid,.cockpit-snapshot{grid-template-columns:repeat(2,1fr)}.cockpit-action-row{grid-template-columns:1fr auto}.cockpit-owner,.cockpit-impact{grid-column:1/2}.cockpit-change-strip{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.cockpit-head{flex-direction:column}.cockpit-updated{text-align:left}.cockpit-health{grid-template-columns:repeat(2,1fr);padding:10px}.health-card{min-height:86px;padding:10px}.cockpit-change-strip,.cockpit-attention-grid,.cockpit-snapshot{grid-template-columns:1fr 1fr;padding-left:10px;padding-right:10px}.cockpit-section{padding:14px 10px}.cockpit-action-row{grid-template-columns:1fr}.cockpit-owner,.cockpit-impact{grid-column:auto}.cockpit-action-btn{width:100%}}
+
 </style></head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="unison-logo.png" alt="UNISON"><div class="subtitle">Site Daily Activity Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
-<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div><div class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div id="dashboardManagementAttention" class="dashboard-management-attention" style="display:none"><div class="dashboard-attention-head"><div><b>🚨 Management Attention</b><span>Today's constraints, holds and rectification items</span></div><button onclick="openDailySummary()">View Daily Summary</button></div><div id="dashboardAttentionList" class="dashboard-attention-list"><div class="summary-empty">Loading...</div></div></div><div class="dashboard-section">
+<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="unison-logo.png" alt="UNISON"><div class="header-brand-text"><div class="app-subtitle">Site Daily Activity Reporting System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats();loadManagementCockpit()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div>
+
+<div id="managementCockpit">
+  <div class="cockpit-shell">
+    <div class="cockpit-head">
+      <div><div class="cockpit-title">Management Cockpit</div><div class="cockpit-subtitle">What needs my attention? • Exception-driven management view</div></div>
+      <div id="cockpitUpdated" class="cockpit-updated">Connecting live project data...</div>
+    </div>
+
+    <div class="cockpit-health">
+      <div class="health-card" onclick="openExecutiveReport()"><div class="health-label">Overall</div><div class="health-status"><span id="healthOverallDot" class="health-dot gray"></span><span id="healthOverallText">Loading</span></div><div id="healthOverallDetail" class="health-detail">Calculating project health</div></div>
+      <div class="health-card" onclick="openPlaceholderModule('📅','Programme','Programme control will connect baseline, current and forecast milestone data to the Management Cockpit.')"><div class="health-label">Programme</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Programme Module • next phase</div></div>
+      <div class="health-card" onclick="openCashFlow()"><div class="health-label">Cost</div><div class="health-status"><span id="healthCostDot" class="health-dot gray"></span><span id="healthCostText">Loading</span></div><div id="healthCostDetail" class="health-detail">Reading BOQ / Cash Flow</div></div>
+      <div class="health-card" onclick="openPlaceholderModule('🛒','Procurement','Procurement control will track package award, lead time, required-on-site dates and programme impact.')"><div class="health-label">Procurement</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Procurement Module • next phase</div></div>
+      <div class="health-card" onclick="openDrawings()"><div class="health-label">Technical</div><div class="health-status"><span id="healthTechnicalDot" class="health-dot gray"></span><span id="healthTechnicalText">Loading</span></div><div id="healthTechnicalDetail" class="health-detail">Reading drawing register</div></div>
+      <div class="health-card" onclick="openDailySummary()"><div class="health-label">Site / Quality</div><div class="health-status"><span id="healthSiteDot" class="health-dot gray"></span><span id="healthSiteText">Loading</span></div><div id="healthSiteDetail" class="health-detail">Reading site & inspections</div></div>
+    </div>
+
+    <div class="cockpit-change-strip">
+      <div class="change-item"><div class="change-label">Since Last Review • Activities</div><div id="changeActivities" class="change-value">—</div></div>
+      <div class="change-item"><div class="change-label">Pending Inspections</div><div id="changeInspections" class="change-value">—</div></div>
+      <div class="change-item"><div class="change-label">Constraints</div><div id="changeConstraints" class="change-value">—</div></div>
+      <div class="change-item"><div class="change-label">Pending Approval</div><div id="changePendingCost" class="change-value">—</div></div>
+    </div>
+
+    <div class="cockpit-section">
+      <div class="cockpit-section-title"><span>⚠ Attention Required</span><span class="cockpit-not-connected">Only exceptions are surfaced</span></div>
+      <div class="cockpit-attention-grid">
+        <div class="attention-card info"><div id="cockpitDecisionCount" class="attention-number">—</div><div class="attention-label">Decisions Required</div><div class="attention-impact">Decision Engine will be connected next</div></div>
+        <div class="attention-card critical"><div id="cockpitConstraintCount" class="attention-number">—</div><div class="attention-label">Site Constraints / Holds</div><div id="cockpitConstraintImpact" class="attention-impact">Loading today's exceptions</div></div>
+        <div class="attention-card warning"><div id="cockpitTechnicalCount" class="attention-number">—</div><div class="attention-label">Technical Attention</div><div class="attention-impact">Under review / non-current drawings</div></div>
+        <div class="attention-card warning"><div id="cockpitPendingApproval" class="attention-number" style="font-size:18px">—</div><div class="attention-label">Pending Approval</div><div class="attention-impact">Cash Flow exposure</div></div>
+      </div>
+    </div>
+
+    <div class="cockpit-section">
+      <div class="cockpit-section-title"><span>Management Brief</span><span id="cockpitBriefStatus" class="cockpit-not-connected">Live summary</span></div>
+      <div id="cockpitManagementBrief" class="management-brief">Connecting current site, cost and technical information...</div>
+    </div>
+
+    <div class="cockpit-section">
+      <div class="cockpit-section-title"><span>Decisions / Actions</span><span class="cockpit-not-connected">Owner + action + impact</span></div>
+      <div id="cockpitActions" class="cockpit-actions"><div class="summary-empty">Loading management attention items...</div></div>
+    </div>
+
+    <div class="cockpit-section">
+      <div class="cockpit-section-title"><span>Project Snapshot</span><span class="cockpit-not-connected">Drill down through the modules below</span></div>
+      <div class="cockpit-snapshot">
+        <div class="snapshot-card"><div class="snapshot-label">Reported Today</div><div id="cockpitActivities" class="snapshot-value">—</div><div class="snapshot-sub">Site activities</div></div>
+        <div class="snapshot-card"><div class="snapshot-label">Completed Today</div><div id="cockpitCompleted" class="snapshot-value">—</div><div class="snapshot-sub">Completed reports</div></div>
+        <div class="snapshot-card"><div class="snapshot-label">Financial Progress</div><div id="cockpitFinancial" class="snapshot-value">—</div><div class="snapshot-sub">Actual spending / awarded</div></div>
+        <div class="snapshot-card"><div class="snapshot-label">Cost Completion</div><div id="cockpitCostCompletion" class="snapshot-value">—</div><div class="snapshot-sub">Certified / revised BOQ</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="legacyDashboardKpis" class="dashboard-kpis"><div class="dashboard-kpi"><div class="dashboard-kpi-label">Today's Activities</div><div id="dashActivities" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">In Progress</div><div id="dashProgress" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Active work fronts</div></div><div class="dashboard-kpi"><div class="dashboard-kpi-label">Completed</div><div id="dashCompleted" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Completed today</div></div><div class="dashboard-kpi pending"><div class="dashboard-kpi-label">Pending Inspections</div><div id="dashPending" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Awaiting decision</div></div><div class="dashboard-kpi constraints"><div class="dashboard-kpi-label">Constraints</div><div id="dashConstraints" class="dashboard-kpi-value">—</div><div class="dashboard-kpi-sub">Reported today</div></div></div><div id="dashboardManagementAttention" class="dashboard-management-attention" style="display:none"><div class="dashboard-attention-head"><div><b>🚨 Management Attention</b><span>Today's constraints, holds and rectification items</span></div><button onclick="openDailySummary()">View Daily Summary</button></div><div id="dashboardAttentionList" class="dashboard-attention-list"><div class="summary-empty">Loading...</div></div></div><div class="dashboard-section">
   <div class="dashboard-section-head"><div class="dashboard-section-icon">🏗️</div><div><div class="dashboard-section-title">Site Operations</div><div class="dashboard-section-subtitle">Daily site reporting, inspections and progress monitoring</div></div></div>
   <div class="menu-grid">
     <div class="menu-card primary" onclick="openActivityForm()"><span id="draftNotificationBadge" class="menu-notification-badge draft-badge" style="display:none">Draft</span><div class="icon">📝</div><div class="menu-title">New Activity</div><div class="menu-stat">Add a new site progress report</div></div>
@@ -2100,8 +2177,8 @@ label{color:#344054;font-size:13px;margin-top:14px}
     </div>
   </div>
 </div>
-<script src="app-config.js?v=20260816-7"></script>
-<script src="api-shim.js?v=20260816-7"></script>
+<script src="app-config.js?v=20260819-1"></script>
+<script src="api-shim.js?v=20260819-1"></script>
 <!-- BOQ Smart Import V2 embedded -->
 <script>
 /* Reporting App - BOQ Smart Import V3.0 - Work Package totals */
@@ -2968,6 +3045,7 @@ function showDashboard(){
   const attentionBox=document.getElementById("dashboardManagementAttention");
   if(attentionBox)attentionBox.style.display=hasExecutiveAccess()?"block":"none";
   loadDashboardStats();
+  loadManagementCockpit();
 }
 function addOption(s,v){if(!v)return;let o=document.createElement("option");o.value=v;o.textContent=v;s.appendChild(o)}
 
@@ -3060,6 +3138,176 @@ function loadDashboardStats(){
       .withFailureHandler(function(){if(adminBadge)adminBadge.style.display="none";})
       .getAdministrationData(loggedInUser.userId,loggedInUser.username);
   }
+}
+
+
+
+/* ===================== MANAGEMENT COCKPIT V1 ===================== */
+let managementCockpitLastData=null;
+
+function cockpitMoney(v){
+  const n=Number(v||0);
+  if(!isFinite(n))return "PKR 0";
+  const a=Math.abs(n);
+  if(a>=1000000000)return "PKR "+(n/1000000000).toFixed(2).replace(/\.00$/,'')+" B";
+  if(a>=1000000)return "PKR "+(n/1000000).toFixed(1).replace(/\.0$/,'')+" M";
+  if(a>=1000)return "PKR "+(n/1000).toFixed(1).replace(/\.0$/,'')+" K";
+  return "PKR "+Math.round(n).toLocaleString();
+}
+function cockpitNum(v){
+  if(v===null||v===undefined||v==="")return 0;
+  if(typeof v==="number")return isFinite(v)?v:0;
+  let s=String(v).trim();
+  const neg=/^\(.*\)$/.test(s);
+  s=s.replace(/[(),]/g,"").replace(/%/g,"").replace(/PKR/ig,"").replace(/Rs\.?/ig,"").replace(/[^\d.\-]/g,"");
+  let n=Number(s);if(!isFinite(n))n=0;if(neg&&n>0)n=-n;return n;
+}
+function setCockpitHealth(name,status,text,detail){
+  const dot=document.getElementById("health"+name+"Dot"),tx=document.getElementById("health"+name+"Text"),dt=document.getElementById("health"+name+"Detail");
+  if(dot)dot.className="health-dot "+status;
+  if(tx)tx.innerText=text||status;
+  if(dt)dt.innerText=detail||"";
+}
+function cockpitApi(action,data){
+  if(window.LCRG_API&&typeof window.LCRG_API.call==="function")return window.LCRG_API.call(action,data||{});
+  return Promise.reject(new Error("API unavailable"));
+}
+function cockpitMeaningful(v){
+  v=String(v||"").trim().toLowerCase();
+  return !!v&&!['none','n/a','na','nil','not applicable','-'].includes(v);
+}
+function cockpitDelta(current,previous,suffix){
+  if(previous===null||previous===undefined)return "Baseline saved";
+  const d=current-previous;if(!d)return "No change";
+  return (d>0?"+":"")+d+(suffix||"");
+}
+function cockpitMoneyDelta(current,previous){
+  if(previous===null||previous===undefined)return "Baseline saved";
+  const d=current-previous;if(Math.abs(d)<1)return "No change";
+  return (d>0?"+":"−")+cockpitMoney(Math.abs(d));
+}
+function loadManagementCockpit(){
+  const cockpit=document.getElementById("managementCockpit");
+  const legacy=document.getElementById("legacyDashboardKpis");
+  const legacyAttention=document.getElementById("dashboardManagementAttention");
+  if(!cockpit)return;
+  if(!hasExecutiveAccess()){
+    cockpit.style.display="none";
+    if(legacy)legacy.style.display="grid";
+    if(legacyAttention)legacyAttention.style.display="none";
+    return;
+  }
+  cockpit.style.display="block";
+  if(legacy)legacy.style.display="none";
+  if(legacyAttention)legacyAttention.style.display="none";
+  const updated=document.getElementById("cockpitUpdated");if(updated)updated.innerText="Updating live management view...";
+  const today=dashboardTodayString();
+  const calls=[
+    cockpitApi("dailySummary",{date:today}),
+    cockpitApi("pendingInspections",{}),
+    cockpitApi("cashFlow",{}),
+    cockpitApi("boqCost",{}),
+    cockpitApi("drawings",{})
+  ];
+  Promise.allSettled(calls).then(function(results){
+    const daily=results[0].status==="fulfilled"?(results[0].value||[]):[];
+    const inspections=results[1].status==="fulfilled"?(results[1].value||[]):[];
+    const cash=results[2].status==="fulfilled"?(results[2].value||[]):[];
+    const boq=results[3].status==="fulfilled"?(results[3].value||[]):[];
+    const drawings=results[4].status==="fulfilled"?(results[4].value||[]):[];
+    const failed=results.filter(x=>x.status!=="fulfilled").length;
+
+    const completed=daily.filter(r=>String(r.workStatus||"").trim().toLowerCase()==="completed").length;
+    const inProgress=daily.filter(r=>String(r.workStatus||"").trim().toLowerCase()==="in progress").length;
+    const constraints=daily.filter(r=>cockpitMeaningful(r.issueConstraint)||cockpitMeaningful(r.delayCategory)||['hold','on hold','delayed'].includes(String(r.workStatus||"").trim().toLowerCase())||String(r.inspectionStatus||"").trim().toLowerCase()==="rectification required");
+    const rectification=daily.filter(r=>String(r.inspectionStatus||"").trim().toLowerCase()==="rectification required").length;
+
+    const cashUnique=new Map();
+    cash.forEach(r=>cashUnique.set([String(r.serialNo||'').toLowerCase(),String(r.project||'').toLowerCase(),String(r.tower||'').toLowerCase(),String(r.activity||'').toLowerCase()].join('||'),r));
+    const cashRows=Array.from(cashUnique.values());
+    const awarded=cashRows.reduce((a,r)=>a+cockpitNum(r.awardedValue),0);
+    const spent=cashRows.reduce((a,r)=>a+cockpitNum(r.actualSpending),0);
+    const pending=cashRows.reduce((a,r)=>a+cockpitNum(r.pendingApproval),0);
+    const initial=cashRows.reduce((a,r)=>a+cockpitNum(r.initialBudget),0);
+    const financial=awarded?(spent/awarded)*100:0;
+
+    const revised=boq.reduce((a,r)=>a+cockpitNum(r.revisedAmount),0);
+    const certified=boq.reduce((a,r)=>a+cockpitNum(r.certifiedAmount),0);
+    const costCompletion=revised?(certified/revised)*100:0;
+
+    const technicalAttention=drawings.filter(r=>{
+      const st=String(r.status||"").trim().toLowerCase();
+      return ['under review','approved with comments','superseded'].includes(st);
+    });
+
+    let siteStatus='green',siteText='On Track';
+    if(constraints.length>=3||rectification>=2)siteStatus='red',siteText='Attention';
+    else if(constraints.length||inspections.length>=5||rectification)siteStatus='amber',siteText='Watch';
+    setCockpitHealth('Site',siteStatus,siteText,constraints.length+' constraints • '+inspections.length+' pending inspections');
+
+    let costStatus='green',costText='Within Position';
+    if(initial>0 && awarded+pending>initial*1.05)costStatus='red',costText='Exposure';
+    else if(pending>0 || (initial>0&&awarded>initial))costStatus='amber',costText='Watch';
+    setCockpitHealth('Cost',costStatus,costText,cockpitMoney(pending)+' pending • '+financial.toFixed(1)+'% financial progress');
+
+    let techStatus='green',techText='Controlled';
+    if(technicalAttention.length>=10)techStatus='red',techText='Attention';
+    else if(technicalAttention.length)techStatus='amber',techText='Watch';
+    setCockpitHealth('Technical',techStatus,techText,technicalAttention.length+' items need review');
+
+    const redCount=[siteStatus,costStatus,techStatus].filter(x=>x==='red').length;
+    const amberCount=[siteStatus,costStatus,techStatus].filter(x=>x==='amber').length;
+    let overall='green',overallText='Stable';
+    if(redCount>=2)overall='red',overallText='Critical';
+    else if(redCount>=1||amberCount>=2)overall='amber',overallText='Attention';
+    setCockpitHealth('Overall',overall,overallText,failed?failed+' data source(s) unavailable':'Live connected sources assessed');
+
+    const setText=(id,v)=>{const e=document.getElementById(id);if(e)e.innerText=v;};
+    setText('cockpitDecisionCount','0');
+    setText('cockpitConstraintCount',constraints.length);
+    setText('cockpitConstraintImpact',constraints.length?'Requires site / management follow-up':'No current exceptions');
+    setText('cockpitTechnicalCount',technicalAttention.length);
+    setText('cockpitPendingApproval',cockpitMoney(pending));
+    setText('cockpitActivities',daily.length);
+    setText('cockpitCompleted',completed);
+    setText('cockpitFinancial',financial.toFixed(1)+'%');
+    setText('cockpitCostCompletion',costCompletion.toFixed(1)+'%');
+
+    const snapshot={activities:daily.length,inspections:inspections.length,constraints:constraints.length,pending:Math.round(pending),at:Date.now()};
+    let previous=null;
+    try{previous=JSON.parse(localStorage.getItem('managementCockpitSnapshot_'+(loggedInUser.username||loggedInUser.userId||'user'))||'null');}catch(e){}
+    setText('changeActivities',cockpitDelta(snapshot.activities,previous&&previous.activities));
+    setText('changeInspections',cockpitDelta(snapshot.inspections,previous&&previous.inspections));
+    setText('changeConstraints',cockpitDelta(snapshot.constraints,previous&&previous.constraints));
+    setText('changePendingCost',cockpitMoneyDelta(snapshot.pending,previous&&previous.pending));
+    try{localStorage.setItem('managementCockpitSnapshot_'+(loggedInUser.username||loggedInUser.userId||'user'),JSON.stringify(snapshot));}catch(e){}
+
+    const brief=[];
+    brief.push('Overall connected-project status is <b>'+overallText.toUpperCase()+'</b>.');
+    if(daily.length)brief.push('Today '+daily.length+' site activities are reported, with '+completed+' completed and '+inProgress+' in progress.');
+    if(constraints.length)brief.push('<b>'+constraints.length+' site constraint'+(constraints.length===1?'':'s')+'</b> currently require follow-up.');
+    else brief.push('No site constraints are currently surfaced from today’s reports.');
+    if(pending>0)brief.push('<b>'+cockpitMoney(pending)+'</b> is recorded as pending approval in Cash Flow.');
+    if(technicalAttention.length)brief.push(technicalAttention.length+' drawing / technical item'+(technicalAttention.length===1?' requires':'s require')+' attention.');
+    brief.push('Programme, Procurement and the formal Decision Engine are intentionally shown as not connected until their source modules are built.');
+    const be=document.getElementById('cockpitManagementBrief');if(be)be.innerHTML=brief.join(' ');
+    setText('cockpitBriefStatus',failed?'Partial live data':'Live connected data');
+
+    const actions=[];
+    constraints.slice(0,4).forEach(r=>{
+      const issue=r.issueConstraint||r.delayCategory||(String(r.inspectionStatus||'').toLowerCase()==='rectification required'?'Rectification Required':'Activity on Hold');
+      actions.push({title:issue,meta:[r.tower,r.floor,r.activity].filter(Boolean).join(' • '),owner:r.contractor||r.supervisorName||'Site Team',impact:r.workStatus||r.inspectionStatus||'Attention',button:'View Summary',fn:'openDailySummary()'});
+    });
+    technicalAttention.slice(0,2).forEach(r=>actions.push({title:r.drawingTitle||r.title||r.drawingNo||'Technical Item',meta:[r.drawingNo,r.revision,r.status].filter(Boolean).join(' • '),owner:r.consultant||r.issuer||'Technical Team',impact:'Technical review',button:'Open Drawings',fn:'openDrawings()'}));
+    if(pending>0)actions.push({title:'Pending Financial Approval',meta:cockpitMoney(pending)+' currently recorded',owner:'Management / Commercial',impact:'Cost exposure',button:'Open Cash Flow',fn:'openCashFlow()'});
+    const ae=document.getElementById('cockpitActions');
+    if(ae){
+      if(!actions.length)ae.innerHTML='<div class="summary-empty">No connected management exceptions require attention at this time.</div>';
+      else ae.innerHTML=actions.slice(0,6).map(a=>'<div class="cockpit-action-row"><div><div class="cockpit-action-title">'+escapeHtml(a.title)+'</div><div class="cockpit-action-meta">'+escapeHtml(a.meta||'')+'</div></div><div class="cockpit-owner"><b>Owner:</b> '+escapeHtml(a.owner)+'</div><div class="cockpit-impact"><b>Status:</b> '+escapeHtml(a.impact)+'</div><button class="cockpit-action-btn" onclick="'+a.fn+'">'+escapeHtml(a.button)+'</button></div>').join('');
+    }
+    managementCockpitLastData=snapshot;
+    if(updated)updated.innerText='Live data updated '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+(failed?' • partial connection':'');
+  });
 }
 
 function resetSelect(id,t){document.getElementById(id).innerHTML='<option value="">'+t+'</option>'}
