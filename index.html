@@ -866,9 +866,45 @@ label{color:#344054;font-size:13px;margin-top:14px}
 @media(max-width:950px){.cockpit-health{grid-template-columns:repeat(3,1fr)}.cockpit-attention-grid,.cockpit-snapshot{grid-template-columns:repeat(2,1fr)}.cockpit-action-row{grid-template-columns:1fr auto}.cockpit-owner,.cockpit-impact{grid-column:1/2}.cockpit-change-strip{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.cockpit-head{flex-direction:column}.cockpit-updated{text-align:left}.cockpit-health{grid-template-columns:repeat(2,1fr);padding:10px}.health-card{min-height:86px;padding:10px}.cockpit-change-strip,.cockpit-attention-grid,.cockpit-snapshot{grid-template-columns:1fr 1fr;padding-left:10px;padding-right:10px}.cockpit-section{padding:14px 10px}.cockpit-action-row{grid-template-columns:1fr}.cockpit-owner,.cockpit-impact{grid-column:auto}.cockpit-action-btn{width:100%}}
 
+
+/* ===== PMC Login/Header Branding Refinement ===== */
+.login-card .brand-logo{
+  width:104px!important;
+  max-width:104px!important;
+  height:104px!important;
+  object-fit:cover!important;
+  border-radius:22px;
+  margin:0 auto 14px!important;
+  box-shadow:0 7px 20px rgba(11,63,136,.16);
+}
+.login-card .subtitle{
+  margin:0 0 26px!important;
+  font-size:15px!important;
+  font-weight:800;
+  color:#172b4d!important;
+  letter-spacing:-.01em;
+}
+.header-logo{
+  width:44px!important;
+  height:44px!important;
+  max-height:44px!important;
+  object-fit:cover!important;
+  border-radius:10px;
+}
+.header-brand-text .app-subtitle{
+  font-size:12px!important;
+  font-weight:700;
+  color:#475467!important;
+}
+@media(max-width:650px){
+  .login-card .brand-logo{width:92px!important;max-width:92px!important;height:92px!important;border-radius:20px}
+  .login-card .subtitle{font-size:14px!important;margin-bottom:22px!important}
+  .header-logo{width:38px!important;height:38px!important;max-height:38px!important}
+}
+
 </style></head><body>
-<div id="loginPage"><div class="login-card"><img class="brand-logo" src="icons/pmc-icon-192.png?v=20260819-3" alt="PMC"><div class="subtitle">Management / Site Reporting System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
-<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="icons/pmc-icon-192.png?v=20260819-3" alt="PMC"><div class="header-brand-text"><div class="app-subtitle">Management / Site Reporting System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats();loadManagementCockpit()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div>
+<div id="loginPage"><div class="login-card"><img class="brand-logo" src="icons/pmc-icon-192.png?v=20260819-3" alt="PMC"><div class="subtitle">Project / Site Management System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
+<div id="dashboardPage"><div class="header"><div class="header-brand"><img class="header-logo" src="icons/pmc-icon-192.png?v=20260819-3" alt="PMC"><div class="header-brand-text"><div class="app-subtitle">Project / Site Management System</div></div></div><div class="header-user-actions"><button class="change-password-button" onclick="openChangePasswordModal()">Change Password</button><button class="logout-button" onclick="logout()">Logout</button></div></div><div class="container"><div class="welcome-card"><div class="dashboard-head-row"><div><h2 id="welcome" style="margin:0">Welcome</h2><div id="userRole"></div><div id="dashboardDate" class="dashboard-date"></div></div><button id="dashboardRefreshButton" class="dashboard-refresh" onclick="loadDashboardStats();loadManagementCockpit()">↻ Refresh Dashboard</button></div><div id="dashboardStatus" class="dashboard-status">Loading today's site snapshot...</div></div>
 
 <div id="managementCockpit">
   <div class="cockpit-shell">
