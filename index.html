@@ -1074,7 +1074,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
         </div>
 
         <section class="pmc-project-hero">
-          <img id="projectElevationImage" src="images/lcrg-elevation.jpg?v=20260820-1" alt="Selected project elevation">
+          <img id="projectElevationImage" src="lcrg-elevation.jpg?v=20260820-1" alt="Selected project elevation">
           <div class="pmc-hero-copy">
             <h1 id="welcome">Welcome</h1>
             <div id="userRole" class="pmc-user-role"></div>
@@ -1104,7 +1104,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
             <div class="pmc-panel-head"><div><h2 id="projectHealthTitle">Project Health</h2><p>Live indicators for the selected project only</p></div><button class="pmc-text-link" onclick="openExecutiveReport()">View Details</button></div>
             <div class="pmc-health-focus">
               <div class="pmc-health-row">
-                <img id="projectHealthThumb" class="pmc-health-thumb" src="images/lcrg-elevation.jpg?v=20260820-1" alt="Project">
+                <img id="projectHealthThumb" class="pmc-health-thumb" src="lcrg-elevation.jpg?v=20260820-1" alt="Project">
                 <div class="pmc-health-main"><b>Financial Progress</b><strong id="projectHealthProgress">—</strong><div class="pmc-health-track"><div id="projectHealthProgressBar" class="pmc-health-fill"></div></div></div>
                 <span id="projectHealthStatus" class="pmc-status-pill">Loading</span>
               </div>
@@ -3466,8 +3466,8 @@ function cockpitPopulateTowerFilter(data,project){
 
 function pmcProjectImageFor_(project){
   const key=String(project||"").trim().toLowerCase();
-  if(key==="one lake city"||key==="olc")return "images/olc-elevation.jpg?v=20260820-1";
-  return "images/lcrg-elevation.jpg?v=20260820-1";
+  if(key==="one lake city"||key==="olc")return "olc-elevation.jpg?v=20260820-1";
+  return "lcrg-elevation.jpg?v=20260820-1";
 }
 function syncSmartProjectIdentity_(){
   const project=(document.getElementById("cockpitProjectFilter")||{}).value||"";
