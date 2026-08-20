@@ -903,6 +903,23 @@ label{color:#344054;font-size:13px;margin-top:14px}
   .header-logo{width:38px!important;height:38px!important;max-height:38px!important}
 }
 
+
+/* ===== RESTORED MANAGEMENT COCKPIT ===== */
+#managementCockpit.pmc-cockpit-panel{display:block!important;margin:0 0 14px}
+.pmc-cockpit-panel .pmc-panel-head{border-bottom:0;padding-bottom:8px}
+.pmc-cockpit-panel .cockpit-health{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:9px;padding:0 14px 12px;background:#fff;border-bottom:1px solid #edf0f4}
+.pmc-cockpit-panel .health-card{min-height:102px;padding:11px;border-radius:10px}
+.pmc-cockpit-panel .health-label{font-size:8px}
+.pmc-cockpit-panel .health-status{font-size:11px;margin-top:7px}
+.pmc-cockpit-panel .health-detail{font-size:8px;line-height:1.35}
+.pmc-cockpit-panel .pmc-overall-hidden{display:none!important}
+.pmc-cockpit-panel .cockpit-change-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:9px 14px 12px;border-bottom:0}
+.pmc-cockpit-panel .change-item{padding:8px 10px}
+.pmc-cockpit-panel .change-label{font-size:7.5px}
+.pmc-cockpit-panel .change-value{font-size:10px}
+@media(max-width:1180px){.pmc-cockpit-panel .cockpit-health{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:820px){.pmc-cockpit-panel .cockpit-health{grid-template-columns:repeat(2,1fr)}.pmc-cockpit-panel .cockpit-change-strip{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 <style id="pmcWideLogoOverride">
 /* ===== PMC Wide Logo Final ===== */
@@ -1090,6 +1107,36 @@ label{color:#344054;font-size:13px;margin-top:14px}
           <div class="pmc-ceo-kpi red"><span class="pmc-kpi-icon">!</span><div><b>Critical Issues</b><strong id="ceoCriticalCount">0</strong><small>Requires management attention</small></div></div>
         </div>
 
+
+        <div id="managementCockpit" class="pmc-panel pmc-cockpit-panel">
+          <div class="pmc-panel-head">
+            <div><h2>Management Cockpit</h2><p>Project-wise exception-driven management view</p></div>
+            <span id="cockpitUpdated" class="pmc-panel-meta">Connecting live project data...</span>
+          </div>
+
+          <div class="cockpit-health pmc-health-grid">
+            <div class="health-card pmc-overall-hidden"><div class="health-label">Overall</div><div class="health-status"><span id="healthOverallDot" class="health-dot gray"></span><span id="healthOverallText">Loading</span></div><div id="healthOverallDetail" class="health-detail">Calculating project health</div></div>
+            <div class="health-card" onclick="openPlaceholderModule('📅','Programme','Programme control will connect baseline, current and forecast milestone data to the Management Cockpit.')"><div class="health-label">Programme</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Programme data not connected yet</div></div>
+            <div class="health-card" onclick="openCashFlow()"><div class="health-label">Cost</div><div class="health-status"><span id="healthCostDot" class="health-dot gray"></span><span id="healthCostText">Loading</span></div><div id="healthCostDetail" class="health-detail">Reading BOQ / Cash Flow</div></div>
+            <div class="health-card" onclick="openPlaceholderModule('🛒','Procurement','Procurement control will track package award, lead time, required-on-site dates and programme impact.')"><div class="health-label">Procurement</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Procurement data not connected yet</div></div>
+            <div class="health-card" onclick="openDrawings()"><div class="health-label">Design / Technical</div><div class="health-status"><span id="healthTechnicalDot" class="health-dot gray"></span><span id="healthTechnicalText">Loading</span></div><div id="healthTechnicalDetail" class="health-detail">Reading drawing register</div></div>
+            <div class="health-card" onclick="openCashFlow()"><div class="health-label">Approvals</div><div class="health-status"><span id="healthApprovalsDot" class="health-dot gray"></span><span id="healthApprovalsText">Loading</span></div><div id="healthApprovalsDetail" class="health-detail">Reading pending approvals</div></div>
+            <div class="health-card" onclick="openBOQCost()"><div class="health-label">Commercial</div><div class="health-status"><span id="healthCommercialDot" class="health-dot gray"></span><span id="healthCommercialText">Loading</span></div><div id="healthCommercialDetail" class="health-detail">Reading BOQ / certification position</div></div>
+            <div class="health-card" onclick="openDailySummary()"><div class="health-label">Site / Quality</div><div class="health-status"><span id="healthSiteDot" class="health-dot gray"></span><span id="healthSiteText">Loading</span></div><div id="healthSiteDetail" class="health-detail">Reading site & inspections</div></div>
+          </div>
+
+          <div class="cockpit-change-strip pmc-change-grid">
+            <div class="change-item"><div class="change-label">Since Last Review · Activities</div><div id="changeActivities" class="change-value">—</div></div>
+            <div class="change-item"><div class="change-label">Pending Inspections</div><div id="changeInspections" class="change-value">—</div></div>
+            <div class="change-item"><div class="change-label">Constraints</div><div id="changeConstraints" class="change-value">—</div></div>
+            <div class="change-item"><div class="change-label">Pending Approval</div><div id="changePendingCost" class="change-value">—</div></div>
+          </div>
+
+          <div class="pmc-hidden-cockpit-data" aria-hidden="true">
+            <div id="cockpitDecisionCount">—</div><div id="cockpitConstraintCount">—</div><div id="cockpitConstraintImpact"></div><div id="cockpitTechnicalCount">—</div><div id="cockpitPendingApproval">—</div><div id="cockpitBriefStatus"></div><div id="cockpitManagementBrief"></div>
+          </div>
+        </div>
+
         <section id="managementControlDashboardSection" class="pmc-panel">
           <div class="pmc-panel-head"><div><h2>Management Control</h2><p>Decision / Action engine for the selected project</p></div><button class="pmc-text-link" onclick="openActionRegister()">View All →</button></div>
           <div class="pmc-control-grid">
@@ -1133,19 +1180,6 @@ label{color:#344054;font-size:13px;margin-top:14px}
             <button class="pmc-quick-card" onclick="openExecutiveReport()"><span>▣</span><div><b>Executive Report</b><small>High-level overview</small></div></button>
           </div>
         </section>
-
-        <div id="managementCockpit" class="pmc-hidden-cockpit-data" aria-hidden="true">
-          <div id="cockpitUpdated"></div>
-          <span id="healthOverallDot" class="health-dot gray"></span><span id="healthOverallText">Loading</span><div id="healthOverallDetail"></div>
-          <span id="healthSiteDot" class="health-dot gray"></span><span id="healthSiteText"></span><div id="healthSiteDetail"></div>
-          <span id="healthCostDot" class="health-dot gray"></span><span id="healthCostText"></span><div id="healthCostDetail"></div>
-          <span id="healthTechnicalDot" class="health-dot gray"></span><span id="healthTechnicalText"></span><div id="healthTechnicalDetail"></div>
-          <span id="healthApprovalsDot" class="health-dot gray"></span><span id="healthApprovalsText"></span><div id="healthApprovalsDetail"></div>
-          <span id="healthCommercialDot" class="health-dot gray"></span><span id="healthCommercialText"></span><div id="healthCommercialDetail"></div>
-          <div id="cockpitDecisionCount"></div><div id="cockpitConstraintCount"></div><div id="cockpitConstraintImpact"></div><div id="cockpitTechnicalCount"></div><div id="cockpitPendingApproval"></div><div id="cockpitBriefStatus"></div><div id="cockpitManagementBrief"></div>
-          <div id="changeActivities"></div><div id="changeInspections"></div><div id="changeConstraints"></div><div id="changePendingCost"></div>
-        </div>
-
         <div id="legacyDashboardKpis" class="pmc-legacy-hidden">
           <span id="dashActivities">—</span><span id="dashProgress">—</span><span id="dashCompleted">—</span><span id="dashPending">—</span><span id="dashConstraints">—</span>
           <span id="dashConstraintCardCount">—</span><span id="dashboardBoqValue">—</span><span id="dashboardCashProgress">—</span>
