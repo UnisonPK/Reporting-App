@@ -1338,7 +1338,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
         </div>
 
         <section id="managementControlDashboardSection" class="pmc-panel">
-          <div class="pmc-panel-head"><div><h2>Management Control</h2><p>Decision / Action engine for the selected project</p></div><button class="pmc-text-link" onclick="openActionRegister()">View All →</button></div>
+          <div class="pmc-panel-head"><div><h2>Management Control</h2><p>Live Decision / Action Engine for the selected project</p></div><button class="pmc-text-link" onclick="openActionRegister()">View All →</button></div>
           <div class="pmc-control-grid">
             <button class="pmc-control-card green" onclick="openActionRegister()"><span class="pmc-control-icon">◎</span><div><b>Action Register</b><strong id="dashOpenActions">—</strong><small>Open</small><p>Create, assign and track management actions</p></div></button>
             <button class="pmc-control-card blue" onclick="openActionRegister('decision')"><span class="pmc-control-icon">⌖</span><div><b>Decision Centre</b><strong id="dashDecisionActions">0</strong><small>Pending</small><p>Items requiring PM / CEO decision</p></div></button>
@@ -4107,8 +4107,23 @@ function loadManagementCockpit(){
   cockpit.style.display="block";if(legacy)legacy.style.display="none";if(legacyAttention)legacyAttention.style.display="none";
   const updated=document.getElementById("cockpitUpdated");if(updated)updated.innerText="Updating live project view...";
   const today=dashboardTodayString();
-  Promise.allSettled([cockpitApi("dailySummary",{date:today}),cockpitApi("pendingInspections",{}),cockpitApi("cashFlow",{}),cockpitApi("boqCost",{}),cockpitApi("drawings",{})]).then(function(results){
-    managementCockpitSourceData={daily:results[0].status==="fulfilled"?(results[0].value||[]):[],inspections:results[1].status==="fulfilled"?(results[1].value||[]):[],cash:results[2].status==="fulfilled"?(results[2].value||[]):[],boq:results[3].status==="fulfilled"?(results[3].value||[]):[],drawings:results[4].status==="fulfilled"?(results[4].value||[]):[],failed:results.filter(x=>x.status!=="fulfilled").length};
+  Promise.allSettled([
+    cockpitApi("dailySummary",{date:today}),
+    cockpitApi("pendingInspections",{}),
+    cockpitApi("cashFlow",{}),
+    cockpitApi("boqCost",{}),
+    cockpitApi("drawings",{}),
+    actionApi("actionRegister",{})
+  ]).then(function(results){
+    managementCockpitSourceData={
+      daily:results[0].status==="fulfilled"?(results[0].value||[]):[],
+      inspections:results[1].status==="fulfilled"?(results[1].value||[]):[],
+      cash:results[2].status==="fulfilled"?(results[2].value||[]):[],
+      boq:results[3].status==="fulfilled"?(results[3].value||[]):[],
+      drawings:results[4].status==="fulfilled"?(results[4].value||[]):[],
+      actions:results[5].status==="fulfilled"?(results[5].value||[]):[],
+      failed:results.filter(x=>x.status!=="fulfilled").length
+    };
     const project=cockpitPopulateProjectFilter(managementCockpitSourceData);cockpitPopulateTowerFilter(managementCockpitSourceData,project);renderManagementCockpitFromCache();
   });
 }
@@ -4117,7 +4132,23 @@ function renderManagementCockpitFromCache(){
   const source=managementCockpitSourceData;
   const project=(document.getElementById('cockpitProjectFilter')||{}).value||'';
   const tower=(document.getElementById('cockpitTowerFilter')||{}).value||'';
-  const daily=cockpitScopeRows(source.daily,project,tower),inspections=cockpitScopeRows(source.inspections,project,tower),cash=cockpitScopeRows(source.cash,project,tower),boq=cockpitScopeRows(source.boq,project,tower),drawings=cockpitScopeRows(source.drawings,project,tower),failed=source.failed||0;
+  const daily=cockpitScopeRows(source.daily,project,tower),
+        inspections=cockpitScopeRows(source.inspections,project,tower),
+        cash=cockpitScopeRows(source.cash,project,tower),
+        boq=cockpitScopeRows(source.boq,project,tower),
+        drawings=cockpitScopeRows(source.drawings,project,tower),
+        actionRows=cockpitScopeRows(source.actions||[],project,tower),
+        failed=source.failed||0;
+
+  const openActions=actionRows.filter(r=>String(r.status||"").trim().toLowerCase()!=="closed");
+  const decisionActions=openActions.filter(r=>{
+    const d=String(r.decisionRequired||"").trim();
+    return d&&d.toLowerCase()!=="no decision required";
+  });
+  const criticalActions=openActions.filter(r=>
+    String(r.priority||"").trim().toLowerCase()==="critical"||!!r.isOverdue
+  );
+  const overdueActions=openActions.filter(r=>!!r.isOverdue);
   const completed=daily.filter(r=>String(r.workStatus||"").trim().toLowerCase()==="completed").length;
   const inProgress=daily.filter(r=>String(r.workStatus||"").trim().toLowerCase()==="in progress").length;
   const constraints=daily.filter(r=>cockpitMeaningful(r.issueConstraint)||cockpitMeaningful(r.delayCategory)||['hold','on hold','delayed'].includes(String(r.workStatus||"").trim().toLowerCase())||String(r.inspectionStatus||"").trim().toLowerCase()==="rectification required");
@@ -4132,10 +4163,104 @@ function renderManagementCockpitFromCache(){
   let approvalsStatus='green',approvalsText='Clear';if(initial>0&&pending>initial*0.05)approvalsStatus='red',approvalsText='Critical';else if(pending>0)approvalsStatus='amber',approvalsText='Pending';setCockpitHealth('Approvals',approvalsStatus,approvalsText,pending>0?'Why: '+cockpitMoney(pending)+' awaiting approval':'Why: No financial approvals pending');
   let commercialStatus='green',commercialText='Controlled';const variationRatio=revised?Math.abs(variations)/revised:0;if(variationRatio>0.10)commercialStatus='red',commercialText='Exposure';else if(Math.abs(variations)>0||certifiedOutstanding>0)commercialStatus='amber',commercialText='Watch';setCockpitHealth('Commercial',commercialStatus,commercialText,'Why: '+cockpitMoney(certifiedOutstanding)+' certified unpaid • '+cockpitMoney(variations)+' variations');
   const redCount=[siteStatus,costStatus,techStatus,approvalsStatus,commercialStatus].filter(x=>x==='red').length,amberCount=[siteStatus,costStatus,techStatus,approvalsStatus,commercialStatus].filter(x=>x==='amber').length;let overall='green',overallText='Stable';if(redCount>=2)overall='red',overallText='Critical';else if(redCount>=1||amberCount>=2)overall='amber',overallText='Attention';const overallReason=redCount?redCount+' Red + '+amberCount+' Amber connected areas':amberCount?amberCount+' Amber connected area'+(amberCount===1?'':'s'):'All connected areas within position';setCockpitHealth('Overall',overall,overallText,'Why: '+overallReason+(failed?' • '+failed+' source(s) unavailable':''));
-  const setText=(id,v)=>{const e=document.getElementById(id);if(e)e.innerText=v;};setText('cockpitDecisionCount','0');setText('cockpitConstraintCount',constraints.length);setText('cockpitConstraintImpact',constraints.length?'Requires site / management follow-up':'No current exceptions');setText('cockpitTechnicalCount',technicalAttention.length);setText('cockpitPendingApproval',cockpitMoney(pending));setText('cockpitActivities',daily.length);setText('cockpitCompleted',completed);setText('cockpitFinancial',financial.toFixed(1)+'%');setText('cockpitCostCompletion',costCompletion.toFixed(1)+'%');
-  const scopeKey=(project||'none')+'_'+(tower||'all'),snapshot={activities:daily.length,inspections:inspections.length,constraints:constraints.length,pending:Math.round(pending),at:Date.now()};let previous=null;try{previous=JSON.parse(localStorage.getItem('managementCockpitSnapshot_'+(loggedInUser.username||loggedInUser.userId||'user')+'_'+scopeKey)||'null');}catch(e){}setText('changeActivities',cockpitDelta(snapshot.activities,previous&&previous.activities));setText('changeInspections',cockpitDelta(snapshot.inspections,previous&&previous.inspections));setText('changeConstraints',cockpitDelta(snapshot.constraints,previous&&previous.constraints));setText('changePendingCost',cockpitMoneyDelta(snapshot.pending,previous&&previous.pending));try{localStorage.setItem('managementCockpitSnapshot_'+(loggedInUser.username||loggedInUser.userId||'user')+'_'+scopeKey,JSON.stringify(snapshot));}catch(e){}
-  const brief=[];brief.push('<b>'+escapeHtml(project||'Selected project')+(tower?' — '+escapeHtml(tower):'')+'</b> overall status is <b>'+overallText.toUpperCase()+'</b>.');if(daily.length)brief.push('Today '+daily.length+' site activities are reported, with '+completed+' completed and '+inProgress+' in progress.');if(constraints.length)brief.push('<b>'+constraints.length+' site constraint'+(constraints.length===1?'':'s')+'</b> currently require follow-up.');else brief.push('No site constraints are currently surfaced from today’s reports.');if(pending>0)brief.push('<b>'+cockpitMoney(pending)+'</b> is recorded as pending approval in Cash Flow.');else brief.push('No financial approvals are currently pending.');if(certifiedOutstanding>0||Math.abs(variations)>0)brief.push('Commercial watch: <b>'+cockpitMoney(certifiedOutstanding)+'</b> certified amount remains unpaid and <b>'+cockpitMoney(variations)+'</b> is recorded in variations.');if(technicalAttention.length)brief.push(technicalAttention.length+' design / technical item'+(technicalAttention.length===1?' requires':'s require')+' attention.');brief.push('Programme, Procurement and the formal Decision Engine remain not connected until their source modules are built.');const be=document.getElementById('cockpitManagementBrief');if(be)be.innerHTML=brief.join(' ');setText('cockpitBriefStatus','Project-wise'+(tower?' • tower filtered':' • all towers')+(failed?' • partial live data':' • live data'));
-  const actions=[];constraints.slice(0,4).forEach(r=>{const issue=r.issueConstraint||r.delayCategory||(String(r.inspectionStatus||'').toLowerCase()==='rectification required'?'Rectification Required':'Activity on Hold');actions.push({title:issue,meta:[r.tower,r.floor,r.activity].filter(Boolean).join(' • '),owner:r.contractor||r.supervisorName||'Site Team',impact:r.workStatus||r.inspectionStatus||'Attention',button:'View Summary',fn:'openDailySummary()'});});technicalAttention.slice(0,2).forEach(r=>actions.push({title:r.drawingTitle||r.title||r.drawingNo||'Technical Item',meta:[r.drawingNo,r.revision,r.status].filter(Boolean).join(' • '),owner:r.consultant||r.issuer||'Technical Team',impact:'Technical review',button:'Open Drawings',fn:'openDrawings()'}));if(pending>0)actions.push({title:'Pending Financial Approval',meta:cockpitMoney(pending)+' currently recorded',owner:'Management / Commercial',impact:'Cost exposure',button:'Open Cash Flow',fn:'openCashFlow()'});const ae=document.getElementById('cockpitActions');if(ae){if(!actions.length)ae.innerHTML='<div class="summary-empty">No connected management exceptions require attention for this project / area.</div>';else ae.innerHTML=actions.slice(0,6).map(a=>'<div class="cockpit-action-row"><div><div class="cockpit-action-title">'+escapeHtml(a.title)+'</div><div class="cockpit-action-meta">'+escapeHtml(a.meta||'')+'</div></div><div class="cockpit-owner"><b>Owner:</b> '+escapeHtml(a.owner)+'</div><div class="cockpit-impact"><b>Status:</b> '+escapeHtml(a.impact)+'</div><button class="cockpit-action-btn" onclick="'+a.fn+'">'+escapeHtml(a.button)+'</button></div>').join('');}
+  const setText=(id,v)=>{const e=document.getElementById(id);if(e)e.innerText=v;};setText('cockpitDecisionCount',decisionActions.length);setText('cockpitConstraintCount',constraints.length);setText('cockpitConstraintImpact',constraints.length?'Requires site / management follow-up':'No current exceptions');setText('cockpitTechnicalCount',technicalAttention.length);setText('cockpitPendingApproval',cockpitMoney(pending));setText('cockpitActivities',daily.length);setText('cockpitCompleted',completed);setText('cockpitFinancial',financial.toFixed(1)+'%');setText('cockpitCostCompletion',costCompletion.toFixed(1)+'%');
+  const scopeKey=(project||'none')+'_'+(tower||'all'),snapshot={activities:daily.length,inspections:inspections.length,constraints:constraints.length,pending:Math.round(pending),openActions:openActions.length,criticalActions:criticalActions.length,decisions:decisionActions.length,at:Date.now()};let previous=null;try{previous=JSON.parse(localStorage.getItem('managementCockpitSnapshot_'+(loggedInUser.username||loggedInUser.userId||'user')+'_'+scopeKey)||'null');}catch(e){}setText('changeActivities',cockpitDelta(snapshot.activities,previous&&previous.activities));setText('changeInspections',cockpitDelta(snapshot.inspections,previous&&previous.inspections));setText('changeConstraints',cockpitDelta(snapshot.constraints,previous&&previous.constraints));setText('changePendingCost',cockpitMoneyDelta(snapshot.pending,previous&&previous.pending));try{localStorage.setItem('managementCockpitSnapshot_'+(loggedInUser.username||loggedInUser.userId||'user')+'_'+scopeKey,JSON.stringify(snapshot));}catch(e){}
+  const brief=[];brief.push('<b>'+escapeHtml(project||'Selected project')+(tower?' — '+escapeHtml(tower):'')+'</b> overall status is <b>'+overallText.toUpperCase()+'</b>.');if(daily.length)brief.push('Today '+daily.length+' site activities are reported, with '+completed+' completed and '+inProgress+' in progress.');if(constraints.length)brief.push('<b>'+constraints.length+' site constraint'+(constraints.length===1?'':'s')+'</b> currently require follow-up.');else brief.push('No site constraints are currently surfaced from today’s reports.');if(pending>0)brief.push('<b>'+cockpitMoney(pending)+'</b> is recorded as pending approval in Cash Flow.');else brief.push('No financial approvals are currently pending.');if(certifiedOutstanding>0||Math.abs(variations)>0)brief.push('Commercial watch: <b>'+cockpitMoney(certifiedOutstanding)+'</b> certified amount remains unpaid and <b>'+cockpitMoney(variations)+'</b> is recorded in variations.');if(technicalAttention.length)brief.push(technicalAttention.length+' design / technical item'+(technicalAttention.length===1?' requires':'s require')+' attention.');if(openActions.length)brief.push('<b>'+openActions.length+' management action'+(openActions.length===1?' is':'s are')+'</b> open; '+criticalActions.length+' critical / overdue and '+decisionActions.length+' requiring management decision.');else brief.push('No open management actions are currently recorded for this project.');brief.push('Programme and Procurement remain pending connection to their formal source modules.');const be=document.getElementById('cockpitManagementBrief');if(be)be.innerHTML=brief.join(' ');setText('cockpitBriefStatus','Project-wise'+(tower?' • tower filtered':' • all towers')+(failed?' • partial live data':' • live data'));
+  const actions=[];
+
+  /* 1. Formal Decision / Action Register is the primary management source. */
+  const rankedActions=openActions.slice().sort((a,b)=>{
+    function score(r){
+      let s=0;
+      if(r.isOverdue)s+=100;
+      const p=String(r.priority||"").trim().toLowerCase();
+      if(p==="critical")s+=80;
+      else if(p==="high")s+=50;
+      else if(p==="attention")s+=25;
+      const d=String(r.decisionRequired||"").trim().toLowerCase();
+      if(d&&d!=="no decision required")s+=35;
+      return s;
+    }
+    return score(b)-score(a);
+  });
+
+  rankedActions.slice(0,4).forEach(r=>{
+    const flags=[];
+    if(r.isOverdue)flags.push("OVERDUE");
+    if(r.priority)flags.push(r.priority);
+    if(r.decisionRequired&&String(r.decisionRequired).trim().toLowerCase()!=="no decision required")flags.push("Decision Required");
+    if(r.status)flags.push(r.status);
+
+    actions.push({
+      title:r.issue||r.actionRequired||r.actionId||"Management Action",
+      meta:[r.actionId,r.category,r.tower,r.floor,r.targetDate?("Target "+r.targetDate):""].filter(Boolean).join(" • "),
+      owner:r.responsiblePerson||r.responsibleParty||"Management",
+      impact:flags.join(" • ")||"Open",
+      button:"Open Action",
+      fn:"openActionDetail('"+escAttr(r.actionId)+"')"
+    });
+  });
+
+  /* 2. Surface operational exceptions only when they are not already
+        represented by the formal action register shortlist. */
+  if(actions.length<6){
+    constraints.slice(0,2).forEach(r=>{
+      if(actions.length>=6)return;
+      const issue=r.issueConstraint||r.delayCategory||
+        (String(r.inspectionStatus||'').toLowerCase()==='rectification required'
+          ?'Rectification Required'
+          :'Activity on Hold');
+      actions.push({
+        title:issue,
+        meta:[r.tower,r.floor,r.activity].filter(Boolean).join(' • '),
+        owner:r.contractor||r.supervisorName||'Site Team',
+        impact:r.workStatus||r.inspectionStatus||'Attention',
+        button:'View Summary',
+        fn:'openDailySummary()'
+      });
+    });
+  }
+
+  if(actions.length<6){
+    technicalAttention.slice(0,1).forEach(r=>actions.push({
+      title:r.drawingTitle||r.title||r.drawingNo||'Technical Item',
+      meta:[r.drawingNo,r.revision,r.status].filter(Boolean).join(' • '),
+      owner:r.consultant||r.issuer||'Technical Team',
+      impact:'Technical review',
+      button:'Open Drawings',
+      fn:'openDrawings()'
+    }));
+  }
+
+  if(actions.length<6&&pending>0){
+    actions.push({
+      title:'Pending Financial Approval',
+      meta:cockpitMoney(pending)+' currently recorded',
+      owner:'Management / Commercial',
+      impact:'Cost exposure',
+      button:'Open Cash Flow',
+      fn:'openCashFlow()'
+    });
+  }
+
+  const ae=document.getElementById('cockpitActions');
+  if(ae){
+    if(!actions.length){
+      ae.innerHTML='<div class="summary-empty">No management actions or connected exceptions require attention for this project / area.</div>';
+    }else{
+      ae.innerHTML=actions.slice(0,6).map(a=>
+        '<div class="cockpit-action-row">'+
+          '<div><div class="cockpit-action-title">'+escapeHtml(a.title)+'</div>'+
+          '<div class="cockpit-action-meta">'+escapeHtml(a.meta||'')+'</div></div>'+
+          '<div class="cockpit-owner"><b>Owner:</b> '+escapeHtml(a.owner)+'</div>'+
+          '<div class="cockpit-impact"><b>Status:</b> '+escapeHtml(a.impact)+'</div>'+
+          '<button class="cockpit-action-btn" onclick="'+a.fn+'">'+escapeHtml(a.button)+'</button>'+
+        '</div>'
+      ).join('');
+    }
+  }
+  actionRegisterData=actionRows;
+  updateActionDashboardBadge();
   managementCockpitLastData=snapshot;const updated=document.getElementById('cockpitUpdated');if(updated)updated.innerText=(project||'Project')+(tower?' • '+tower:'')+' • updated '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+(failed?' • partial connection':'');syncSmartExecutiveDashboard_({project:project,tower:tower,financial:financial,costCompletion:costCompletion,overall:overall,overallText:overallText,constraints:constraints.length,pending:pending});
 }
 
