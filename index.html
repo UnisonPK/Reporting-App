@@ -1189,6 +1189,14 @@ label{color:#344054;font-size:13px;margin-top:14px}
 }
 </style>
 
+
+<style id="activeProjectContextStyles">
+.project-context-locked{
+  background:#f1f5f9!important;color:#475569!important;border-color:#d8e0ea!important;
+  cursor:not-allowed!important;font-weight:800!important
+}
+</style>
+
 </head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="icons/pmc-app-192-v3.png?v=20260819-6" alt="PMC"><div class="subtitle">Project / Site Management System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
 
@@ -3497,6 +3505,44 @@ function getActiveProject(){
   return normalizeProjectName_(localStorage.getItem(ACTIVE_PROJECT_KEY)||"");
 }
 
+function rowMatchesActiveProject_(row){
+  const active=getActiveProject();
+  if(!active)return false;
+  const p=String(
+    row?.project ??
+    row?.Project ??
+    row?.["Project Name"] ??
+    ""
+  ).trim();
+  return normalizeProjectName_(p)===active;
+}
+
+function scopeRowsToActiveProject_(rows){
+  return (rows||[]).filter(rowMatchesActiveProject_);
+}
+
+function lockProjectSelectToActive_(id){
+  const el=document.getElementById(id);
+  const active=getActiveProject();
+  if(!el||!active)return;
+
+  let opt=Array.from(el.options||[]).find(o=>
+    normalizeProjectName_(o.value||o.textContent)===active
+  );
+
+  if(!opt){
+    opt=document.createElement("option");
+    opt.value=active;
+    opt.textContent=projectLauncherDisplayName_(active);
+    el.insertBefore(opt,el.firstChild);
+  }
+
+  el.value=opt.value;
+  el.disabled=true;
+  el.classList.add("project-context-locked");
+  el.title="Project is controlled by the Project Launcher. Use Change Project from Dashboard.";
+}
+
 function projectMatchesActive_(row){
   const active=getActiveProject();
   return !!active&&normalizeProjectName_(cockpitRowProject(row))===active;
@@ -4190,8 +4236,12 @@ function openActivityForm(){
     .withSuccessHandler(function(d){
       masterData=d;
       loadMasterDropdowns();
+      lockProjectSelectToActive_("project");
+      updateTowers();
       setupActivityDraftAutosave();
       restoreActivityDraft();
+      lockProjectSelectToActive_("project");
+      updateTowers();
     })
     .withFailureHandler(function(e){
       alert("Unable to load Project / Tower / Floor master data: "+e.message);
@@ -4469,8 +4519,9 @@ function openMyReports(){
 
   google.script.run
     .withSuccessHandler(function(rows){
-      myReportsData=rows||[];
-      fillReportFilter("reportProject",uniqueValues(myReportsData,"project"),"All Projects");
+      myReportsData=scopeRowsToActiveProject_(rows||[]);
+      fillReportFilter("reportProject",uniqueValues(myReportsData,"project"),"Project");
+      lockProjectSelectToActive_("reportProject");
       fillReportFilter("reportTower",uniqueValues(myReportsData,"tower"),"All Towers");
       fillReportFilter("reportFloor",uniqueValues(myReportsData,"floor"),"All Floors");
       applyReportFilters();
@@ -4793,8 +4844,9 @@ function loadPendingInspectionQueue(){
 
   google.script.run
     .withSuccessHandler(function(rows){
-      pendingInspectionData=rows||[];
-      fillReportFilter("inspectionProjectFilter",uniqueValues(pendingInspectionData,"project"),"All Projects");
+      pendingInspectionData=scopeRowsToActiveProject_(rows||[]);
+      fillReportFilter("inspectionProjectFilter",uniqueValues(pendingInspectionData,"project"),"Project");
+      lockProjectSelectToActive_("inspectionProjectFilter");
       updateInspectionDependentFilters();
       applyInspectionFilters();
       document.getElementById("pendingTabCount").innerText=pendingInspectionData.length;
@@ -5108,8 +5160,9 @@ function loadDailySummary(){
   const d=document.getElementById("summaryDate").value;
   google.script.run
     .withSuccessHandler(function(rows){
-      dailySummaryCache=rows||[];
-      fillReportFilter("summaryProject", uniqueValues(dailySummaryCache,"project"), "All Projects");
+      dailySummaryCache=scopeRowsToActiveProject_(rows||[]);
+      fillReportFilter("summaryProject", uniqueValues(dailySummaryCache,"project"), "Project");
+      lockProjectSelectToActive_("summaryProject");
       fillReportFilter("summaryTrade", uniqueValues(dailySummaryCache,"trade"), "All Trades");
       updateSummaryDependentFilters();
       renderDailySummaryFromCache();
@@ -5126,9 +5179,10 @@ function loadDailySummary(){
 }
 
 function resetSummaryFilters(){
-  ["summaryProject","summaryTower","summaryFloor","summaryTrade","summaryWorkStatusFilter","summaryContractor"].forEach(id=>{
+  ["summaryTower","summaryFloor","summaryTrade","summaryWorkStatusFilter","summaryContractor"].forEach(id=>{
     const el=document.getElementById(id); if(el)el.value="";
   });
+  lockProjectSelectToActive_("summaryProject");
   updateSummaryDependentFilters();
   renderDailySummaryFromCache();
 }
@@ -6633,7 +6687,7 @@ function loadCashFlow(){
   c.innerText="Loading Cash Flow register...";
   cashFlowApi("cashFlow",{})
     .then(function(rows){
-      cashFlowData=rows||[];
+      cashFlowData=scopeRowsToActiveProject_(rows||[]);
       populateCashFlowProjectOptions();
       updateCashFlowTowerFilter();
       renderCashFlow();
@@ -6646,9 +6700,12 @@ function loadCashFlow(){
 
 function populateCashFlowProjectOptions(){
   const projects=[...new Set((masterData&&masterData.projects||[]).map(x=>x["Project Name"]).filter(Boolean))].sort();
-  fillSimpleSelect("cashProjectFilter",projects,"All Projects");
-  fillSimpleSelect("cashProject",projects,"Select Project");
-  fillSimpleSelect("cashFlowImportProject",projects,"Select Project");
+  fillSimpleSelect("cashProjectFilter",projects,"Project");
+  fillSimpleSelect("cashProject",projects,"Project");
+  fillSimpleSelect("cashFlowImportProject",projects,"Project");
+  lockProjectSelectToActive_("cashProjectFilter");
+  lockProjectSelectToActive_("cashProject");
+  lockProjectSelectToActive_("cashFlowImportProject");
 }
 
 
@@ -6695,7 +6752,7 @@ function updateCashFlowImportTowers(){
 }
 
 function resetCashFlowFilters(){
-  document.getElementById("cashProjectFilter").value="";
+  lockProjectSelectToActive_("cashProjectFilter");
   updateCashFlowTowerFilter();
   document.getElementById("cashTowerFilter").value="";
   document.getElementById("cashStatusFilter").value="";
@@ -6801,7 +6858,7 @@ function clearCashFlowForm(){
     const e=document.getElementById(id);if(e)e.value="";
   });
   populateCashFlowProjectOptions();
-  document.getElementById("cashProject").value="";
+  lockProjectSelectToActive_("cashProject");
   updateCashFlowFormTowers();
   updateCashFlowCalcPreview();
   document.getElementById("cashFlowMessage").innerText="";
@@ -7269,7 +7326,7 @@ function loadBOQCost(){
 
   google.script.run
     .withSuccessHandler(function(rows){
-      boqCostData=rows||[];
+      boqCostData=scopeRowsToActiveProject_(rows||[]);
       fillBOQFilters();
       renderBOQCost();
     })
@@ -7286,8 +7343,9 @@ function fillBOQFilters(){
   fillSimpleSelect(
     "boqProjectFilter",
     [...new Set((masterData&&masterData.projects||[]).map(x=>x["Project Name"]).filter(Boolean))].sort(),
-    "All Projects"
+    "Project"
   );
+  lockProjectSelectToActive_("boqProjectFilter");
 
   updateBOQFilterTowers();
   fillSimpleSelect("boqContractorFilter",unique("contractor"),"All Contractors");
@@ -7314,10 +7372,11 @@ function updateBOQFilterFloors(){
 }
 
 function resetBOQFilters(){
-  ["boqSearch","boqProjectFilter","boqTowerFilter","boqFloorFilter","boqContractorFilter","boqPackageFilter","boqStatusFilter"].forEach(id=>{
+  ["boqSearch","boqTowerFilter","boqFloorFilter","boqContractorFilter","boqPackageFilter","boqStatusFilter"].forEach(id=>{
     const e=document.getElementById(id);
     if(e)e.value="";
   });
+  lockProjectSelectToActive_("boqProjectFilter");
   updateBOQFilterTowers();
   renderBOQCost();
 }
@@ -7463,7 +7522,7 @@ function clearBOQForm(){
   document.getElementById("boqVariationAmount").value="0";
 
   populateBOQMasterDropdowns();
-  document.getElementById("boqProject").value="";
+  lockProjectSelectToActive_("boqProject");
   document.getElementById("boqUnit").value="";
   updateBOQTowers();
   updateBOQCalcPreview();
@@ -7495,7 +7554,7 @@ function editBOQItem(id){
     document.getElementById("boqId").value=r.boqId||"";
     populateBOQMasterDropdowns();
 
-    document.getElementById("boqProject").value=r.project||"";
+    document.getElementById("boqProject").value=r.project||"";lockProjectSelectToActive_("boqProject");
     updateBOQTowers();
 
     if(r.tower && !Array.from(document.getElementById("boqTower").options).some(o=>o.value===r.tower)){
@@ -7651,7 +7710,7 @@ function loadDrawings(){
 
   google.script.run
     .withSuccessHandler(function(rows){
-      drawingsData=rows||[];
+      drawingsData=scopeRowsToActiveProject_(rows||[]);
       fillDrawingFilters();
       renderDrawings();
     })
@@ -7670,7 +7729,7 @@ function openDrawings(){
 }
 function fillDrawingFilters(){
   const projects=(masterData&&masterData.projects||[]).map(x=>x["Project Name"]).filter(Boolean);
-  fillSimpleSelect("drawingProjectFilter",[...new Set(projects)].sort(),"All Projects");
+  fillSimpleSelect("drawingProjectFilter",[...new Set(projects)].sort(),"Project");lockProjectSelectToActive_("drawingProjectFilter");
   updateDrawingFilterTowers();
   fillSimpleSelect("drawingDisciplineFilter",drawingUnique("discipline"),"All Disciplines");
 }
@@ -7692,9 +7751,10 @@ function updateDrawingFilterFloors(){
   fillSimpleSelect("drawingFloorFilter",vals,"All Floors / Areas");
 }
 function resetDrawingFilters(){
-  ["drawingSearch","drawingProjectFilter","drawingTowerFilter","drawingFloorFilter","drawingDisciplineFilter","drawingStatusFilter"].forEach(id=>{
+  ["drawingSearch","drawingTowerFilter","drawingFloorFilter","drawingDisciplineFilter","drawingStatusFilter"].forEach(id=>{
     const e=document.getElementById(id);if(e)e.value="";
   });
+  lockProjectSelectToActive_("drawingProjectFilter");
   updateDrawingFilterTowers();
   renderDrawings();
 }
@@ -7780,7 +7840,7 @@ function clearDrawingForm(){
   document.getElementById("drawingPdfNote").className="upload-note";
   document.getElementById("drawingPdfNote").innerText="Select the PDF file. It will upload automatically to Google Drive when you save.";
   populateDrawingProjects();
-  document.getElementById("drawingProject").value="";
+  lockProjectSelectToActive_("drawingProject");
   updateDrawingTowers();
 }
 function openDrawingModal(){
@@ -7803,7 +7863,7 @@ function editDrawing(id){
 
     document.getElementById("drawingId").value=r.drawingId||"";
     populateDrawingProjects();
-    document.getElementById("drawingProject").value=r.project||"";
+    document.getElementById("drawingProject").value=r.project||"";lockProjectSelectToActive_("drawingProject");
     updateDrawingTowers();
     document.getElementById("drawingTower").value=r.tower||"";
     updateDrawingFloors();
@@ -7950,20 +8010,20 @@ function actionApi(action,data){
 function actionCanClose(){const r=normalizeRole(loggedInUser&&loggedInUser.role);return ["ceo","project manager","admin"].includes(r)}
 function actionCanDelete(){const r=normalizeRole(loggedInUser&&loggedInUser.role);return ["project manager","admin"].includes(r)}
 function openActionRegister(mode){hideAppPages();document.getElementById("actionRegisterPage").style.display="block";actionQuickOverdue=false;ensureCashFlowMasterData(function(){populateActionFilters();loadActionRegister(function(){if(mode==="decision"){document.getElementById("actionSearch").value="Decision";}if(mode==="critical"){document.getElementById("actionPriorityFilter").value="Critical";}renderActionRegister();});});}
-function loadActionRegister(cb){const c=document.getElementById("actionRegisterContainer");c.className="reports-loading";c.innerText="Loading Action Register...";actionApi("actionRegister",{}).then(function(rows){actionRegisterData=rows||[];renderActionRegister();updateActionDashboardBadge();if(cb)cb();}).catch(function(e){c.className="empty-state";c.innerText="Unable to load Action Register: "+e.message;});}
-function populateActionFilters(){const projects=[...new Set((masterData&&masterData.projects||[]).map(x=>x["Project Name"]).filter(Boolean))].sort();fillSimpleSelect("actionProjectFilter",projects,"All Projects");fillSimpleSelect("actionProject",projects,"Select Project");fillSimpleSelect("actionCategoryFilter",ACTION_CATEGORIES,"All Categories");updateActionTowerFilter();actionProjectChanged();}
+function loadActionRegister(cb){const c=document.getElementById("actionRegisterContainer");c.className="reports-loading";c.innerText="Loading Action Register...";actionApi("actionRegister",{}).then(function(rows){actionRegisterData=scopeRowsToActiveProject_(rows||[]);renderActionRegister();updateActionDashboardBadge();if(cb)cb();}).catch(function(e){c.className="empty-state";c.innerText="Unable to load Action Register: "+e.message;});}
+function populateActionFilters(){const projects=[...new Set((masterData&&masterData.projects||[]).map(x=>x["Project Name"]).filter(Boolean))].sort();fillSimpleSelect("actionProjectFilter",projects,"Project");fillSimpleSelect("actionProject",projects,"Project");lockProjectSelectToActive_("actionProjectFilter");lockProjectSelectToActive_("actionProject");fillSimpleSelect("actionCategoryFilter",ACTION_CATEGORIES,"All Categories");updateActionTowerFilter();actionProjectChanged();}
 function actionTowersForProject(project){return [...new Set((masterData&&masterData.towers||[]).filter(x=>!project||String(x["Project"]||"")===project).map(x=>x["Tower / Block"]).filter(Boolean))].sort()}
 function updateActionTowerFilter(){const p=value("actionProjectFilter");fillSimpleSelect("actionTowerFilter",actionTowersForProject(p),"All Towers / Areas")}
 function actionProjectChanged(){const p=value("actionProject");fillSimpleSelect("actionTower",actionTowersForProject(p),"Select Tower / Block");fillSimpleSelect("actionFloor",[],"Overall / All")}
 function actionTowerChanged(){const t=value("actionTower");const floors=[...new Set((masterData&&masterData.floors||[]).filter(x=>String(x["Tower / Block"]||"")===t).map(x=>x["Floor"]).filter(Boolean))];fillSimpleSelect("actionFloor",floors,"Overall / All")}
-function openActionModal(id){document.getElementById("actionModal").style.display="block";document.getElementById("actionFormMessage").innerText="";populateActionFilters();const r=(actionRegisterData||[]).find(x=>x.actionId===id);document.getElementById("actionModalTitle").innerText=r?"Edit "+r.actionId:"New Action";document.getElementById("actionId").value=r?r.actionId:"";if(r){document.getElementById("actionProject").value=r.project;actionProjectChanged();document.getElementById("actionTower").value=r.tower;actionTowerChanged();document.getElementById("actionFloor").value=r.floor||"";document.getElementById("actionCategory").value=r.category;document.getElementById("actionIssue").value=r.issue;document.getElementById("actionRequired").value=r.actionRequired;document.getElementById("actionResponsible").value=r.responsiblePerson;document.getElementById("actionResponsibleUsername").value=r.responsibleUsername||"";document.getElementById("actionResponsibleParty").value=r.responsibleParty;document.getElementById("actionPriority").value=r.priority;document.getElementById("actionDecisionRequired").value=r.decisionRequired;document.getElementById("actionTargetDate").value=r.targetDateInput||"";document.getElementById("actionStatus").value=r.status;document.getElementById("actionSource").value=r.source||"Manual";document.getElementById("actionProgressUpdate").value="";}else{["actionIssue","actionRequired","actionResponsible","actionResponsibleUsername","actionProgressUpdate"].forEach(id=>document.getElementById(id).value="");document.getElementById("actionCategory").value="";document.getElementById("actionResponsibleParty").value="";document.getElementById("actionPriority").value="";document.getElementById("actionDecisionRequired").value="No Decision Required";document.getElementById("actionStatus").value="Open";document.getElementById("actionSource").value="Manual";document.getElementById("actionTargetDate").value="";}}
+function openActionModal(id){document.getElementById("actionModal").style.display="block";document.getElementById("actionFormMessage").innerText="";populateActionFilters();const r=(actionRegisterData||[]).find(x=>x.actionId===id);document.getElementById("actionModalTitle").innerText=r?"Edit "+r.actionId:"New Action";document.getElementById("actionId").value=r?r.actionId:"";if(r){document.getElementById("actionProject").value=r.project;lockProjectSelectToActive_("actionProject");actionProjectChanged();document.getElementById("actionTower").value=r.tower;actionTowerChanged();document.getElementById("actionFloor").value=r.floor||"";document.getElementById("actionCategory").value=r.category;document.getElementById("actionIssue").value=r.issue;document.getElementById("actionRequired").value=r.actionRequired;document.getElementById("actionResponsible").value=r.responsiblePerson;document.getElementById("actionResponsibleUsername").value=r.responsibleUsername||"";document.getElementById("actionResponsibleParty").value=r.responsibleParty;document.getElementById("actionPriority").value=r.priority;document.getElementById("actionDecisionRequired").value=r.decisionRequired;document.getElementById("actionTargetDate").value=r.targetDateInput||"";document.getElementById("actionStatus").value=r.status;document.getElementById("actionSource").value=r.source||"Manual";document.getElementById("actionProgressUpdate").value="";}else{["actionIssue","actionRequired","actionResponsible","actionResponsibleUsername","actionProgressUpdate"].forEach(id=>document.getElementById(id).value="");document.getElementById("actionCategory").value="";document.getElementById("actionResponsibleParty").value="";document.getElementById("actionPriority").value="";document.getElementById("actionDecisionRequired").value="No Decision Required";document.getElementById("actionStatus").value="Open";document.getElementById("actionSource").value="Manual";document.getElementById("actionTargetDate").value="";}}
 function closeActionModal(e){if(e&&e.target!==document.getElementById("actionModal"))return;document.getElementById("actionModal").style.display="none"}
 function saveActionRecord(){const btn=document.getElementById("actionSaveButton"),msg=document.getElementById("actionFormMessage");const payload={actionId:value("actionId"),project:value("actionProject"),tower:value("actionTower"),floor:value("actionFloor")||"Overall / All",category:value("actionCategory"),issue:value("actionIssue"),actionRequired:value("actionRequired"),responsiblePerson:value("actionResponsible"),responsibleUsername:value("actionResponsibleUsername"),responsibleParty:value("actionResponsibleParty"),priority:value("actionPriority"),decisionRequired:value("actionDecisionRequired"),targetDate:value("actionTargetDate"),status:value("actionStatus"),source:value("actionSource"),progressUpdate:value("actionProgressUpdate")};btn.disabled=true;msg.style.color="#64748b";msg.innerText="Saving action...";actionApi("saveAction",payload).then(function(r){btn.disabled=false;msg.style.color="#166534";msg.innerText=r.message||"Saved.";loadActionRegister();setTimeout(closeActionModal,700);}).catch(function(e){btn.disabled=false;msg.style.color="#dc2626";msg.innerText=e.message;});}
 function actionIsOverdue(r){return !!r.isOverdue}
 function renderActionRegister(){const c=document.getElementById("actionRegisterContainer");if(!c)return;const q=value("actionSearch").toLowerCase(),p=value("actionProjectFilter"),t=value("actionTowerFilter"),cat=value("actionCategoryFilter"),pri=value("actionPriorityFilter"),st=value("actionStatusFilter");let rows=(actionRegisterData||[]).filter(r=>(!p||r.project===p)&&(!t||r.tower===t)&&(!cat||r.category===cat)&&(!pri||r.priority===pri)&&(!st||r.status===st)&&(!actionQuickOverdue||r.isOverdue)&&(!q||[r.actionId,r.issue,r.actionRequired,r.responsiblePerson,r.responsibleParty,r.decisionRequired,r.category].join(" ").toLowerCase().includes(q)));updateActionKpis();if(!rows.length){c.className="empty-state";c.innerText="No actions match the selected filters.";return;}c.className="action-list";c.innerHTML=rows.map(function(r){const ps=String(r.priority||"Normal").toLowerCase().replace(/\s+/g,"-");const ss=String(r.status||"Open").toLowerCase().replace(/\s+/g,"-");return `<div class="action-card priority-${ps}"><div class="action-card-top"><div><div class="action-id">${esc(r.actionId)} • ${esc(r.category)}</div><div class="action-meta">${esc(r.project)} • ${esc(r.tower)} • ${esc(r.floor||"Overall / All")}</div></div><div class="action-meta">Target: <b>${esc(r.targetDate||"—")}</b></div></div><div class="action-issue">${esc(r.issue)}</div><div class="action-required"><b>Action:</b> ${esc(r.actionRequired)}</div><div class="action-tags"><span class="action-tag">${esc(r.priority)}</span><span class="action-tag status-${ss}">${esc(r.status)}</span>${r.isOverdue?'<span class="action-tag overdue">OVERDUE</span>':''}<span class="action-tag decision">${esc(r.decisionRequired)}</span><span class="action-tag">Owner: ${esc(r.responsiblePerson)}</span></div><div class="action-card-actions"><button class="action-btn view" onclick="openActionDetail('${escAttr(r.actionId)}')">View / History</button><button class="action-btn update" onclick="openActionModal('${escAttr(r.actionId)}')">Edit</button>${actionCanClose()&&r.status!=="Closed"?`<button class="action-btn close-action" onclick="closeActionRecord('${escAttr(r.actionId)}')">Close</button>`:""}${actionCanDelete()?`<button class="action-btn delete-action" onclick="deleteActionRecord('${escAttr(r.actionId)}')">Delete</button>`:""}</div></div>`}).join("");}
 function updateActionKpis(){const rows=actionRegisterData||[];document.getElementById("actionKpiCritical").innerText=rows.filter(r=>r.priority==="Critical"&&r.status!=="Closed").length;document.getElementById("actionKpiHigh").innerText=rows.filter(r=>r.priority==="High"&&r.status!=="Closed").length;document.getElementById("actionKpiOverdue").innerText=rows.filter(r=>r.isOverdue).length;document.getElementById("actionKpiOpen").innerText=rows.filter(r=>r.status==="Open").length;document.getElementById("actionKpiProgress").innerText=rows.filter(r=>r.status==="In Progress").length;document.getElementById("actionKpiClosed").innerText=rows.filter(r=>r.status==="Closed").length;}
 function setActionQuickFilter(type,val){resetActionFilters(false);if(type==="priority")document.getElementById("actionPriorityFilter").value=val;if(type==="status")document.getElementById("actionStatusFilter").value=val;if(type==="overdue")actionQuickOverdue=true;renderActionRegister()}
-function resetActionFilters(render=true){["actionSearch","actionProjectFilter","actionTowerFilter","actionCategoryFilter","actionPriorityFilter","actionStatusFilter"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});actionQuickOverdue=false;updateActionTowerFilter();if(render)renderActionRegister()}
+function resetActionFilters(render=true){["actionSearch","actionTowerFilter","actionCategoryFilter","actionPriorityFilter","actionStatusFilter"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});lockProjectSelectToActive_("actionProjectFilter");actionQuickOverdue=false;updateActionTowerFilter();if(render)renderActionRegister()}
 function updateActionDashboardBadge(){const active=getActiveProject();const rows=(actionRegisterData||[]).filter(r=>!active||normalizeProjectName_(r.project)===active),open=rows.filter(r=>r.status!=="Closed").length,urgent=rows.filter(r=>r.status!=="Closed"&&(r.priority==="Critical"||r.isOverdue)).length,decisions=rows.filter(r=>r.status!=="Closed"&&String(r.decisionRequired||"").trim()&&String(r.decisionRequired||"").trim()!=="No Decision Required").length;const n=document.getElementById("dashOpenActions"),b=document.getElementById("actionNotificationBadge"),d=document.getElementById("dashDecisionActions"),c=document.getElementById("dashCriticalActions"),sd=document.getElementById("sidebarDecisionBadge"),sc=document.getElementById("sidebarCriticalBadge"),cc=document.getElementById("ceoCriticalCount");if(n)n.innerText=open;if(d)d.innerText=decisions;if(c)c.innerText=urgent;if(cc)cc.innerText=urgent;if(b){b.innerText=open;b.style.display=open?"flex":"none"}if(sd){sd.innerText=decisions;sd.style.display=decisions?"flex":"none"}if(sc){sc.innerText=urgent;sc.style.display=urgent?"flex":"none"}}
 function loadActionDashboardBadge(){if(!loggedInUser)return;actionApi("actionRegister",{}).then(function(rows){actionRegisterData=rows||[];updateActionDashboardBadge();}).catch(function(){})}
 function openActionDetail(id){currentActionDetailId=id;const r=(actionRegisterData||[]).find(x=>x.actionId===id);if(!r)return;document.getElementById("actionDetailModal").style.display="block";document.getElementById("actionDetailTitle").innerText=r.actionId+" — "+r.category;document.getElementById("actionDetailPath").innerText=[r.project,r.tower,r.floor].filter(Boolean).join(" • ");document.getElementById("actionDetailBody").innerHTML=`<div class="detail-grid"><div class="detail-item"><strong>Issue / Constraint</strong>${esc(r.issue)}</div><div class="detail-item"><strong>Priority</strong>${esc(r.priority)}${r.isOverdue?" • OVERDUE":""}</div><div class="detail-item"><strong>Action Required</strong>${esc(r.actionRequired)}</div><div class="detail-item"><strong>Responsible</strong>${esc(r.responsiblePerson)} • ${esc(r.responsibleParty)}</div><div class="detail-item"><strong>Decision Required</strong>${esc(r.decisionRequired)}</div><div class="detail-item"><strong>Target / Status</strong>${esc(r.targetDate)} • ${esc(r.status)}</div><div class="detail-item"><strong>Raised By</strong>${esc(r.raisedBy)} • ${esc(r.dateRaised)}</div><div class="detail-item"><strong>Source</strong>${esc(r.source||"Manual")}</div></div>`;document.getElementById("actionUpdateText").value="";document.getElementById("actionDetailMessage").innerText="";loadActionHistory(id)}
