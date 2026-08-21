@@ -1061,6 +1061,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
         <h1>Select Project</h1>
         <p>Select the project you want to manage. The dashboard will open only for the selected project.</p>
         <div id="projectSelectionUser" class="project-select-user">Logged-in User</div>
+        <div id="projectAccessNote" style="margin-top:8px;font-size:11px;color:#667085"></div>
       </div>
       <div class="project-launcher-tools">
         <input id="projectLauncherSearch" class="project-launcher-search" type="search"
@@ -3407,6 +3408,40 @@ function projectLauncherMeta_(name){
   return "Project Management Dashboard";
 }
 
+
+function userHasAllProjectAccess_(){
+  const role=String(loggedInUser?.role||"").trim().toLowerCase();
+  return role==="ceo"||role==="project manager";
+}
+
+function userProjectAccessTokens_(){
+  return String(loggedInUser?.projectAccess||"")
+    .split(/[\n,;|]+/)
+    .map(v=>String(v||"").trim())
+    .filter(Boolean);
+}
+
+function projectAccessTokenKey_(v){
+  return String(v||"").trim().toLowerCase().replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim();
+}
+
+function projectRowAllowedForUser_(row){
+  if(userHasAllProjectAccess_())return true;
+
+  const tokens=userProjectAccessTokens_();
+  if(!tokens.length)return false;
+
+  const name=projectLauncherName_(row);
+  const id=projectLauncherId_(row);
+  const nameKey=projectAccessTokenKey_(name);
+  const idKey=projectAccessTokenKey_(id);
+
+  return tokens.some(t=>{
+    const key=projectAccessTokenKey_(t);
+    return key===nameKey||key===idKey;
+  });
+}
+
 function renderProjectLauncher(){
   const grid=document.getElementById("projectLauncherGrid");
   const count=document.getElementById("projectLauncherCount");
@@ -3415,6 +3450,7 @@ function renderProjectLauncher(){
   const q=String(document.getElementById("projectLauncherSearch")?.value||"").trim().toLowerCase();
 
   const rows=(projectLauncherData||[])
+    .filter(projectRowAllowedForUser_)
     .map(r=>({
       raw:r,
       name:projectLauncherName_(r),
@@ -3425,13 +3461,20 @@ function renderProjectLauncher(){
     .sort((a,b)=>a.name.localeCompare(b.name));
 
   if(count){
-    const total=(projectLauncherData||[]).filter(r=>projectLauncherName_(r)).length;
-    count.innerText=q?rows.length+" of "+total+" projects":total+" active project"+(total===1?"":"s");
+    const total=(projectLauncherData||[])
+      .filter(projectRowAllowedForUser_)
+      .filter(r=>projectLauncherName_(r)).length;
+    count.innerText=q?rows.length+" of "+total+" projects":total+" accessible project"+(total===1?"":"s");
   }
 
   if(!rows.length){
+    const noAssignment=!userHasAllProjectAccess_()&&!userProjectAccessTokens_().length;
     grid.innerHTML='<div class="project-launcher-empty">'+
-      (q?'No project matches your search.':'No active projects are available in Projects Master Data.')+
+      (q
+        ?'No accessible project matches your search.'
+        :(noAssignment
+          ?'No project has been assigned to your account. Please contact the Administrator.'
+          :'No accessible active projects are available.'))+
       '</div>';
     return;
   }
@@ -3474,7 +3517,7 @@ function loadProjectLauncher(){
       /* Emergency compatibility fallback:
          only used if master data cannot return project rows.
          This prevents the existing LCRG/OLC system from becoming inaccessible. */
-      if(!projectLauncherData.length){
+      if(!projectLauncherData.length&&userHasAllProjectAccess_()){
         projectLauncherData=[
           {"Project ID":"PRJ-001","Project Name":"Lake City Roof Garden","Status":"Active"},
           {"Project ID":"PRJ-002","Project Name":"One Lake City","Status":"Active"}
@@ -3486,10 +3529,12 @@ function loadProjectLauncher(){
     .withFailureHandler(function(e){
       console.error("Project launcher master-data load failed:",e);
 
-      projectLauncherData=[
-        {"Project ID":"PRJ-001","Project Name":"Lake City Roof Garden","Status":"Active"},
-        {"Project ID":"PRJ-002","Project Name":"One Lake City","Status":"Active"}
-      ];
+      projectLauncherData=userHasAllProjectAccess_()
+        ?[
+          {"Project ID":"PRJ-001","Project Name":"Lake City Roof Garden","Status":"Active"},
+          {"Project ID":"PRJ-002","Project Name":"One Lake City","Status":"Active"}
+        ]
+        :[];
 
       renderProjectLauncher();
 
@@ -3538,6 +3583,13 @@ function showProjectSelection(){
     user.innerText=role?name+" • "+role:name;
   }
 
+  const accessNote=document.getElementById("projectAccessNote");
+  if(accessNote){
+    accessNote.innerText=userHasAllProjectAccess_()
+      ?"All active projects are available for your role."
+      :"Only projects assigned to your account are shown.";
+  }
+
   const search=document.getElementById("projectLauncherSearch");
   if(search)search.value="";
 
@@ -3550,14 +3602,16 @@ function selectActiveProject(project){
 
   /* Generic: any active project returned by Projects Master Data is valid. */
   const valid=(projectLauncherData||[]).some(r=>
+    projectRowAllowedForUser_(r)&&
     normalizeProjectName_(projectLauncherName_(r))===normalized
   );
 
-  /* Preserve the two legacy projects even during a temporary master-data failure. */
-  const legacy=["Lake City Roof Garden","One Lake City"].includes(normalized);
+  /* Legacy fallback is allowed only for CEO / Project Manager. */
+  const legacy=userHasAllProjectAccess_()&&
+    ["Lake City Roof Garden","One Lake City"].includes(normalized);
 
   if(!valid&&!legacy){
-    alert("This project is not currently available in Projects Master Data.");
+    alert("You do not have permission to access this project. Please contact the Administrator.");
     return;
   }
 
