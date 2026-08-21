@@ -1197,6 +1197,41 @@ label{color:#344054;font-size:13px;margin-top:14px}
 }
 </style>
 
+
+<style id="programmeProcurementStyles">
+/* ===== PROGRAMME + PROCUREMENT CONTROL V1 ===== */
+#programmePage,#procurementPage{display:none}
+.control-toolbar{
+  display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr auto;gap:10px;margin:14px 0
+}
+.control-kpis{
+  display:grid;grid-template-columns:repeat(5,minmax(125px,1fr));gap:10px;margin:14px 0 18px
+}
+.control-kpi{
+  background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:14px;
+  box-shadow:0 3px 12px rgba(15,23,42,.04)
+}
+.control-kpi-label{font-size:10px;font-weight:900;color:#64748b;text-transform:uppercase}
+.control-kpi-value{font-size:22px;font-weight:900;color:#172b4d;margin-top:5px}
+.control-table-wrap{overflow-x:auto;border:1px solid #e5e7eb;border-radius:12px}
+.control-table{width:100%;border-collapse:collapse;min-width:1150px}
+.control-table th,.control-table td{padding:10px 9px;border-bottom:1px solid #e5e7eb;text-align:left;font-size:12px;vertical-align:top}
+.control-table th{background:#f8fafc;color:#475569;white-space:nowrap}
+.control-status{display:inline-block;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:900;white-space:nowrap;background:#f1f5f9;color:#475569}
+.control-status.completed,.control-status.delivered,.control-status.closed{background:#dcfce7;color:#166534}
+.control-status.delayed,.control-status.on-hold{background:#fee2e2;color:#991b1b}
+.control-status.in-progress,.control-status.manufacturing,.control-status.shipped,.control-status.awarded{background:#dbeafe;color:#1d4ed8}
+.control-status.rfq,.control-status.under-evaluation,.control-status.planned{background:#fef3c7;color:#92400e}
+.control-danger{color:#b91c1c;font-weight:900}.control-warning{color:#b45309;font-weight:900}.control-good{color:#166534;font-weight:900}
+.control-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.control-form-grid .full-width{grid-column:1/-1}
+.control-note{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;border-radius:10px;padding:10px 12px;font-size:12px;margin-bottom:12px}
+.control-delete{border:0;background:#fee2e2;color:#991b1b;border-radius:7px;padding:7px 9px;font-weight:800;cursor:pointer;font-size:11px}
+.control-edit{border:0;background:#e8f0fe;color:#0b3f88;border-radius:7px;padding:7px 9px;font-weight:800;cursor:pointer;font-size:11px}
+@media(max-width:950px){.control-toolbar{grid-template-columns:1fr 1fr}.control-kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:650px){.control-toolbar,.control-form-grid{grid-template-columns:1fr}.control-kpis{grid-template-columns:repeat(2,1fr)}.control-form-grid .full-width{grid-column:auto}}
+</style>
+
 </head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="icons/pmc-app-192-v3.png?v=20260819-6" alt="PMC"><div class="subtitle">Project / Site Management System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
 
@@ -1246,6 +1281,8 @@ label{color:#344054;font-size:13px;margin-top:14px}
         <div id="projectControlsDashboardSection" class="pmc-sidebar-role-section" style="display:none">
           <div class="pmc-nav-section">Project Controls</div>
           <button id="executiveReportCard" class="pmc-nav-item" style="display:none" onclick="openExecutiveReport()"><span>▥</span>Executive Report</button>
+          <button class="pmc-nav-item" onclick="openProgramme()"><span>◷</span>Programme</button>
+          <button class="pmc-nav-item" onclick="openProcurement()"><span>◇</span>Procurement</button>
           <button class="pmc-nav-item" onclick="openBOQCost()"><span>◉</span>BOQ &amp; Cost</button>
           <button class="pmc-nav-item" onclick="openCashFlow()"><span>▣</span>Cash Flow</button>
         </div>
@@ -1316,9 +1353,9 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
           <div class="cockpit-health pmc-health-grid">
             <div class="health-card pmc-overall-hidden"><div class="health-label">Overall</div><div class="health-status"><span id="healthOverallDot" class="health-dot gray"></span><span id="healthOverallText">Loading</span></div><div id="healthOverallDetail" class="health-detail">Calculating project health</div></div>
-            <div class="health-card" onclick="openPlaceholderModule('📅','Programme','Programme control will connect baseline, current and forecast milestone data to the Management Cockpit.')"><div class="health-label">Programme</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Programme data not connected yet</div></div>
+            <div class="health-card" onclick="openProgramme()"><div class="health-label">Programme</div><div class="health-status"><span id="healthProgrammeDot" class="health-dot gray"></span><span id="healthProgrammeText">Loading</span></div><div id="healthProgrammeDetail" class="health-detail">Reading programme milestones</div></div>
             <div class="health-card" onclick="openCashFlow()"><div class="health-label">Cost</div><div class="health-status"><span id="healthCostDot" class="health-dot gray"></span><span id="healthCostText">Loading</span></div><div id="healthCostDetail" class="health-detail">Reading BOQ / Cash Flow</div></div>
-            <div class="health-card" onclick="openPlaceholderModule('🛒','Procurement','Procurement control will track package award, lead time, required-on-site dates and programme impact.')"><div class="health-label">Procurement</div><div class="health-status"><span class="health-dot gray"></span><span>Not Connected</span></div><div class="health-detail">Procurement data not connected yet</div></div>
+            <div class="health-card" onclick="openProcurement()"><div class="health-label">Procurement</div><div class="health-status"><span id="healthProcurementDot" class="health-dot gray"></span><span id="healthProcurementText">Loading</span></div><div id="healthProcurementDetail" class="health-detail">Reading procurement packages</div></div>
             <div class="health-card" onclick="openDrawings()"><div class="health-label">Design / Technical</div><div class="health-status"><span id="healthTechnicalDot" class="health-dot gray"></span><span id="healthTechnicalText">Loading</span></div><div id="healthTechnicalDetail" class="health-detail">Reading drawing register</div></div>
             <div class="health-card" onclick="openCashFlow()"><div class="health-label">Approvals</div><div class="health-status"><span id="healthApprovalsDot" class="health-dot gray"></span><span id="healthApprovalsText">Loading</span></div><div id="healthApprovalsDetail" class="health-detail">Reading pending approvals</div></div>
             <div class="health-card" onclick="openBOQCost()"><div class="health-label">Commercial</div><div class="health-status"><span id="healthCommercialDot" class="health-dot gray"></span><span id="healthCommercialText">Loading</span></div><div id="healthCommercialDetail" class="health-detail">Reading BOQ / certification position</div></div>
@@ -1733,6 +1770,113 @@ label{color:#344054;font-size:13px;margin-top:14px}
   <div class="admin-modal-card" style="max-width:850px" onclick="event.stopPropagation()">
     <div class="admin-modal-head"><div><div id="actionDetailTitle" class="admin-modal-title">Action</div><div id="actionDetailPath" class="app-subtitle"></div></div><button class="modal-close" onclick="closeActionDetailModal()">Close</button></div>
     <div class="admin-modal-body"><div id="actionDetailBody"></div><div class="action-section-note">Update history is append-only. Closing an action keeps the full audit trail.</div><label>Add Update</label><textarea id="actionUpdateText" placeholder="Enter progress, instruction, decision or follow-up note."></textarea><div class="decision-actions"><button class="decision-save" onclick="appendActionUpdate()">Add Update</button></div><div id="actionDetailMessage" class="admin-message"></div><div id="actionHistoryContainer" class="action-history"></div></div>
+  </div>
+</div>
+
+
+<div id="programmePage">
+  <div class="header">
+    <div class="header-brand"><img class="header-logo" src="icons/pmc-logo-wide.png?v=20260819-6"><div class="header-brand-text"><div class="app-name">Programme Control</div><div class="app-subtitle">Baseline, forecast and milestone variance</div></div></div>
+    <button class="back-button" onclick="showDashboard()">Back to Dashboard</button>
+  </div>
+  <div class="container">
+    <div class="form-card">
+      <div class="dashboard-head-row">
+        <div><div class="step-title">Programme Milestones</div><div class="step-subtitle">Selected-project milestone and schedule exception register.</div></div>
+        <button class="admin-primary-btn" onclick="openProgrammeModal()">+ Add Milestone</button>
+      </div>
+      <div class="control-toolbar">
+        <input id="programmeSearch" placeholder="Search milestone..." oninput="renderProgramme()">
+        <select id="programmeProjectFilter" disabled></select>
+        <select id="programmeTowerFilter" onchange="renderProgramme()"><option value="">All Towers / Areas</option></select>
+        <select id="programmeStatusFilter" onchange="renderProgramme()"><option value="">All Statuses</option><option>Not Started</option><option>In Progress</option><option>Completed</option><option>Delayed</option><option>On Hold</option></select>
+        <button class="reset-filter-btn" onclick="resetProgrammeFilters()">Reset</button>
+      </div>
+      <div class="control-kpis">
+        <div class="control-kpi"><div class="control-kpi-label">Milestones</div><div id="progKpiTotal" class="control-kpi-value">0</div></div>
+        <div class="control-kpi"><div class="control-kpi-label">Completed</div><div id="progKpiCompleted" class="control-kpi-value">0</div></div>
+        <div class="control-kpi"><div class="control-kpi-label">In Progress</div><div id="progKpiProgress" class="control-kpi-value">0</div></div>
+        <div class="control-kpi"><div class="control-kpi-label">Delayed / Overdue</div><div id="progKpiDelayed" class="control-kpi-value">0</div></div>
+        <div class="control-kpi"><div class="control-kpi-label">Max Delay</div><div id="progKpiVariance" class="control-kpi-value">0 d</div></div>
+      </div>
+      <div id="programmeTableContainer" class="control-table-wrap"></div>
+    </div>
+  </div>
+</div>
+
+<div id="procurementPage">
+  <div class="header">
+    <div class="header-brand"><img class="header-logo" src="icons/pmc-logo-wide.png?v=20260819-6"><div class="header-brand-text"><div class="app-name">Procurement Control</div><div class="app-subtitle">Package award, delivery and required-on-site tracking</div></div></div>
+    <button class="back-button" onclick="showDashboard()">Back to Dashboard</button>
+  </div>
+  <div class="container">
+    <div class="form-card">
+      <div class="dashboard-head-row">
+        <div><div class="step-title">Procurement Packages</div><div class="step-subtitle">Selected-project procurement and delivery exception register.</div></div>
+        <button class="admin-primary-btn" onclick="openProcurementModal()">+ Add Package</button>
+      </div>
+      <div class="control-toolbar">
+        <input id="procurementSearch" placeholder="Search package/vendor..." oninput="renderProcurement()">
+        <select id="procurementProjectFilter" disabled></select>
+        <select id="procurementTowerFilter" onchange="renderProcurement()"><option value="">All Towers / Areas</option></select>
+        <select id="procurementStatusFilter" onchange="renderProcurement()"><option value="">All Statuses</option><option>Planned</option><option>RFQ</option><option>Under Evaluation</option><option>Awarded</option><option>Manufacturing</option><option>Shipped</option><option>Delivered</option><option>Closed</option></select>
+        <button class="reset-filter-btn" onclick="resetProcurementFilters()">Reset</button>
+      </div>
+      <div class="control-kpis">
+        <div class="control-kpi"><div class="control-kpi-label">Packages</div><div id="procKpiTotal" class="control-kpi-value">0</div></div>
+        <div class="control-kpi"><div class="control-kpi-label">Awarded+</div><div id="procKpiAwarded" class="control-kpi-value">0</div></div>
+        <div class="control-kpi"><div class="control-kpi-label">Delivered</div><div id="procKpiDelivered" class="control-kpi-value">0</div></div>
+        <div class="control-kpi"><div class="control-kpi-label">Late / At Risk</div><div id="procKpiLate" class="control-kpi-value">0</div></div>
+        <div class="control-kpi"><div class="control-kpi-label">Total Value</div><div id="procKpiValue" class="control-kpi-value">0</div></div>
+      </div>
+      <div id="procurementTableContainer" class="control-table-wrap"></div>
+    </div>
+  </div>
+</div>
+
+<div id="programmeModal" class="admin-modal">
+  <div class="admin-modal-card">
+    <div class="admin-modal-head"><div id="programmeModalTitle" class="admin-modal-title">Add Programme Milestone</div><button class="modal-close" onclick="closeProgrammeModal()">Close</button></div>
+    <div class="admin-modal-body">
+      <div class="control-note">Variance is calculated automatically from Baseline Date to Forecast / Actual Date.</div>
+      <div class="control-form-grid">
+        <div><label>Project *</label><select id="programmeProject"></select></div>
+        <div><label>Tower / Area *</label><select id="programmeTower"></select></div>
+        <div class="full-width"><label>Milestone *</label><input id="programmeMilestone"></div>
+        <div><label>Baseline Date *</label><input id="programmeBaselineDate" type="date"></div>
+        <div><label>Forecast Date *</label><input id="programmeForecastDate" type="date"></div>
+        <div><label>Actual Date</label><input id="programmeActualDate" type="date"></div>
+        <div><label>Status *</label><select id="programmeStatus"><option>Not Started</option><option>In Progress</option><option>Completed</option><option>Delayed</option><option>On Hold</option></select></div>
+        <div><label>Progress % *</label><input id="programmeProgress" type="number" min="0" max="100" step="0.01"></div>
+        <div class="full-width"><label>Remarks</label><textarea id="programmeRemarks"></textarea></div>
+      </div>
+      <div id="programmeMessage" class="admin-message"></div>
+      <div class="decision-actions"><button class="decision-save" onclick="saveProgrammeItem()">Save Milestone</button></div>
+    </div>
+  </div>
+</div>
+
+<div id="procurementModal" class="admin-modal">
+  <div class="admin-modal-card">
+    <div class="admin-modal-head"><div id="procurementModalTitle" class="admin-modal-title">Add Procurement Package</div><button class="modal-close" onclick="closeProcurementModal()">Close</button></div>
+    <div class="admin-modal-body">
+      <div class="control-note">Required-on-Site versus Forecast / Actual Delivery drives the cockpit procurement health.</div>
+      <div class="control-form-grid">
+        <div><label>Project *</label><select id="procurementProject"></select></div>
+        <div><label>Tower / Area *</label><select id="procurementTower"></select></div>
+        <div class="full-width"><label>Package *</label><input id="procurementPackage"></div>
+        <div><label>Vendor / Contractor</label><input id="procurementVendor"></div>
+        <div><label>Status *</label><select id="procurementStatus"><option>Planned</option><option>RFQ</option><option>Under Evaluation</option><option>Awarded</option><option>Manufacturing</option><option>Shipped</option><option>Delivered</option><option>Closed</option></select></div>
+        <div><label>Required on Site *</label><input id="procurementRequiredDate" type="date"></div>
+        <div><label>Forecast Delivery *</label><input id="procurementForecastDate" type="date"></div>
+        <div><label>Actual Delivery</label><input id="procurementActualDate" type="date"></div>
+        <div><label>Lead Time (Days)</label><input id="procurementLeadTime" type="number" min="0"></div>
+        <div><label>Package Value</label><input id="procurementValue" type="number" min="0" step="0.01"></div>
+        <div class="full-width"><label>Remarks</label><textarea id="procurementRemarks"></textarea></div>
+      </div>
+      <div id="procurementMessage" class="admin-message"></div>
+      <div class="decision-actions"><button class="decision-save" onclick="saveProcurementItem()">Save Package</button></div>
+    </div>
   </div>
 </div>
 
@@ -3831,7 +3975,7 @@ function changeActiveProject(){
 }
 
 function hideAppPages(){
-  ["loginPage","projectSelectionPage","dashboardPage","activityPage","myReportsPage","pendingInspectionsPage","dailySummaryPage","administrationPage","executiveReportPage","cashFlowPage","boqCostPage","drawingsPage","actionRegisterPage","placeholderModulePage"].forEach(function(id){
+  ["loginPage","projectSelectionPage","dashboardPage","activityPage","myReportsPage","pendingInspectionsPage","dailySummaryPage","administrationPage","executiveReportPage","cashFlowPage","boqCostPage","drawingsPage","actionRegisterPage","programmePage","procurementPage","placeholderModulePage"].forEach(function(id){
     const el=document.getElementById(id);
     if(el)el.style.display="none";
   });
@@ -3992,6 +4136,12 @@ function loadDashboardStats(){
 /* ===================== MANAGEMENT COCKPIT V1 ===================== */
 let managementCockpitLastData=null;
 
+function cockpitSetHealth(name,color,text,detail){
+  const dot=document.getElementById("health"+name+"Dot"),txt=document.getElementById("health"+name+"Text"),det=document.getElementById("health"+name+"Detail");
+  if(dot)dot.className="health-dot "+color;
+  if(txt)txt.innerText=text;
+  if(det)det.innerText=detail;
+}
 function cockpitMoney(v){
   const n=Number(v||0);
   if(!isFinite(n))return "PKR 0";
@@ -4113,7 +4263,9 @@ function loadManagementCockpit(){
     cockpitApi("cashFlow",{}),
     cockpitApi("boqCost",{}),
     cockpitApi("drawings",{}),
-    actionApi("actionRegister",{})
+    actionApi("actionRegister",{}),
+    cockpitApi("programme",{}),
+    cockpitApi("procurement",{})
   ]).then(function(results){
     managementCockpitSourceData={
       daily:results[0].status==="fulfilled"?(results[0].value||[]):[],
@@ -4122,6 +4274,8 @@ function loadManagementCockpit(){
       boq:results[3].status==="fulfilled"?(results[3].value||[]):[],
       drawings:results[4].status==="fulfilled"?(results[4].value||[]):[],
       actions:results[5].status==="fulfilled"?(results[5].value||[]):[],
+      programme:results[6].status==="fulfilled"?(results[6].value||[]):[],
+      procurement:results[7].status==="fulfilled"?(results[7].value||[]):[],
       failed:results.filter(x=>x.status!=="fulfilled").length
     };
     const project=cockpitPopulateProjectFilter(managementCockpitSourceData);cockpitPopulateTowerFilter(managementCockpitSourceData,project);renderManagementCockpitFromCache();
@@ -4138,6 +4292,8 @@ function renderManagementCockpitFromCache(){
         boq=cockpitScopeRows(source.boq,project,tower),
         drawings=cockpitScopeRows(source.drawings,project,tower),
         actionRows=cockpitScopeRows(source.actions||[],project,tower),
+        programmeRows=cockpitScopeRows(source.programme||[],project,tower),
+        procurementRows=cockpitScopeRows(source.procurement||[],project,tower),
         failed=source.failed||0;
 
   const openActions=actionRows.filter(r=>String(r.status||"").trim().toLowerCase()!=="closed");
@@ -4149,6 +4305,20 @@ function renderManagementCockpitFromCache(){
     String(r.priority||"").trim().toLowerCase()==="critical"||!!r.isOverdue
   );
   const overdueActions=openActions.filter(r=>!!r.isOverdue);
+
+  const programmeDelayed=programmeRows.filter(r=>r.isDelayed||String(r.status||"").toLowerCase()==="delayed");
+  if(!programmeRows.length)cockpitSetHealth('Programme','gray','No Data','No programme milestones recorded');
+  else if(programmeDelayed.length)cockpitSetHealth('Programme','red','Delayed',programmeDelayed.length+' delayed / overdue milestone'+(programmeDelayed.length===1?'':'s'));
+  else if(programmeRows.some(r=>Number(r.varianceDays||0)>0))cockpitSetHealth('Programme','amber','At Risk','Forecast slippage exists in programme milestones');
+  else cockpitSetHealth('Programme','green','On Track','No delayed programme milestones');
+
+  const procurementLate=procurementRows.filter(r=>r.isLate);
+  const procurementRisk=procurementRows.filter(r=>r.isAtRisk&&!r.isLate);
+  if(!procurementRows.length)cockpitSetHealth('Procurement','gray','No Data','No procurement packages recorded');
+  else if(procurementLate.length)cockpitSetHealth('Procurement','red','Delayed',procurementLate.length+' package'+(procurementLate.length===1?'':'s')+' late');
+  else if(procurementRisk.length)cockpitSetHealth('Procurement','amber','At Risk',procurementRisk.length+' package'+(procurementRisk.length===1?'':'s')+' forecast after required date');
+  else cockpitSetHealth('Procurement','green','On Track','No late procurement packages');
+
   const completed=daily.filter(r=>String(r.workStatus||"").trim().toLowerCase()==="completed").length;
   const inProgress=daily.filter(r=>String(r.workStatus||"").trim().toLowerCase()==="in progress").length;
   const constraints=daily.filter(r=>cockpitMeaningful(r.issueConstraint)||cockpitMeaningful(r.delayCategory)||['hold','on hold','delayed'].includes(String(r.workStatus||"").trim().toLowerCase())||String(r.inspectionStatus||"").trim().toLowerCase()==="rectification required");
@@ -4165,7 +4335,7 @@ function renderManagementCockpitFromCache(){
   const redCount=[siteStatus,costStatus,techStatus,approvalsStatus,commercialStatus].filter(x=>x==='red').length,amberCount=[siteStatus,costStatus,techStatus,approvalsStatus,commercialStatus].filter(x=>x==='amber').length;let overall='green',overallText='Stable';if(redCount>=2)overall='red',overallText='Critical';else if(redCount>=1||amberCount>=2)overall='amber',overallText='Attention';const overallReason=redCount?redCount+' Red + '+amberCount+' Amber connected areas':amberCount?amberCount+' Amber connected area'+(amberCount===1?'':'s'):'All connected areas within position';setCockpitHealth('Overall',overall,overallText,'Why: '+overallReason+(failed?' • '+failed+' source(s) unavailable':''));
   const setText=(id,v)=>{const e=document.getElementById(id);if(e)e.innerText=v;};setText('cockpitDecisionCount',decisionActions.length);setText('cockpitConstraintCount',constraints.length);setText('cockpitConstraintImpact',constraints.length?'Requires site / management follow-up':'No current exceptions');setText('cockpitTechnicalCount',technicalAttention.length);setText('cockpitPendingApproval',cockpitMoney(pending));setText('cockpitActivities',daily.length);setText('cockpitCompleted',completed);setText('cockpitFinancial',financial.toFixed(1)+'%');setText('cockpitCostCompletion',costCompletion.toFixed(1)+'%');
   const scopeKey=(project||'none')+'_'+(tower||'all'),snapshot={activities:daily.length,inspections:inspections.length,constraints:constraints.length,pending:Math.round(pending),openActions:openActions.length,criticalActions:criticalActions.length,decisions:decisionActions.length,at:Date.now()};let previous=null;try{previous=JSON.parse(localStorage.getItem('managementCockpitSnapshot_'+(loggedInUser.username||loggedInUser.userId||'user')+'_'+scopeKey)||'null');}catch(e){}setText('changeActivities',cockpitDelta(snapshot.activities,previous&&previous.activities));setText('changeInspections',cockpitDelta(snapshot.inspections,previous&&previous.inspections));setText('changeConstraints',cockpitDelta(snapshot.constraints,previous&&previous.constraints));setText('changePendingCost',cockpitMoneyDelta(snapshot.pending,previous&&previous.pending));try{localStorage.setItem('managementCockpitSnapshot_'+(loggedInUser.username||loggedInUser.userId||'user')+'_'+scopeKey,JSON.stringify(snapshot));}catch(e){}
-  const brief=[];brief.push('<b>'+escapeHtml(project||'Selected project')+(tower?' — '+escapeHtml(tower):'')+'</b> overall status is <b>'+overallText.toUpperCase()+'</b>.');if(daily.length)brief.push('Today '+daily.length+' site activities are reported, with '+completed+' completed and '+inProgress+' in progress.');if(constraints.length)brief.push('<b>'+constraints.length+' site constraint'+(constraints.length===1?'':'s')+'</b> currently require follow-up.');else brief.push('No site constraints are currently surfaced from today’s reports.');if(pending>0)brief.push('<b>'+cockpitMoney(pending)+'</b> is recorded as pending approval in Cash Flow.');else brief.push('No financial approvals are currently pending.');if(certifiedOutstanding>0||Math.abs(variations)>0)brief.push('Commercial watch: <b>'+cockpitMoney(certifiedOutstanding)+'</b> certified amount remains unpaid and <b>'+cockpitMoney(variations)+'</b> is recorded in variations.');if(technicalAttention.length)brief.push(technicalAttention.length+' design / technical item'+(technicalAttention.length===1?' requires':'s require')+' attention.');if(openActions.length)brief.push('<b>'+openActions.length+' management action'+(openActions.length===1?' is':'s are')+'</b> open; '+criticalActions.length+' critical / overdue and '+decisionActions.length+' requiring management decision.');else brief.push('No open management actions are currently recorded for this project.');brief.push('Programme and Procurement remain pending connection to their formal source modules.');const be=document.getElementById('cockpitManagementBrief');if(be)be.innerHTML=brief.join(' ');setText('cockpitBriefStatus','Project-wise'+(tower?' • tower filtered':' • all towers')+(failed?' • partial live data':' • live data'));
+  const brief=[];brief.push('<b>'+escapeHtml(project||'Selected project')+(tower?' — '+escapeHtml(tower):'')+'</b> overall status is <b>'+overallText.toUpperCase()+'</b>.');if(daily.length)brief.push('Today '+daily.length+' site activities are reported, with '+completed+' completed and '+inProgress+' in progress.');if(constraints.length)brief.push('<b>'+constraints.length+' site constraint'+(constraints.length===1?'':'s')+'</b> currently require follow-up.');else brief.push('No site constraints are currently surfaced from today’s reports.');if(pending>0)brief.push('<b>'+cockpitMoney(pending)+'</b> is recorded as pending approval in Cash Flow.');else brief.push('No financial approvals are currently pending.');if(certifiedOutstanding>0||Math.abs(variations)>0)brief.push('Commercial watch: <b>'+cockpitMoney(certifiedOutstanding)+'</b> certified amount remains unpaid and <b>'+cockpitMoney(variations)+'</b> is recorded in variations.');if(technicalAttention.length)brief.push(technicalAttention.length+' design / technical item'+(technicalAttention.length===1?' requires':'s require')+' attention.');if(openActions.length)brief.push('<b>'+openActions.length+' management action'+(openActions.length===1?' is':'s are')+'</b> open; '+criticalActions.length+' critical / overdue and '+decisionActions.length+' requiring management decision.');else brief.push('No open management actions are currently recorded for this project.');if(programmeRows.length)brief.push('Programme: <b>'+programmeDelayed.length+'</b> delayed / overdue milestone'+(programmeDelayed.length===1?'':'s')+'.');if(procurementRows.length)brief.push('Procurement: <b>'+procurementLate.length+'</b> late and <b>'+procurementRisk.length+'</b> at-risk package'+((procurementLate.length+procurementRisk.length)===1?'':'s')+'.');const be=document.getElementById('cockpitManagementBrief');if(be)be.innerHTML=brief.join(' ');setText('cockpitBriefStatus','Project-wise'+(tower?' • tower filtered':' • all towers')+(failed?' • partial live data':' • live data'));
   const actions=[];
 
   /* 1. Formal Decision / Action Register is the primary management source. */
@@ -8157,6 +8327,154 @@ function loadActionHistory(id){const c=document.getElementById("actionHistoryCon
 function appendActionUpdate(){const txt=value("actionUpdateText"),msg=document.getElementById("actionDetailMessage");if(!txt){msg.style.color="#dc2626";msg.innerText="Please enter an update.";return;}actionApi("updateAction",{actionId:currentActionDetailId,updateText:txt}).then(function(r){msg.style.color="#166534";msg.innerText=r.message||"Update added.";document.getElementById("actionUpdateText").value="";loadActionHistory(currentActionDetailId);loadActionRegister();}).catch(function(e){msg.style.color="#dc2626";msg.innerText=e.message;})}
 function closeActionRecord(id){const remarks=prompt("Closure remarks for "+id+":");if(remarks===null)return;if(!remarks.trim()){alert("Closure remarks are required.");return;}actionApi("closeAction",{actionId:id,closureRemarks:remarks.trim()}).then(function(r){loadActionRegister();alert(r.message||"Action closed.");}).catch(e=>alert(e.message))}
 function deleteActionRecord(id){if(!confirm("Delete "+id+"? This is restricted to Project Manager / Admin and should only be used for erroneous records."))return;actionApi("deleteAction",{actionId:id}).then(function(r){loadActionRegister();alert(r.message||"Action deleted.");}).catch(e=>alert(e.message))}
+
+
+/* ===================== PROGRAMME CONTROL ===================== */
+let programmeData=[],programmeEditId="";
+function programmeApi(action,data){if(window.LCRG_API&&typeof LCRG_API.apiRequest==="function")return LCRG_API.apiRequest(action,data||{});return Promise.reject(new Error("API not available."))}
+function openProgramme(){
+  if(!hasExecutiveAccess()){alert("Programme Control is available to CEO and Project Manager only.");return}
+  hideAppPages();document.getElementById("programmePage").style.display="block";
+  loadProgramme();
+}
+function loadProgramme(){
+  programmeApi("programme",{}).then(rows=>{
+    programmeData=scopeRowsToActiveProject_(rows||[]);
+    populateProgrammeFilters();renderProgramme();
+  }).catch(e=>{document.getElementById("programmeTableContainer").innerHTML='<div class="empty-state">'+escapeHtml(e.message||String(e))+'</div>'});
+}
+function populateProgrammeFilters(){
+  const active=getActiveProject();
+  fillSimpleSelect("programmeProjectFilter",[active],"Project");lockProjectSelectToActive_("programmeProjectFilter");
+  const towers=[...new Set(programmeData.map(r=>r.tower).filter(Boolean))].sort();
+  fillSimpleSelect("programmeTowerFilter",towers,"All Towers / Areas");
+}
+function resetProgrammeFilters(){
+  document.getElementById("programmeSearch").value="";
+  document.getElementById("programmeTowerFilter").value="";
+  document.getElementById("programmeStatusFilter").value="";
+  lockProjectSelectToActive_("programmeProjectFilter");renderProgramme();
+}
+function programmeVarianceClass(v){v=Number(v||0);return v>0?"control-danger":v<0?"control-good":""}
+function renderProgramme(){
+  const q=value("programmeSearch").toLowerCase(),tower=value("programmeTowerFilter"),status=value("programmeStatusFilter");
+  const rows=programmeData.filter(r=>{
+    const s=[r.milestone,r.tower,r.remarks].join(" ").toLowerCase();
+    return (!q||s.includes(q))&&(!tower||r.tower===tower)&&(!status||r.status===status);
+  });
+  const delayed=rows.filter(r=>r.isDelayed||r.status==="Delayed").length;
+  setText("progKpiTotal",rows.length);setText("progKpiCompleted",rows.filter(r=>r.status==="Completed").length);
+  setText("progKpiProgress",rows.filter(r=>r.status==="In Progress").length);setText("progKpiDelayed",delayed);
+  const maxVar=rows.length?Math.max(0,...rows.map(r=>Number(r.varianceDays||0))):0;setText("progKpiVariance",maxVar+" d");
+  const box=document.getElementById("programmeTableContainer");
+  if(!rows.length){box.innerHTML='<div class="empty-state">No programme milestones found for this project / filter.</div>';return}
+  box.innerHTML='<table class="control-table"><thead><tr><th>Milestone</th><th>Tower / Area</th><th>Baseline</th><th>Forecast</th><th>Actual</th><th>Status</th><th>Progress</th><th>Variance</th><th>Remarks</th><th>Actions</th></tr></thead><tbody>'+
+    rows.map(r=>'<tr><td><b>'+escapeHtml(r.milestone)+'</b></td><td>'+escapeHtml(r.tower)+'</td><td>'+escapeHtml(r.baselineDate)+'</td><td>'+escapeHtml(r.forecastDate)+'</td><td>'+escapeHtml(r.actualDate||"—")+'</td><td><span class="control-status '+slugify(r.status)+'">'+escapeHtml(r.status)+'</span></td><td>'+Number(r.progress||0).toFixed(1)+'%</td><td class="'+programmeVarianceClass(r.varianceDays)+'">'+Number(r.varianceDays||0)+' d</td><td>'+escapeHtml(r.remarks||"")+'</td><td><button class="control-edit" onclick="openProgrammeModal(\''+escAttr(r.programmeId)+'\')">Edit</button><button class="control-delete" onclick="deleteProgrammeItem(\''+escAttr(r.programmeId)+'\')">Delete</button></td></tr>').join("")+
+    '</tbody></table>';
+}
+function openProgrammeModal(id){
+  programmeEditId=id||"";
+  const r=programmeData.find(x=>x.programmeId===programmeEditId)||{};
+  fillSimpleSelect("programmeProject",[getActiveProject()],"Project");lockProjectSelectToActive_("programmeProject");
+  const towers=(masterData?.towers||[]).filter(t=>normalizeProjectName_(t["Project"]||"")===getActiveProject()).map(t=>t["Tower / Block"]).filter(Boolean);
+  fillSimpleSelect("programmeTower",[...new Set(towers)],"Select Tower / Area");
+  document.getElementById("programmeTower").value=r.tower||"";
+  document.getElementById("programmeMilestone").value=r.milestone||"";
+  document.getElementById("programmeBaselineDate").value=r.baselineDateInput||"";
+  document.getElementById("programmeForecastDate").value=r.forecastDateInput||"";
+  document.getElementById("programmeActualDate").value=r.actualDateInput||"";
+  document.getElementById("programmeStatus").value=r.status||"Not Started";
+  document.getElementById("programmeProgress").value=r.progress??0;
+  document.getElementById("programmeRemarks").value=r.remarks||"";
+  setText("programmeModalTitle",programmeEditId?"Edit Programme Milestone":"Add Programme Milestone");
+  setText("programmeMessage","");document.getElementById("programmeModal").style.display="block";
+}
+function closeProgrammeModal(){document.getElementById("programmeModal").style.display="none"}
+function saveProgrammeItem(){
+  const payload={programmeId:programmeEditId,project:getActiveProject(),tower:value("programmeTower"),milestone:value("programmeMilestone"),baselineDate:value("programmeBaselineDate"),forecastDate:value("programmeForecastDate"),actualDate:value("programmeActualDate"),status:value("programmeStatus"),progress:value("programmeProgress"),remarks:value("programmeRemarks")};
+  const msg=document.getElementById("programmeMessage");
+  if(!payload.project||!payload.tower||!payload.milestone||!payload.baselineDate||!payload.forecastDate||!payload.status){msg.style.color="#dc2626";msg.innerText="Please complete all mandatory fields.";return}
+  msg.style.color="#475569";msg.innerText="Saving...";
+  programmeApi("saveProgramme",payload).then(r=>{msg.style.color="#166534";msg.innerText=r.message||"Saved.";setTimeout(()=>{closeProgrammeModal();loadProgramme();loadManagementCockpit()},450)}).catch(e=>{msg.style.color="#dc2626";msg.innerText=e.message||String(e)});
+}
+function deleteProgrammeItem(id){
+  if(!confirm("Delete this programme milestone?"))return;
+  programmeApi("deleteProgramme",{programmeId:id}).then(()=>{loadProgramme();loadManagementCockpit()}).catch(e=>alert(e.message||String(e)));
+}
+
+/* ===================== PROCUREMENT CONTROL ===================== */
+let procurementData=[],procurementEditId="";
+function procurementApi(action,data){if(window.LCRG_API&&typeof LCRG_API.apiRequest==="function")return LCRG_API.apiRequest(action,data||{});return Promise.reject(new Error("API not available."))}
+function openProcurement(){
+  if(!hasExecutiveAccess()){alert("Procurement Control is available to CEO and Project Manager only.");return}
+  hideAppPages();document.getElementById("procurementPage").style.display="block";loadProcurement();
+}
+function loadProcurement(){
+  procurementApi("procurement",{}).then(rows=>{
+    procurementData=scopeRowsToActiveProject_(rows||[]);
+    populateProcurementFilters();renderProcurement();
+  }).catch(e=>{document.getElementById("procurementTableContainer").innerHTML='<div class="empty-state">'+escapeHtml(e.message||String(e))+'</div>'});
+}
+function populateProcurementFilters(){
+  const active=getActiveProject();
+  fillSimpleSelect("procurementProjectFilter",[active],"Project");lockProjectSelectToActive_("procurementProjectFilter");
+  const towers=[...new Set(procurementData.map(r=>r.tower).filter(Boolean))].sort();
+  fillSimpleSelect("procurementTowerFilter",towers,"All Towers / Areas");
+}
+function resetProcurementFilters(){
+  document.getElementById("procurementSearch").value="";
+  document.getElementById("procurementTowerFilter").value="";
+  document.getElementById("procurementStatusFilter").value="";
+  lockProjectSelectToActive_("procurementProjectFilter");renderProcurement();
+}
+function renderProcurement(){
+  const q=value("procurementSearch").toLowerCase(),tower=value("procurementTowerFilter"),status=value("procurementStatusFilter");
+  const rows=procurementData.filter(r=>{
+    const s=[r.packageName,r.vendor,r.tower,r.remarks].join(" ").toLowerCase();
+    return (!q||s.includes(q))&&(!tower||r.tower===tower)&&(!status||r.status===status);
+  });
+  const delivered=rows.filter(r=>["Delivered","Closed"].includes(r.status)).length;
+  const awarded=rows.filter(r=>["Awarded","Manufacturing","Shipped","Delivered","Closed"].includes(r.status)).length;
+  const late=rows.filter(r=>r.isLate||r.isAtRisk).length;
+  const totalValue=rows.reduce((a,r)=>a+Number(r.packageValue||0),0);
+  setText("procKpiTotal",rows.length);setText("procKpiAwarded",awarded);setText("procKpiDelivered",delivered);setText("procKpiLate",late);setText("procKpiValue",cockpitMoney(totalValue));
+  const box=document.getElementById("procurementTableContainer");
+  if(!rows.length){box.innerHTML='<div class="empty-state">No procurement packages found for this project / filter.</div>';return}
+  box.innerHTML='<table class="control-table"><thead><tr><th>Package</th><th>Tower / Area</th><th>Vendor</th><th>Status</th><th>Required on Site</th><th>Forecast</th><th>Actual</th><th>Variance</th><th>Lead Time</th><th>Value</th><th>Remarks</th><th>Actions</th></tr></thead><tbody>'+
+    rows.map(r=>'<tr><td><b>'+escapeHtml(r.packageName)+'</b></td><td>'+escapeHtml(r.tower)+'</td><td>'+escapeHtml(r.vendor||"—")+'</td><td><span class="control-status '+slugify(r.status)+'">'+escapeHtml(r.status)+'</span></td><td>'+escapeHtml(r.requiredDate)+'</td><td>'+escapeHtml(r.forecastDate)+'</td><td>'+escapeHtml(r.actualDate||"—")+'</td><td class="'+(Number(r.varianceDays)>0?"control-danger":Number(r.varianceDays)<0?"control-good":"")+'">'+Number(r.varianceDays||0)+' d</td><td>'+Number(r.leadTimeDays||0)+' d</td><td>'+cockpitMoney(r.packageValue||0)+'</td><td>'+escapeHtml(r.remarks||"")+'</td><td><button class="control-edit" onclick="openProcurementModal(\''+escAttr(r.procurementId)+'\')">Edit</button><button class="control-delete" onclick="deleteProcurementItem(\''+escAttr(r.procurementId)+'\')">Delete</button></td></tr>').join("")+
+    '</tbody></table>';
+}
+function openProcurementModal(id){
+  procurementEditId=id||"";
+  const r=procurementData.find(x=>x.procurementId===procurementEditId)||{};
+  fillSimpleSelect("procurementProject",[getActiveProject()],"Project");lockProjectSelectToActive_("procurementProject");
+  const towers=(masterData?.towers||[]).filter(t=>normalizeProjectName_(t["Project"]||"")===getActiveProject()).map(t=>t["Tower / Block"]).filter(Boolean);
+  fillSimpleSelect("procurementTower",[...new Set(towers)],"Select Tower / Area");
+  document.getElementById("procurementTower").value=r.tower||"";
+  document.getElementById("procurementPackage").value=r.packageName||"";
+  document.getElementById("procurementVendor").value=r.vendor||"";
+  document.getElementById("procurementStatus").value=r.status||"Planned";
+  document.getElementById("procurementRequiredDate").value=r.requiredDateInput||"";
+  document.getElementById("procurementForecastDate").value=r.forecastDateInput||"";
+  document.getElementById("procurementActualDate").value=r.actualDateInput||"";
+  document.getElementById("procurementLeadTime").value=r.leadTimeDays??"";
+  document.getElementById("procurementValue").value=r.packageValue??"";
+  document.getElementById("procurementRemarks").value=r.remarks||"";
+  setText("procurementModalTitle",procurementEditId?"Edit Procurement Package":"Add Procurement Package");
+  setText("procurementMessage","");document.getElementById("procurementModal").style.display="block";
+}
+function closeProcurementModal(){document.getElementById("procurementModal").style.display="none"}
+function saveProcurementItem(){
+  const payload={procurementId:procurementEditId,project:getActiveProject(),tower:value("procurementTower"),packageName:value("procurementPackage"),vendor:value("procurementVendor"),status:value("procurementStatus"),requiredDate:value("procurementRequiredDate"),forecastDate:value("procurementForecastDate"),actualDate:value("procurementActualDate"),leadTimeDays:value("procurementLeadTime"),packageValue:value("procurementValue"),remarks:value("procurementRemarks")};
+  const msg=document.getElementById("procurementMessage");
+  if(!payload.project||!payload.tower||!payload.packageName||!payload.status||!payload.requiredDate||!payload.forecastDate){msg.style.color="#dc2626";msg.innerText="Please complete all mandatory fields.";return}
+  msg.style.color="#475569";msg.innerText="Saving...";
+  procurementApi("saveProcurement",payload).then(r=>{msg.style.color="#166534";msg.innerText=r.message||"Saved.";setTimeout(()=>{closeProcurementModal();loadProcurement();loadManagementCockpit()},450)}).catch(e=>{msg.style.color="#dc2626";msg.innerText=e.message||String(e)});
+}
+function deleteProcurementItem(id){
+  if(!confirm("Delete this procurement package?"))return;
+  procurementApi("deleteProcurement",{procurementId:id}).then(()=>{loadProcurement();loadManagementCockpit()}).catch(e=>alert(e.message||String(e)));
+}
 
 function openPlaceholderModule(icon,title,text){hideAppPages();document.getElementById("placeholderModulePage").style.display="block";document.getElementById("placeholderModuleHeader").innerText=icon+" "+title;document.getElementById("placeholderModuleIcon").innerText=icon;document.getElementById("placeholderModuleTitle").innerText=title;document.getElementById("placeholderModuleText").innerText=text}
 
