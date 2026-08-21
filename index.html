@@ -1018,8 +1018,57 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
 </style>
 
+
+<style id="projectSelectionIntegratedStyles">
+#projectSelectionPage{display:none;min-height:100vh;background:radial-gradient(circle at 50% -10%,#dbeafe 0,#eef4fb 34%,#f7f9fc 68%,#f5f7fb 100%);padding:24px;align-items:center;justify-content:center}
+.project-select-shell{width:100%;max-width:900px}.project-select-brand{text-align:center;margin-bottom:18px}.project-select-brand img{width:170px;max-width:65%;height:auto;object-fit:contain}
+.project-select-panel{background:#fff;border:1px solid #e4e9f1;border-radius:24px;overflow:hidden;box-shadow:0 20px 55px rgba(11,63,136,.13)}
+.project-select-panel:before{content:"";display:block;height:5px;background:linear-gradient(90deg,#0b3f88,#2d73bf)}
+.project-select-head{text-align:center;padding:30px 26px 18px}.project-select-eyebrow{color:#0b3f88;font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.project-select-head h1{margin:7px 0 0;color:#172b4d;font-size:28px;letter-spacing:-.03em}.project-select-head p{margin:8px auto 0;max-width:610px;color:#667085;font-size:13px;line-height:1.5}
+.project-select-user{display:inline-flex;margin-top:14px;padding:7px 11px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:11px;font-weight:800}
+.project-select-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:10px 26px 30px}
+.project-choice{appearance:none;text-align:left;border:1px solid #dde4ed;background:linear-gradient(145deg,#fff,#f9fbfe);border-radius:18px;padding:24px;cursor:pointer;min-height:180px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 7px 20px rgba(16,24,40,.05);transition:.16s}
+.project-choice:hover{transform:translateY(-2px);border-color:#9bbce5;box-shadow:0 13px 28px rgba(16,24,40,.10)}.project-choice:active{transform:scale(.99)}
+.project-choice-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.project-choice-code{min-width:55px;height:55px;padding:0 8px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#eef5ff;color:#0b3f88;font-weight:900;font-size:13px}
+.project-choice-arrow{font-size:24px;color:#94a3b8}.project-choice-name{margin-top:18px;font-size:20px;font-weight:900;color:#1d2939;line-height:1.25}.project-choice-meta{margin-top:6px;color:#667085;font-size:12px}
+.project-select-footer{border-top:1px solid #edf0f4;padding:14px 20px;text-align:center;color:#98a2b3;font-size:11px}
+.pmc-active-project{min-height:43px;border:1px solid #d8e2ef;background:#fff;border-radius:9px;padding:6px 11px;display:flex;flex-direction:column;justify-content:center;min-width:210px}
+.pmc-active-project span{font-size:8px;color:#667085;text-transform:uppercase;font-weight:900;letter-spacing:.05em}.pmc-active-project b{font-size:11px;color:#172b4d;margin-top:2px}
+.pmc-change-project-btn{border:1px solid #cbd5e1;background:#fff;color:#334155;border-radius:9px;min-height:43px;padding:8px 12px;font-size:10px;font-weight:900;cursor:pointer;white-space:nowrap}
+#cockpitProjectFilter{display:none!important}#dashboardPage .pmc-filter-row{grid-template-columns:minmax(210px,1.15fr) minmax(170px,1fr) auto auto auto}#dashboardPage .pmc-filter-row>label:first-of-type{display:none!important}
+@media(max-width:900px){#dashboardPage .pmc-filter-row{grid-template-columns:1fr 1fr auto}.pmc-active-project{min-width:0}}
+@media(max-width:650px){#projectSelectionPage{padding:16px}.project-select-head{padding:25px 18px 16px}.project-select-head h1{font-size:24px}.project-select-grid{grid-template-columns:1fr;padding:8px 18px 24px}.project-choice{min-height:145px;padding:20px}#dashboardPage .pmc-filter-row{grid-template-columns:1fr}.pmc-change-project-btn{width:100%}}
+</style>
+
 </head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="icons/pmc-app-192-v3.png?v=20260819-6" alt="PMC"><div class="subtitle">Project / Site Management System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
+
+<div id="projectSelectionPage">
+  <div class="project-select-shell">
+    <div class="project-select-brand"><img src="icons/pmc-logo-wide.png?v=20260821-1" onerror="this.src='icons/pmc-app-192-v3.png?v=20260819-6'" alt="PMC"></div>
+    <section class="project-select-panel">
+      <div class="project-select-head">
+        <div class="project-select-eyebrow">Project / Site Management System</div>
+        <h1>Select Project</h1>
+        <p>Select the project you want to manage. The dashboard will open only for the selected project.</p>
+        <div id="projectSelectionUser" class="project-select-user">Logged-in User</div>
+      </div>
+      <div class="project-select-grid">
+        <button type="button" class="project-choice" onclick="selectActiveProject('Lake City Roof Garden')">
+          <div class="project-choice-top"><div class="project-choice-code">LCRG</div><div class="project-choice-arrow">→</div></div>
+          <div><div class="project-choice-name">Lake City Roof Gardens</div><div class="project-choice-meta">Tower I • L1 • L2</div></div>
+        </button>
+        <button type="button" class="project-choice" onclick="selectActiveProject('One Lake City')">
+          <div class="project-choice-top"><div class="project-choice-code">OLC</div><div class="project-choice-arrow">→</div></div>
+          <div><div class="project-choice-name">One Lake City</div><div class="project-choice-meta">Tower 1 • Tower 2</div></div>
+        </button>
+      </div>
+      <div class="project-select-footer">A project must be selected before the dashboard can be opened.</div>
+    </section>
+  </div>
+</div>
+
 
 <div id="dashboardPage">
   <div class="pmc-dashboard-shell">
@@ -1084,8 +1133,10 @@ label{color:#344054;font-size:13px;margin-top:14px}
 
       <main class="pmc-dashboard-content">
         <div class="pmc-filter-row">
+          <div class="pmc-active-project"><span>Active Project</span><b id="activeProjectDisplay">No Project Selected</b></div>
           <label>Select Project<select id="cockpitProjectFilter" onchange="cockpitProjectChanged()"><option value="">Loading projects...</option></select></label>
           <label>Select Tower / Area<select id="cockpitTowerFilter" onchange="renderManagementCockpitFromCache()"><option value="">All Towers / Areas</option></select></label>
+          <button class="pmc-change-project-btn" type="button" onclick="changeActiveProject()">Change Project</button>
           <button id="dashboardRefreshButton" class="pmc-refresh-btn" onclick="loadDashboardStats();loadManagementCockpit()">↻ Refresh Dashboard</button>
           <button class="pmc-logout-btn" onclick="logout()">Logout</button>
         </div>
@@ -3263,8 +3314,47 @@ function applyRoleAccess(){
     :"Search and filter your submitted reports. Click View for full details and photo evidence.";
 }
 
+
+/* ===================== PROJECT SELECTION GATE — INTEGRATED V1 ===================== */
+const ACTIVE_PROJECT_KEY="pmcActiveProject";
+function normalizeProjectName_(project){
+  const key=String(project||"").trim().toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+  if(["lcrg","lake city roof garden","lake city roof gardens"].includes(key))return "Lake City Roof Garden";
+  if(["olc","one lake city"].includes(key))return "One Lake City";
+  return String(project||"").trim();
+}
+function getActiveProject(){return normalizeProjectName_(localStorage.getItem(ACTIVE_PROJECT_KEY)||"")}
+function projectMatchesActive_(row){const active=getActiveProject();return !!active&&normalizeProjectName_(cockpitRowProject(row))===active}
+function syncActiveProjectDashboard_(){
+  const active=getActiveProject();
+  const label=document.getElementById("activeProjectDisplay");if(label)label.innerText=active||"No Project Selected";
+  const sel=document.getElementById("cockpitProjectFilter");
+  if(sel&&active){
+    let option=Array.from(sel.options).find(o=>normalizeProjectName_(o.value||o.textContent)===active);
+    if(!option){option=document.createElement("option");option.value=active;option.textContent=active;sel.insertBefore(option,sel.firstChild)}
+    sel.value=option.value;
+  }
+  if(active)localStorage.setItem("managementCockpitProject",active);
+  syncSmartProjectIdentity_();
+}
+function showProjectSelection(){
+  if(!loggedInUser){hideAppPages();document.getElementById("loginPage").style.display="flex";return}
+  hideAppPages();const page=document.getElementById("projectSelectionPage");if(page)page.style.display="flex";
+  const user=document.getElementById("projectSelectionUser");if(user){const name=loggedInUser.supervisorName||loggedInUser.username||"User",role=loggedInUser.role||"";user.innerText=role?name+" • "+role:name}
+}
+function selectActiveProject(project){
+  const normalized=normalizeProjectName_(project);if(!["Lake City Roof Garden","One Lake City"].includes(normalized))return;
+  localStorage.setItem(ACTIVE_PROJECT_KEY,normalized);localStorage.setItem("managementCockpitProject",normalized);
+  const tower=document.getElementById("cockpitTowerFilter");if(tower)tower.value="";
+  showDashboard();
+}
+function changeActiveProject(){
+  localStorage.removeItem(ACTIVE_PROJECT_KEY);localStorage.removeItem("managementCockpitProject");
+  managementCockpitSourceData=null;managementCockpitLastData=null;showProjectSelection();
+}
+
 function hideAppPages(){
-  ["loginPage","dashboardPage","activityPage","myReportsPage","pendingInspectionsPage","dailySummaryPage","administrationPage","executiveReportPage","cashFlowPage","boqCostPage","drawingsPage","actionRegisterPage","placeholderModulePage"].forEach(function(id){
+  ["loginPage","projectSelectionPage","dashboardPage","activityPage","myReportsPage","pendingInspectionsPage","dailySummaryPage","administrationPage","executiveReportPage","cashFlowPage","boqCostPage","drawingsPage","actionRegisterPage","placeholderModulePage"].forEach(function(id){
     const el=document.getElementById(id);
     if(el)el.style.display="none";
   });
@@ -3299,7 +3389,9 @@ function login(){
           localStorage.removeItem("rememberedUsername");
         }
         m.innerText="";
-        showDashboard();
+        localStorage.removeItem(ACTIVE_PROJECT_KEY);
+        localStorage.removeItem("managementCockpitProject");
+        showProjectSelection();
       }else{
         m.style.color="#dc2626";
         m.innerText=r.message;
@@ -3315,22 +3407,14 @@ function login(){
 }
 
 function showDashboard(){
-  if(!loggedInUser){
-    hideAppPages();
-    document.getElementById("loginPage").style.display="flex";
-    return;
-  }
-  hideAppPages();
-  document.getElementById("dashboardPage").style.display="block";
+  if(!loggedInUser){hideAppPages();document.getElementById("loginPage").style.display="flex";return}
+  if(!getActiveProject()){showProjectSelection();return}
+  hideAppPages();document.getElementById("dashboardPage").style.display="block";
   document.getElementById("welcome").innerText="Welcome, "+loggedInUser.supervisorName;
   document.getElementById("userRole").innerText="Role: "+loggedInUser.role+" | Employee ID: "+loggedInUser.employeeId;
-  syncDashboardSidebarUser();
-  applyRoleAccess();
-  const attentionBox=document.getElementById("dashboardManagementAttention");
-  if(attentionBox)attentionBox.style.display=hasExecutiveAccess()?"block":"none";
-  loadDashboardStats();
-  loadManagementCockpit();
-  loadActionDashboardBadge();
+  syncDashboardSidebarUser();applyRoleAccess();syncActiveProjectDashboard_();
+  const attentionBox=document.getElementById("dashboardManagementAttention");if(attentionBox)attentionBox.style.display=hasExecutiveAccess()?"block":"none";
+  loadDashboardStats();loadManagementCockpit();loadActionDashboardBadge();
 }
 function addOption(s,v){if(!v)return;let o=document.createElement("option");o.value=v;o.textContent=v;s.appendChild(o)}
 
@@ -3358,7 +3442,7 @@ function loadDashboardStats(){
 
   google.script.run
     .withSuccessHandler(function(rows){
-      rows=rows||[];
+      rows=(rows||[]).filter(projectMatchesActive_);
       const completed=rows.filter(r=>String(r.workStatus||"").trim().toLowerCase()==="completed").length;
       const progress=rows.filter(r=>String(r.workStatus||"").trim().toLowerCase()==="in progress").length;
       const constraints=rows.filter(r=>{
@@ -3397,7 +3481,8 @@ function loadDashboardStats(){
 
   google.script.run
     .withSuccessHandler(function(rows){
-      const n=(rows||[]).length;
+      rows=(rows||[]).filter(projectMatchesActive_);
+      const n=rows.length;
       document.getElementById("dashPending").innerText=n;
       document.getElementById("dashInspectionCardCount").innerText=n;
       const nb=document.getElementById("inspectionNotificationBadge");
@@ -3476,11 +3561,12 @@ function cockpitRowProject(r){return String((r&&r.project)||(r&&r.projectName)||
 function cockpitRowTower(r){return String((r&&r.tower)||(r&&r.towerArea)||(r&&r.area)||(r&&r["Tower / Block"])||(r&&r["Tower / Area"])||"").trim();}
 function cockpitPopulateProjectFilter(data){
   const sel=document.getElementById('cockpitProjectFilter');if(!sel)return '';
-  const previous=sel.value||localStorage.getItem('managementCockpitProject')||'';
+  const active=getActiveProject();
   const projects=[...new Set([].concat(data.daily,data.inspections,data.cash,data.boq,data.drawings).map(cockpitRowProject).filter(Boolean))].sort();
-  sel.innerHTML=projects.length?projects.map(p=>'<option value="'+escapeHtml(p)+'">'+escapeHtml(p)+'</option>').join(''):'<option value="">No project data</option>';
-  const chosen=projects.includes(previous)?previous:(projects[0]||'');
-  sel.value=chosen;if(chosen)localStorage.setItem('managementCockpitProject',chosen);return chosen;
+  if(active&&!projects.some(p=>normalizeProjectName_(p)===active))projects.unshift(active);
+  sel.innerHTML=projects.length?projects.map(p=>'<option value="'+escapeHtml(p)+'">'+escapeHtml(p)+'</option>').join(''):'<option value="'+escapeHtml(active)+'">'+escapeHtml(active||'No project data')+'</option>';
+  const matched=projects.find(p=>normalizeProjectName_(p)===active)||active||projects[0]||'';
+  sel.value=matched;if(matched)localStorage.setItem('managementCockpitProject',normalizeProjectName_(matched));syncActiveProjectDashboard_();return matched;
 }
 function cockpitPopulateTowerFilter(data,project){
   const sel=document.getElementById('cockpitTowerFilter');if(!sel)return;
@@ -7321,7 +7407,7 @@ function renderActionRegister(){const c=document.getElementById("actionRegisterC
 function updateActionKpis(){const rows=actionRegisterData||[];document.getElementById("actionKpiCritical").innerText=rows.filter(r=>r.priority==="Critical"&&r.status!=="Closed").length;document.getElementById("actionKpiHigh").innerText=rows.filter(r=>r.priority==="High"&&r.status!=="Closed").length;document.getElementById("actionKpiOverdue").innerText=rows.filter(r=>r.isOverdue).length;document.getElementById("actionKpiOpen").innerText=rows.filter(r=>r.status==="Open").length;document.getElementById("actionKpiProgress").innerText=rows.filter(r=>r.status==="In Progress").length;document.getElementById("actionKpiClosed").innerText=rows.filter(r=>r.status==="Closed").length;}
 function setActionQuickFilter(type,val){resetActionFilters(false);if(type==="priority")document.getElementById("actionPriorityFilter").value=val;if(type==="status")document.getElementById("actionStatusFilter").value=val;if(type==="overdue")actionQuickOverdue=true;renderActionRegister()}
 function resetActionFilters(render=true){["actionSearch","actionProjectFilter","actionTowerFilter","actionCategoryFilter","actionPriorityFilter","actionStatusFilter"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});actionQuickOverdue=false;updateActionTowerFilter();if(render)renderActionRegister()}
-function updateActionDashboardBadge(){const rows=(actionRegisterData||[]),open=rows.filter(r=>r.status!=="Closed").length,urgent=rows.filter(r=>r.status!=="Closed"&&(r.priority==="Critical"||r.isOverdue)).length,decisions=rows.filter(r=>r.status!=="Closed"&&String(r.decisionRequired||"").trim()&&String(r.decisionRequired||"").trim()!=="No Decision Required").length;const n=document.getElementById("dashOpenActions"),b=document.getElementById("actionNotificationBadge"),d=document.getElementById("dashDecisionActions"),c=document.getElementById("dashCriticalActions"),sd=document.getElementById("sidebarDecisionBadge"),sc=document.getElementById("sidebarCriticalBadge"),cc=document.getElementById("ceoCriticalCount");if(n)n.innerText=open;if(d)d.innerText=decisions;if(c)c.innerText=urgent;if(cc)cc.innerText=urgent;if(b){b.innerText=open;b.style.display=open?"flex":"none"}if(sd){sd.innerText=decisions;sd.style.display=decisions?"flex":"none"}if(sc){sc.innerText=urgent;sc.style.display=urgent?"flex":"none"}}
+function updateActionDashboardBadge(){const active=getActiveProject();const rows=(actionRegisterData||[]).filter(r=>!active||normalizeProjectName_(r.project)===active),open=rows.filter(r=>r.status!=="Closed").length,urgent=rows.filter(r=>r.status!=="Closed"&&(r.priority==="Critical"||r.isOverdue)).length,decisions=rows.filter(r=>r.status!=="Closed"&&String(r.decisionRequired||"").trim()&&String(r.decisionRequired||"").trim()!=="No Decision Required").length;const n=document.getElementById("dashOpenActions"),b=document.getElementById("actionNotificationBadge"),d=document.getElementById("dashDecisionActions"),c=document.getElementById("dashCriticalActions"),sd=document.getElementById("sidebarDecisionBadge"),sc=document.getElementById("sidebarCriticalBadge"),cc=document.getElementById("ceoCriticalCount");if(n)n.innerText=open;if(d)d.innerText=decisions;if(c)c.innerText=urgent;if(cc)cc.innerText=urgent;if(b){b.innerText=open;b.style.display=open?"flex":"none"}if(sd){sd.innerText=decisions;sd.style.display=decisions?"flex":"none"}if(sc){sc.innerText=urgent;sc.style.display=urgent?"flex":"none"}}
 function loadActionDashboardBadge(){if(!loggedInUser)return;actionApi("actionRegister",{}).then(function(rows){actionRegisterData=rows||[];updateActionDashboardBadge();}).catch(function(){})}
 function openActionDetail(id){currentActionDetailId=id;const r=(actionRegisterData||[]).find(x=>x.actionId===id);if(!r)return;document.getElementById("actionDetailModal").style.display="block";document.getElementById("actionDetailTitle").innerText=r.actionId+" — "+r.category;document.getElementById("actionDetailPath").innerText=[r.project,r.tower,r.floor].filter(Boolean).join(" • ");document.getElementById("actionDetailBody").innerHTML=`<div class="detail-grid"><div class="detail-item"><strong>Issue / Constraint</strong>${esc(r.issue)}</div><div class="detail-item"><strong>Priority</strong>${esc(r.priority)}${r.isOverdue?" • OVERDUE":""}</div><div class="detail-item"><strong>Action Required</strong>${esc(r.actionRequired)}</div><div class="detail-item"><strong>Responsible</strong>${esc(r.responsiblePerson)} • ${esc(r.responsibleParty)}</div><div class="detail-item"><strong>Decision Required</strong>${esc(r.decisionRequired)}</div><div class="detail-item"><strong>Target / Status</strong>${esc(r.targetDate)} • ${esc(r.status)}</div><div class="detail-item"><strong>Raised By</strong>${esc(r.raisedBy)} • ${esc(r.dateRaised)}</div><div class="detail-item"><strong>Source</strong>${esc(r.source||"Manual")}</div></div>`;document.getElementById("actionUpdateText").value="";document.getElementById("actionDetailMessage").innerText="";loadActionHistory(id)}
 function closeActionDetailModal(e){if(e&&e.target!==document.getElementById("actionDetailModal"))return;document.getElementById("actionDetailModal").style.display="none"}
@@ -7335,7 +7421,7 @@ function openPlaceholderModule(icon,title,text){hideAppPages();document.getEleme
 function toggleDashboardSidebar(open){const s=document.getElementById("pmcSidebar");if(!s)return;s.classList.toggle("open",open!==false);}
 function syncDashboardSidebarUser(){if(!loggedInUser)return;const name=document.getElementById("sidebarUserName"),role=document.getElementById("sidebarUserRole"),initials=document.getElementById("sidebarUserInitials");if(name)name.innerText=loggedInUser.supervisorName||loggedInUser.username||"User";if(role)role.innerText=loggedInUser.role||"";if(initials){const parts=String(loggedInUser.supervisorName||loggedInUser.username||"U").trim().split(/\s+/);initials.innerText=(parts[0]?.[0]||"U")+(parts.length>1?(parts[parts.length-1][0]||""):"");}syncSmartTopbarUser_();}
 
-function logout(){loggedInUser=null;if(window.LCRG_API&&LCRG_API.clearToken)LCRG_API.clearToken();location.reload()}
+function logout(){localStorage.removeItem(ACTIVE_PROJECT_KEY);localStorage.removeItem("managementCockpitProject");loggedInUser=null;if(window.LCRG_API&&LCRG_API.clearToken)LCRG_API.clearToken();location.reload()}
 window.onload=function(){let u=localStorage.getItem("rememberedUsername");if(u){document.getElementById("username").value=u;document.getElementById("rememberMe").checked=true}updateStepDisplay();updateNetworkStatus();updateDashboardDraftBadge()}
 
 function parseReportDate(s){
