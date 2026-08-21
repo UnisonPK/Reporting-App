@@ -1039,6 +1039,14 @@ label{color:#344054;font-size:13px;margin-top:14px}
 #cockpitProjectFilter{display:none!important}#dashboardPage .pmc-filter-row{grid-template-columns:minmax(210px,1.15fr) minmax(170px,1fr) auto auto auto}#dashboardPage .pmc-filter-row>label:first-of-type{display:none!important}
 @media(max-width:900px){#dashboardPage .pmc-filter-row{grid-template-columns:1fr 1fr auto}.pmc-active-project{min-width:0}}
 @media(max-width:650px){#projectSelectionPage{padding:16px}.project-select-head{padding:25px 18px 16px}.project-select-head h1{font-size:24px}.project-select-grid{grid-template-columns:1fr;padding:8px 18px 24px}.project-choice{min-height:145px;padding:20px}#dashboardPage .pmc-filter-row{grid-template-columns:1fr}.pmc-change-project-btn{width:100%}}
+.project-launcher-tools{display:flex;gap:10px;align-items:center;padding:0 26px 8px}
+.project-launcher-search{flex:1;min-width:0}
+.project-launcher-count{white-space:nowrap;font-size:11px;font-weight:800;color:#667085;background:#f1f5f9;border-radius:999px;padding:8px 11px}
+.project-choice-id{font-size:10px;color:#98a2b3;margin-top:4px;font-weight:700}
+.project-choice-open{margin-top:13px;color:#0b3f88;font-size:11px;font-weight:900}
+.project-launcher-empty{grid-column:1/-1;text-align:center;padding:34px 20px;color:#667085;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:14px}
+.project-launcher-loading{grid-column:1/-1;text-align:center;padding:34px 20px;color:#667085}
+@media(max-width:650px){.project-launcher-tools{padding:0 18px 8px;flex-direction:column;align-items:stretch}.project-launcher-count{text-align:center}}
 </style>
 
 </head><body>
@@ -1054,17 +1062,17 @@ label{color:#344054;font-size:13px;margin-top:14px}
         <p>Select the project you want to manage. The dashboard will open only for the selected project.</p>
         <div id="projectSelectionUser" class="project-select-user">Logged-in User</div>
       </div>
-      <div class="project-select-grid">
-        <button type="button" class="project-choice" onclick="selectActiveProject('Lake City Roof Garden')">
-          <div class="project-choice-top"><div class="project-choice-code">LCRG</div><div class="project-choice-arrow">→</div></div>
-          <div><div class="project-choice-name">Lake City Roof Gardens</div><div class="project-choice-meta">Tower I • L1 • L2</div></div>
-        </button>
-        <button type="button" class="project-choice" onclick="selectActiveProject('One Lake City')">
-          <div class="project-choice-top"><div class="project-choice-code">OLC</div><div class="project-choice-arrow">→</div></div>
-          <div><div class="project-choice-name">One Lake City</div><div class="project-choice-meta">Tower 1 • Tower 2</div></div>
-        </button>
+      <div class="project-launcher-tools">
+        <input id="projectLauncherSearch" class="project-launcher-search" type="search"
+               placeholder="Search projects..." oninput="renderProjectLauncher()">
+        <div id="projectLauncherCount" class="project-launcher-count">Loading projects...</div>
       </div>
-      <div class="project-select-footer">A project must be selected before the dashboard can be opened.</div>
+
+      <div id="projectLauncherGrid" class="project-select-grid">
+        <div class="project-launcher-loading">Loading active projects...</div>
+      </div>
+
+      <div class="project-select-footer">Select a project to open its management dashboard.</div>
     </section>
   </div>
 </div>
@@ -3315,42 +3323,259 @@ function applyRoleAccess(){
 }
 
 
-/* ===================== PROJECT SELECTION GATE — INTEGRATED V1 ===================== */
+/* ===================== GENERIC PROJECT LAUNCHER — V2 ===================== */
 const ACTIVE_PROJECT_KEY="pmcActiveProject";
+let projectLauncherData=[];
+
 function normalizeProjectName_(project){
   const key=String(project||"").trim().toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+
+  /* Backward compatibility — DO NOT REMOVE.
+     These aliases preserve all existing LCRG / OLC records and module logic. */
   if(["lcrg","lake city roof garden","lake city roof gardens"].includes(key))return "Lake City Roof Garden";
   if(["olc","one lake city"].includes(key))return "One Lake City";
+
   return String(project||"").trim();
 }
-function getActiveProject(){return normalizeProjectName_(localStorage.getItem(ACTIVE_PROJECT_KEY)||"")}
-function projectMatchesActive_(row){const active=getActiveProject();return !!active&&normalizeProjectName_(cockpitRowProject(row))===active}
+
+function getActiveProject(){
+  return normalizeProjectName_(localStorage.getItem(ACTIVE_PROJECT_KEY)||"");
+}
+
+function projectMatchesActive_(row){
+  const active=getActiveProject();
+  return !!active&&normalizeProjectName_(cockpitRowProject(row))===active;
+}
+
+function projectLauncherName_(row){
+  return String(
+    row?.["Project Name"] ??
+    row?.projectName ??
+    row?.Project ??
+    row?.project ??
+    ""
+  ).trim();
+}
+
+function projectLauncherId_(row){
+  return String(
+    row?.["Project ID"] ??
+    row?.projectId ??
+    row?.ID ??
+    row?.id ??
+    ""
+  ).trim();
+}
+
+function projectLauncherCode_(name,id){
+  const normalized=normalizeProjectName_(name);
+
+  /* Preserve familiar legacy codes. */
+  if(normalized==="Lake City Roof Garden")return "LCRG";
+  if(normalized==="One Lake City")return "OLC";
+
+  const words=String(name||"").trim().split(/\s+/).filter(Boolean);
+  if(words.length>=2){
+    return words.slice(0,4).map(w=>w.charAt(0).toUpperCase()).join("").slice(0,5);
+  }
+
+  const cleaned=String(name||id||"PRJ").replace(/[^A-Za-z0-9]/g,"").toUpperCase();
+  return cleaned.slice(0,5)||"PRJ";
+}
+
+function projectLauncherDisplayName_(name){
+  const normalized=normalizeProjectName_(name);
+  if(normalized==="Lake City Roof Garden")return "Lake City Roof Gardens";
+  return name;
+}
+
+function projectLauncherMeta_(name){
+  const normalized=normalizeProjectName_(name);
+
+  /* Preserve the existing project hierarchy information. */
+  if(normalized==="Lake City Roof Garden")return "Tower I • L1 • L2";
+  if(normalized==="One Lake City")return "Tower 1 • Tower 2";
+
+  const towers=(masterData?.towers||[]).filter(t=>{
+    return normalizeProjectName_(t["Project"]||t["Project Name"]||t.project||"")===normalized;
+  }).map(t=>String(t["Tower / Block"]||t["Tower"]||t.tower||"").trim()).filter(Boolean);
+
+  const unique=[...new Set(towers)];
+  if(unique.length===1)return unique[0];
+  if(unique.length>1)return unique.slice(0,3).join(" • ")+(unique.length>3?" • +"+(unique.length-3):"");
+
+  return "Project Management Dashboard";
+}
+
+function renderProjectLauncher(){
+  const grid=document.getElementById("projectLauncherGrid");
+  const count=document.getElementById("projectLauncherCount");
+  if(!grid)return;
+
+  const q=String(document.getElementById("projectLauncherSearch")?.value||"").trim().toLowerCase();
+
+  const rows=(projectLauncherData||[])
+    .map(r=>({
+      raw:r,
+      name:projectLauncherName_(r),
+      id:projectLauncherId_(r)
+    }))
+    .filter(r=>r.name)
+    .filter(r=>!q||[r.name,r.id].join(" ").toLowerCase().includes(q))
+    .sort((a,b)=>a.name.localeCompare(b.name));
+
+  if(count){
+    const total=(projectLauncherData||[]).filter(r=>projectLauncherName_(r)).length;
+    count.innerText=q?rows.length+" of "+total+" projects":total+" active project"+(total===1?"":"s");
+  }
+
+  if(!rows.length){
+    grid.innerHTML='<div class="project-launcher-empty">'+
+      (q?'No project matches your search.':'No active projects are available in Projects Master Data.')+
+      '</div>';
+    return;
+  }
+
+  grid.innerHTML=rows.map(r=>{
+    const display=projectLauncherDisplayName_(r.name);
+    const code=projectLauncherCode_(r.name,r.id);
+    const meta=projectLauncherMeta_(r.name);
+
+    return '<button type="button" class="project-choice" data-project="'+escapeHtml(r.name)+'">'+
+      '<div class="project-choice-top">'+
+        '<div class="project-choice-code">'+escapeHtml(code)+'</div>'+
+        '<div class="project-choice-arrow">→</div>'+
+      '</div>'+
+      '<div>'+
+        '<div class="project-choice-name">'+escapeHtml(display)+'</div>'+
+        '<div class="project-choice-meta">'+escapeHtml(meta)+'</div>'+
+        (r.id?'<div class="project-choice-id">'+escapeHtml(r.id)+'</div>':'')+
+        '<div class="project-choice-open">Open Dashboard →</div>'+
+      '</div>'+
+    '</button>';
+  }).join("");
+
+  grid.querySelectorAll(".project-choice[data-project]").forEach(btn=>{
+    btn.addEventListener("click",()=>selectActiveProject(btn.getAttribute("data-project")));
+  });
+}
+
+function loadProjectLauncher(){
+  const grid=document.getElementById("projectLauncherGrid");
+  const count=document.getElementById("projectLauncherCount");
+  if(grid)grid.innerHTML='<div class="project-launcher-loading">Loading active projects...</div>';
+  if(count)count.innerText="Loading projects...";
+
+  google.script.run
+    .withSuccessHandler(function(d){
+      masterData=d||masterData||{};
+      projectLauncherData=Array.isArray(d?.projects)?d.projects:[];
+
+      /* Emergency compatibility fallback:
+         only used if master data cannot return project rows.
+         This prevents the existing LCRG/OLC system from becoming inaccessible. */
+      if(!projectLauncherData.length){
+        projectLauncherData=[
+          {"Project ID":"PRJ-001","Project Name":"Lake City Roof Garden","Status":"Active"},
+          {"Project ID":"PRJ-002","Project Name":"One Lake City","Status":"Active"}
+        ];
+      }
+
+      renderProjectLauncher();
+    })
+    .withFailureHandler(function(e){
+      console.error("Project launcher master-data load failed:",e);
+
+      projectLauncherData=[
+        {"Project ID":"PRJ-001","Project Name":"Lake City Roof Garden","Status":"Active"},
+        {"Project ID":"PRJ-002","Project Name":"One Lake City","Status":"Active"}
+      ];
+
+      renderProjectLauncher();
+
+      if(count)count.title="Master Data could not be loaded. Legacy LCRG / OLC fallback is active.";
+    })
+    .getMasterData();
+}
+
 function syncActiveProjectDashboard_(){
   const active=getActiveProject();
-  const label=document.getElementById("activeProjectDisplay");if(label)label.innerText=active||"No Project Selected";
+  const label=document.getElementById("activeProjectDisplay");
+  if(label)label.innerText=projectLauncherDisplayName_(active)||"No Project Selected";
+
   const sel=document.getElementById("cockpitProjectFilter");
   if(sel&&active){
     let option=Array.from(sel.options).find(o=>normalizeProjectName_(o.value||o.textContent)===active);
-    if(!option){option=document.createElement("option");option.value=active;option.textContent=active;sel.insertBefore(option,sel.firstChild)}
+    if(!option){
+      option=document.createElement("option");
+      option.value=active;
+      option.textContent=projectLauncherDisplayName_(active);
+      sel.insertBefore(option,sel.firstChild);
+    }
     sel.value=option.value;
   }
+
   if(active)localStorage.setItem("managementCockpitProject",active);
   syncSmartProjectIdentity_();
 }
+
 function showProjectSelection(){
-  if(!loggedInUser){hideAppPages();document.getElementById("loginPage").style.display="flex";return}
-  hideAppPages();const page=document.getElementById("projectSelectionPage");if(page)page.style.display="flex";
-  const user=document.getElementById("projectSelectionUser");if(user){const name=loggedInUser.supervisorName||loggedInUser.username||"User",role=loggedInUser.role||"";user.innerText=role?name+" • "+role:name}
+  if(!loggedInUser){
+    hideAppPages();
+    document.getElementById("loginPage").style.display="flex";
+    return;
+  }
+
+  hideAppPages();
+
+  const page=document.getElementById("projectSelectionPage");
+  if(page)page.style.display="flex";
+
+  const user=document.getElementById("projectSelectionUser");
+  if(user){
+    const name=loggedInUser.supervisorName||loggedInUser.username||"User";
+    const role=loggedInUser.role||"";
+    user.innerText=role?name+" • "+role:name;
+  }
+
+  const search=document.getElementById("projectLauncherSearch");
+  if(search)search.value="";
+
+  loadProjectLauncher();
 }
+
 function selectActiveProject(project){
-  const normalized=normalizeProjectName_(project);if(!["Lake City Roof Garden","One Lake City"].includes(normalized))return;
-  localStorage.setItem(ACTIVE_PROJECT_KEY,normalized);localStorage.setItem("managementCockpitProject",normalized);
-  const tower=document.getElementById("cockpitTowerFilter");if(tower)tower.value="";
+  const normalized=normalizeProjectName_(project);
+  if(!normalized)return;
+
+  /* Generic: any active project returned by Projects Master Data is valid. */
+  const valid=(projectLauncherData||[]).some(r=>
+    normalizeProjectName_(projectLauncherName_(r))===normalized
+  );
+
+  /* Preserve the two legacy projects even during a temporary master-data failure. */
+  const legacy=["Lake City Roof Garden","One Lake City"].includes(normalized);
+
+  if(!valid&&!legacy){
+    alert("This project is not currently available in Projects Master Data.");
+    return;
+  }
+
+  localStorage.setItem(ACTIVE_PROJECT_KEY,normalized);
+  localStorage.setItem("managementCockpitProject",normalized);
+
+  const tower=document.getElementById("cockpitTowerFilter");
+  if(tower)tower.value="";
+
   showDashboard();
 }
+
 function changeActiveProject(){
-  localStorage.removeItem(ACTIVE_PROJECT_KEY);localStorage.removeItem("managementCockpitProject");
-  managementCockpitSourceData=null;managementCockpitLastData=null;showProjectSelection();
+  localStorage.removeItem(ACTIVE_PROJECT_KEY);
+  localStorage.removeItem("managementCockpitProject");
+  managementCockpitSourceData=null;
+  managementCockpitLastData=null;
+  showProjectSelection();
 }
 
 function hideAppPages(){
@@ -5606,7 +5831,10 @@ function saveMasterDataRecord(){
       msg.innerText=r.message||"Saved successfully.";
       currentMasterType=payload.type;
       loadAdministrationData();
-      google.script.run.withSuccessHandler(function(d){masterData=d}).getMasterData();
+      google.script.run.withSuccessHandler(function(d){
+        masterData=d;
+        projectLauncherData=Array.isArray(d?.projects)?d.projects:projectLauncherData;
+      }).getMasterData();
       setTimeout(closeMasterDataModal,650);
     })
     .withFailureHandler(function(e){
@@ -5623,7 +5851,10 @@ function toggleMasterDataStatus(key,status){
   google.script.run
     .withSuccessHandler(function(){
       loadAdministrationData();
-      google.script.run.withSuccessHandler(function(d){masterData=d}).getMasterData();
+      google.script.run.withSuccessHandler(function(d){
+        masterData=d;
+        projectLauncherData=Array.isArray(d?.projects)?d.projects:projectLauncherData;
+      }).getMasterData();
     })
     .withFailureHandler(function(e){alert(e.message)})
     .adminSetMasterDataStatus({
