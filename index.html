@@ -1232,6 +1232,50 @@ label{color:#344054;font-size:13px;margin-top:14px}
 @media(max-width:650px){.control-toolbar,.control-form-grid{grid-template-columns:1fr}.control-kpis{grid-template-columns:repeat(2,1fr)}.control-form-grid .full-width{grid-column:auto}}
 </style>
 
+
+<style id="executiveManagementV3Styles">
+/* ===== EXECUTIVE MANAGEMENT REPORT V3 ===== */
+.exec-management-position{
+  display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:10px;margin:16px 0 18px
+}
+.exec-position-card{
+  background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:13px;
+  box-shadow:0 3px 12px rgba(15,23,42,.04);min-height:100px
+}
+.exec-position-label{font-size:9px;color:#667085;text-transform:uppercase;font-weight:900;letter-spacing:.04em}
+.exec-position-main{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:14px;font-weight:900;color:#172b4d}
+.exec-position-dot{width:10px;height:10px;border-radius:50%;background:#94a3b8;box-shadow:0 0 0 3px #f1f5f9;flex:0 0 auto}
+.exec-position-dot.green{background:#16a34a;box-shadow:0 0 0 3px #dcfce7}
+.exec-position-dot.amber{background:#f59e0b;box-shadow:0 0 0 3px #fef3c7}
+.exec-position-dot.red{background:#dc2626;box-shadow:0 0 0 3px #fee2e2}
+.exec-position-detail{font-size:10px;color:#667085;margin-top:6px;line-height:1.35}
+.exec-management-brief{
+  border:1px solid #dbeafe;background:#f8fbff;border-radius:12px;padding:13px 15px;
+  line-height:1.55;color:#344054;font-size:12px;margin-bottom:18px
+}
+.exec-financial-strip{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:18px
+}
+.exec-financial-card{
+  border:1px solid #e5e7eb;border-radius:11px;background:#fff;padding:12px
+}
+.exec-financial-label{font-size:9px;text-transform:uppercase;color:#667085;font-weight:900}
+.exec-financial-value{font-size:17px;color:#172b4d;font-weight:900;margin-top:5px}
+.exec-financial-sub{font-size:9px;color:#98a2b3;margin-top:3px}
+.exec-live-actions{display:flex;flex-direction:column;gap:8px}
+.exec-live-action{
+  border:1px solid #e5e7eb;border-left:4px solid #2563eb;border-radius:9px;padding:10px 12px;background:#fff
+}
+.exec-live-action.critical{border-left-color:#dc2626}
+.exec-live-action.overdue{border-left-color:#111827}
+.exec-live-action-title{font-size:12px;font-weight:900;color:#1d2939}
+.exec-live-action-meta{font-size:10px;color:#667085;margin-top:4px}
+.exec-live-action-decision{font-size:11px;color:#7c3aed;font-weight:800;margin-top:5px}
+@media(max-width:1100px){.exec-management-position{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.exec-management-position{grid-template-columns:repeat(2,1fr)}.exec-financial-strip{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.exec-management-position,.exec-financial-strip{grid-template-columns:1fr}}
+</style>
+
 </head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="icons/pmc-app-192-v3.png?v=20260819-6" alt="PMC"><div class="subtitle">Project / Site Management System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
 
@@ -2192,7 +2236,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
         </div>
         <div>
           <label>Project</label>
-          <select id="execProject" onchange="renderExecutiveReport()"><option value="">All Projects</option></select>
+          <select id="execProject" onchange="renderExecutiveReport()"><option value="">Project</option></select>
         </div>
         <div>
           <label>Work Status</label>
@@ -2225,9 +2269,67 @@ label{color:#344054;font-size:13px;margin-top:14px}
         <div class="summary-progress-track"><div id="execCompletionBar" class="summary-progress-fill"></div></div>
       </div>
 
+      <div class="executive-panel">
+        <div class="executive-panel-title">Management Position — Selected Project</div>
+        <div class="executive-panel-body">
+          <div class="exec-management-position">
+            <div class="exec-position-card">
+              <div class="exec-position-label">Programme</div>
+              <div class="exec-position-main"><span id="execProgrammeDot" class="exec-position-dot"></span><span id="execProgrammeText">Loading</span></div>
+              <div id="execProgrammeDetail" class="exec-position-detail">Reading milestones</div>
+            </div>
+            <div class="exec-position-card">
+              <div class="exec-position-label">Procurement</div>
+              <div class="exec-position-main"><span id="execProcurementDot" class="exec-position-dot"></span><span id="execProcurementText">Loading</span></div>
+              <div id="execProcurementDetail" class="exec-position-detail">Reading packages</div>
+            </div>
+            <div class="exec-position-card">
+              <div class="exec-position-label">Cost / Cash Flow</div>
+              <div class="exec-position-main"><span id="execCostDot" class="exec-position-dot"></span><span id="execCostText">Loading</span></div>
+              <div id="execCostDetail" class="exec-position-detail">Reading financial data</div>
+            </div>
+            <div class="exec-position-card">
+              <div class="exec-position-label">Technical</div>
+              <div class="exec-position-main"><span id="execTechnicalDot" class="exec-position-dot"></span><span id="execTechnicalText">Loading</span></div>
+              <div id="execTechnicalDetail" class="exec-position-detail">Reading drawings</div>
+            </div>
+            <div class="exec-position-card">
+              <div class="exec-position-label">Decisions / Actions</div>
+              <div class="exec-position-main"><span id="execActionDot" class="exec-position-dot"></span><span id="execActionText">Loading</span></div>
+              <div id="execActionDetail" class="exec-position-detail">Reading action register</div>
+            </div>
+            <div class="exec-position-card">
+              <div class="exec-position-label">Site / Quality</div>
+              <div class="exec-position-main"><span id="execSiteDot" class="exec-position-dot"></span><span id="execSiteText">Loading</span></div>
+              <div id="execSiteDetail" class="exec-position-detail">Reading activity and inspection data</div>
+            </div>
+          </div>
+
+          <div id="execManagementBrief" class="exec-management-brief">Loading management brief...</div>
+
+          <div class="exec-financial-strip">
+            <div class="exec-financial-card"><div class="exec-financial-label">Awarded / Budgeted</div><div id="execAwardedValue" class="exec-financial-value">0</div><div class="exec-financial-sub">Cash Flow register</div></div>
+            <div class="exec-financial-card"><div class="exec-financial-label">Actual Spending</div><div id="execActualSpend" class="exec-financial-value">0</div><div class="exec-financial-sub">Cash Flow register</div></div>
+            <div class="exec-financial-card"><div class="exec-financial-label">Pending Approval</div><div id="execPendingApproval" class="exec-financial-value">0</div><div class="exec-financial-sub">Current exposure</div></div>
+            <div class="exec-financial-card"><div class="exec-financial-label">Open Management Actions</div><div id="execOpenActions" class="exec-financial-value">0</div><div id="execActionSub" class="exec-financial-sub">Decision / Action Engine</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="executive-grid executive-management-grid">
+        <div class="executive-panel">
+          <div class="executive-panel-title">Priority Decisions / Actions</div>
+          <div id="execLiveActions" class="executive-panel-body"></div>
+        </div>
+        <div class="executive-panel">
+          <div class="executive-panel-title">Programme / Procurement Exceptions</div>
+          <div id="execControlExceptions" class="executive-panel-body"></div>
+        </div>
+      </div>
+
       <div class="executive-grid executive-grid-v2">
         <div class="executive-panel">
-          <div class="executive-panel-title">🏢 Activity by Project / Tower</div>
+          <div class="executive-panel-title">🏢 Activity by Tower / Area</div>
           <div id="execProjects" class="executive-panel-body"></div>
         </div>
         <div class="executive-panel">
@@ -5788,6 +5890,159 @@ function renderRecentSummary(rows){
 /* ===================== EXECUTIVE REPORT ===================== */
 let executiveRows=[];
 
+
+let executiveManagementSources={
+  programme:[],
+  procurement:[],
+  cash:[],
+  boq:[],
+  drawings:[],
+  actions:[],
+  inspections:[]
+};
+
+function executiveApi_(action,data){
+  if(window.LCRG_API&&typeof LCRG_API.apiRequest==="function"){
+    return LCRG_API.apiRequest(action,data||{});
+  }
+  return Promise.reject(new Error("API not available."));
+}
+
+function execSetPosition_(name,color,text,detail){
+  const dot=document.getElementById("exec"+name+"Dot");
+  const txt=document.getElementById("exec"+name+"Text");
+  const det=document.getElementById("exec"+name+"Detail");
+  if(dot)dot.className="exec-position-dot "+(color||"");
+  if(txt)txt.innerText=text||"—";
+  if(det)det.innerText=detail||"";
+}
+
+function execProjectRows_(rows){
+  const active=getActiveProject();
+  return (rows||[]).filter(r=>normalizeProjectName_(r.project||r.Project||"")===active);
+}
+
+function loadExecutiveManagementSources_(){
+  return Promise.allSettled([
+    executiveApi_("programme",{}),
+    executiveApi_("procurement",{}),
+    executiveApi_("cashFlow",{}),
+    executiveApi_("boqCost",{}),
+    executiveApi_("drawings",{}),
+    executiveApi_("actionRegister",{}),
+    executiveApi_("pendingInspections",{})
+  ]).then(results=>{
+    executiveManagementSources={
+      programme:results[0].status==="fulfilled"?execProjectRows_(results[0].value):[],
+      procurement:results[1].status==="fulfilled"?execProjectRows_(results[1].value):[],
+      cash:results[2].status==="fulfilled"?execProjectRows_(results[2].value):[],
+      boq:results[3].status==="fulfilled"?execProjectRows_(results[3].value):[],
+      drawings:results[4].status==="fulfilled"?execProjectRows_(results[4].value):[],
+      actions:results[5].status==="fulfilled"?execProjectRows_(results[5].value):[],
+      inspections:results[6].status==="fulfilled"?execProjectRows_(results[6].value):[]
+    };
+    renderExecutiveManagementPosition_();
+  });
+}
+
+function renderExecutiveManagementPosition_(){
+  const d=executiveManagementSources||{};
+  const programme=d.programme||[],procurement=d.procurement||[],cash=d.cash||[],
+        drawings=d.drawings||[],actions=d.actions||[],inspections=d.inspections||[];
+
+  const progDelayed=programme.filter(r=>r.isDelayed||String(r.status||"").toLowerCase()==="delayed");
+  const progRisk=programme.filter(r=>!r.isDelayed&&Number(r.varianceDays||0)>0);
+  if(!programme.length)execSetPosition_("Programme","gray","No Data","No programme milestones recorded.");
+  else if(progDelayed.length)execSetPosition_("Programme","red","Delayed",progDelayed.length+" delayed / overdue milestone"+(progDelayed.length===1?"":"s"));
+  else if(progRisk.length)execSetPosition_("Programme","amber","At Risk",progRisk.length+" milestone"+(progRisk.length===1?"":"s")+" forecast late");
+  else execSetPosition_("Programme","green","On Track","No delayed milestones.");
+
+  const procLate=procurement.filter(r=>r.isLate);
+  const procRisk=procurement.filter(r=>r.isAtRisk&&!r.isLate);
+  if(!procurement.length)execSetPosition_("Procurement","gray","No Data","No procurement packages recorded.");
+  else if(procLate.length)execSetPosition_("Procurement","red","Delayed",procLate.length+" late package"+(procLate.length===1?"":"s"));
+  else if(procRisk.length)execSetPosition_("Procurement","amber","At Risk",procRisk.length+" package"+(procRisk.length===1?"":"s")+" forecast late");
+  else execSetPosition_("Procurement","green","On Track","No late procurement packages.");
+
+  const awarded=cash.reduce((a,r)=>a+Number(r.awardedValue||0),0);
+  const spend=cash.reduce((a,r)=>a+Number(r.actualSpending||0),0);
+  const pendingApproval=cash.reduce((a,r)=>a+Number(r.pendingApproval||0),0);
+  setText("execAwardedValue",cockpitMoney(awarded));
+  setText("execActualSpend",cockpitMoney(spend));
+  setText("execPendingApproval",cockpitMoney(pendingApproval));
+
+  if(!cash.length)execSetPosition_("Cost","gray","No Data","No Cash Flow records.");
+  else if(awarded>0&&spend>awarded)execSetPosition_("Cost","red","Overrun","Actual spending exceeds awarded value.");
+  else if(pendingApproval>0)execSetPosition_("Cost","amber","Attention",cockpitMoney(pendingApproval)+" pending approval");
+  else execSetPosition_("Cost","green","Controlled","No current financial exception.");
+
+  const technicalAttention=drawings.filter(r=>{
+    const s=String(r.status||"").toLowerCase();
+    return s.includes("review")||s.includes("comment")||s.includes("superseded");
+  });
+  if(!drawings.length)execSetPosition_("Technical","gray","No Data","No drawings recorded.");
+  else if(technicalAttention.length)execSetPosition_("Technical","amber","Attention",technicalAttention.length+" drawing"+(technicalAttention.length===1?"":"s")+" need attention");
+  else execSetPosition_("Technical","green","Controlled","No drawing exception identified.");
+
+  const openActions=actions.filter(r=>String(r.status||"").toLowerCase()!=="closed");
+  const overdue=openActions.filter(r=>r.isOverdue);
+  const critical=openActions.filter(r=>String(r.priority||"").toLowerCase()==="critical");
+  const decisions=openActions.filter(r=>{
+    const x=String(r.decisionRequired||"").trim().toLowerCase();
+    return x&&x!=="no decision required";
+  });
+  setText("execOpenActions",openActions.length);
+  setText("execActionSub",decisions.length+" decisions • "+overdue.length+" overdue");
+  if(!openActions.length)execSetPosition_("Action","green","Clear","No open management actions.");
+  else if(overdue.length||critical.length)execSetPosition_("Action","red","Critical",critical.length+" critical • "+overdue.length+" overdue");
+  else if(decisions.length)execSetPosition_("Action","amber","Decision Due",decisions.length+" management decision"+(decisions.length===1?"":"s")+" required");
+  else execSetPosition_("Action","amber","Open",openActions.length+" open action"+(openActions.length===1?"":"s"));
+
+  const activeRows=executiveRows.filter(r=>normalizeProjectName_(r.project)===getActiveProject());
+  const constraints=activeRows.filter(r=>String(r.issueConstraint||"").trim()||String(r.delayCategory||"").trim());
+  const rectifications=inspections.filter(r=>String(r.inspectionStatus||"").toLowerCase()==="rectification required");
+  if(rectifications.length)execSetPosition_("Site","red","Quality Risk",rectifications.length+" rectification item"+(rectifications.length===1?"":"s"));
+  else if(constraints.length)execSetPosition_("Site","amber","Attention",constraints.length+" site constraint"+(constraints.length===1?"":"s"));
+  else execSetPosition_("Site","green","Stable","No major site / quality exception.");
+
+  const brief=[];
+  brief.push("<b>"+projectLauncherDisplayName_(getActiveProject())+"</b> management position:");
+  if(progDelayed.length)brief.push("<b>"+progDelayed.length+"</b> programme milestone"+(progDelayed.length===1?" is":"s are")+" delayed/overdue.");
+  if(procLate.length||procRisk.length)brief.push("Procurement has <b>"+procLate.length+"</b> late and <b>"+procRisk.length+"</b> at-risk package"+((procLate.length+procRisk.length)===1?"":"s")+".");
+  if(pendingApproval>0)brief.push("<b>"+cockpitMoney(pendingApproval)+"</b> is pending financial approval.");
+  if(decisions.length)brief.push("<b>"+decisions.length+"</b> management decision"+(decisions.length===1?" is":"s are")+" pending.");
+  if(overdue.length)brief.push("<b>"+overdue.length+"</b> action"+(overdue.length===1?" is":"s are")+" overdue.");
+  if(technicalAttention.length)brief.push("<b>"+technicalAttention.length+"</b> technical drawing item"+(technicalAttention.length===1?" needs":"s need")+" attention.");
+  if(brief.length===1)brief.push("No major connected management exception is currently recorded.");
+  document.getElementById("execManagementBrief").innerHTML=brief.join(" ");
+
+  const ranked=openActions.slice().sort((a,b)=>{
+    const score=r=>(r.isOverdue?100:0)+(String(r.priority||"").toLowerCase()==="critical"?80:String(r.priority||"").toLowerCase()==="high"?50:0)+(String(r.decisionRequired||"").trim()&&String(r.decisionRequired||"").toLowerCase()!=="no decision required"?35:0);
+    return score(b)-score(a);
+  }).slice(0,6);
+
+  const actionBox=document.getElementById("execLiveActions");
+  if(actionBox){
+    actionBox.innerHTML=ranked.length?'<div class="exec-live-actions">'+ranked.map(r=>{
+      const cls=r.isOverdue?"overdue":String(r.priority||"").toLowerCase()==="critical"?"critical":"";
+      const meta=[r.actionId,r.category,r.tower,r.floor,r.responsiblePerson||r.responsibleParty,r.targetDate].filter(Boolean).join(" • ");
+      const decision=String(r.decisionRequired||"").trim();
+      return '<div class="exec-live-action '+cls+'"><div class="exec-live-action-title">'+escapeHtml(r.issue||r.actionRequired||r.actionId||"Action")+'</div><div class="exec-live-action-meta">'+escapeHtml(meta)+'</div>'+(decision&&decision.toLowerCase()!=="no decision required"?'<div class="exec-live-action-decision">Decision: '+escapeHtml(decision)+'</div>':'')+'</div>';
+    }).join("")+'</div>':'<div class="empty-state">No open management actions.</div>';
+  }
+
+  const exceptions=[];
+  progDelayed.slice(0,3).forEach(r=>exceptions.push("Programme — "+r.milestone+" ("+Number(r.varianceDays||0)+" days variance)"));
+  procLate.slice(0,3).forEach(r=>exceptions.push("Procurement — "+r.packageName+" (required "+r.requiredDate+")"));
+  procRisk.slice(0,2).forEach(r=>exceptions.push("Procurement risk — "+r.packageName+" (forecast "+r.forecastDate+")"));
+  const control=document.getElementById("execControlExceptions");
+  if(control){
+    control.innerHTML=exceptions.length
+      ?'<table class="exec-summary-table"><tbody>'+exceptions.map(x=>'<tr><td>'+escapeHtml(x)+'</td></tr>').join("")+'</tbody></table>'
+      :'<div class="empty-state">No Programme / Procurement exception.</div>';
+  }
+}
+
 function openExecutiveReport(){
   if(!hasExecutiveAccess()){
     alert("Executive Report is available to CEO and Project Manager only.");
@@ -5957,16 +6212,13 @@ function loadExecutiveReport(){
 
   google.script.run
     .withSuccessHandler(function(rows){
-      executiveRows=rows||[];
+      executiveRows=scopeRowsToActiveProject_(rows||[]);
 
-      const project=document.getElementById("execProject");
-      const currentProject=project.value;
-      fillReportFilter("execProject",uniqueValues(executiveRows,"project"),"All Projects");
-      if(currentProject && uniqueValues(executiveRows,"project").includes(currentProject)){
-        project.value=currentProject;
-      }
+      fillReportFilter("execProject",uniqueValues(executiveRows,"project"),"Project");
+      lockProjectSelectToActive_("execProject");
 
       renderExecutiveReport();
+      loadExecutiveManagementSources_();
     })
     .withFailureHandler(function(e){
       document.getElementById("execCritical").innerHTML=
@@ -5982,7 +6234,8 @@ function loadExecutiveReport(){
 }
 
 function renderExecutiveReport(){
-  const p=document.getElementById("execProject").value;
+  lockProjectSelectToActive_("execProject");
+  const p=getActiveProject();
   const s=document.getElementById("execStatus").value;
 
   const rows=executiveRows.filter(function(r){
