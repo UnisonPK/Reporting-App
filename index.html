@@ -1131,6 +1131,64 @@ label{color:#344054;font-size:13px;margin-top:14px}
 }
 </style>
 
+
+<style id="adminProjectAccessStyles">
+/* ===== ADMIN USER PROJECT ACCESS V1 ===== */
+.project-access-box{
+  grid-column:1/-1;
+  border:1px solid #dfe6ef;
+  background:#f8fafc;
+  border-radius:12px;
+  padding:14px;
+  margin-top:2px
+}
+.project-access-head{
+  display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px
+}
+.project-access-head b{display:block;font-size:13px;color:#1d2939}
+.project-access-head span{display:block;font-size:11px;color:#667085;margin-top:3px;line-height:1.4}
+.project-access-actions{display:flex;gap:6px;flex-wrap:wrap}
+.project-access-mini-btn{
+  border:1px solid #cbd5e1;background:#fff;color:#475569;border-radius:7px;
+  padding:6px 8px;font-size:10px;font-weight:800;cursor:pointer
+}
+.project-access-grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px
+}
+.project-access-option{
+  display:flex;align-items:center;gap:9px;
+  border:1px solid #e2e8f0;background:#fff;border-radius:9px;padding:9px 10px;
+  cursor:pointer;margin:0
+}
+.project-access-option input{
+  width:17px;height:17px;min-height:auto;flex:0 0 auto;margin:0;accent-color:#0b3f88
+}
+.project-access-option-main{min-width:0}
+.project-access-option-name{font-size:12px;font-weight:800;color:#334155}
+.project-access-option-id{font-size:9px;color:#94a3b8;margin-top:2px}
+.project-access-auto{
+  display:none;grid-column:1/-1;
+  border:1px solid #bbf7d0;background:#f0fdf4;color:#166534;
+  border-radius:10px;padding:11px 12px;font-size:12px;font-weight:800
+}
+.project-access-empty{
+  grid-column:1/-1;color:#667085;font-size:11px;padding:10px 0
+}
+.user-access-summary{
+  display:flex;gap:5px;flex-wrap:wrap;max-width:260px
+}
+.user-access-chip{
+  display:inline-block;border-radius:999px;background:#eef4ff;color:#1849a9;
+  padding:4px 7px;font-size:9px;font-weight:800;white-space:nowrap
+}
+.user-access-all{background:#dcfce7;color:#166534}
+.user-access-none{background:#f1f5f9;color:#64748b}
+@media(max-width:700px){
+  .project-access-grid{grid-template-columns:1fr}
+  .project-access-head{flex-direction:column}
+}
+</style>
+
 </head><body>
 <div id="loginPage"><div class="login-card"><img class="brand-logo" src="icons/pmc-app-192-v3.png?v=20260819-6" alt="PMC"><div class="subtitle">Project / Site Management System</div><label>Username</label><input id="username"><label>Password</label><div class="password-wrap"><input id="password" type="password"><span id="passwordToggle" class="toggle-password" onclick="togglePassword()">Show</span></div><div class="remember"><input id="rememberMe" type="checkbox"> <label>Remember Me</label></div><button id="loginButton" class="login-button" onclick="login()">LOGIN</button><button class="forgot-password-link" type="button" onclick="openForgotPasswordModal()">Forgot Password?</button><div id="message" class="message"></div></div></div>
 
@@ -1741,7 +1799,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
         <div class="admin-toolbar">
           <div>
             <div class="step-title">User Management</div>
-            <div class="step-subtitle">Create users, change roles/status, and reset passwords.</div>
+            <div class="step-subtitle">Create users, assign project access, change roles/status, and reset passwords.</div>
           </div>
           <button class="admin-primary-btn" onclick="openCreateUserModal()">+ Add User</button>
         </div>
@@ -1819,7 +1877,7 @@ label{color:#344054;font-size:13px;margin-top:14px}
         </div>
         <div>
           <label>Role *</label>
-          <select id="adminRole">
+          <select id="adminRole" onchange="adminRoleProjectAccessChanged()">
             <option value="">Select Role</option>
             <option>CEO</option>
             <option>Project Manager</option>
@@ -1836,6 +1894,20 @@ label{color:#344054;font-size:13px;margin-top:14px}
         <div id="adminPasswordGroup" class="full-width">
           <label>Initial Password *</label>
           <input id="adminPassword" type="password">
+        </div>
+        <div id="adminProjectAccessBox" class="project-access-box">
+          <div class="project-access-head">
+            <div>
+              <b>Project Access</b>
+              <span>Assign the projects this user can access. CEO and Project Manager automatically have access to all active projects.</span>
+            </div>
+            <div id="adminProjectAccessActions" class="project-access-actions">
+              <button type="button" class="project-access-mini-btn" onclick="setAllAdminProjectAccess(true)">Select All</button>
+              <button type="button" class="project-access-mini-btn" onclick="setAllAdminProjectAccess(false)">Clear</button>
+            </div>
+          </div>
+          <div id="adminProjectAccessAuto" class="project-access-auto">✓ All active projects — automatic for this role</div>
+          <div id="adminProjectAccessGrid" class="project-access-grid"></div>
         </div>
       </div>
       <div style="display:flex;justify-content:flex-end;margin-top:18px">
@@ -5726,17 +5798,129 @@ function openAdminPasswordModalFromRequest(userId){
   openAdminPasswordModal(userId);
 }
 
+
+function adminRoleHasAutomaticAllProjects_(role){
+  const r=String(role||"").trim().toLowerCase();
+  return r==="ceo"||r==="project manager";
+}
+
+function adminActiveProjectRows_(){
+  return ((adminMasterData&&adminMasterData.projects)||[])
+    .filter(r=>String(r["Status"]||"Active").trim().toLowerCase()==="active");
+}
+
+function adminProjectRowName_(r){
+  return String(r["Project Name"]||r["Project"]||"").trim();
+}
+
+function adminProjectRowId_(r){
+  return String(r["Project ID"]||"").trim();
+}
+
+function adminAccessTokens_(value){
+  return String(value||"").split(/[\n,;|]+/).map(v=>String(v||"").trim()).filter(Boolean);
+}
+
+function adminAccessKey_(v){
+  return String(v||"").trim().toLowerCase().replace(/[^a-z0-9]+/g," ").replace(/\s+/g," ").trim();
+}
+
+function renderAdminProjectAccess(selectedValue){
+  const grid=document.getElementById("adminProjectAccessGrid");
+  const auto=document.getElementById("adminProjectAccessAuto");
+  const actions=document.getElementById("adminProjectAccessActions");
+  if(!grid||!auto||!actions)return;
+
+  const role=value("adminRole");
+  const automatic=adminRoleHasAutomaticAllProjects_(role);
+
+  auto.style.display=automatic?"block":"none";
+  actions.style.display=automatic?"none":"flex";
+  grid.style.display=automatic?"none":"grid";
+
+  if(automatic){
+    grid.innerHTML="";
+    return;
+  }
+
+  const rows=adminActiveProjectRows_();
+  if(!rows.length){
+    grid.innerHTML='<div class="project-access-empty">No active projects are available in Project Master Data.</div>';
+    return;
+  }
+
+  const tokens=adminAccessTokens_(selectedValue);
+  const keys=new Set(tokens.map(adminAccessKey_));
+
+  grid.innerHTML=rows.map((r,i)=>{
+    const name=adminProjectRowName_(r);
+    const id=adminProjectRowId_(r);
+    const checked=keys.has(adminAccessKey_(name))||keys.has(adminAccessKey_(id));
+    return '<label class="project-access-option">'+
+      '<input type="checkbox" class="admin-project-access-check" data-project-name="'+escapeHtml(name)+'" data-project-id="'+escapeHtml(id)+'" '+(checked?'checked':'')+'>'+
+      '<div class="project-access-option-main">'+
+        '<div class="project-access-option-name">'+escapeHtml(name)+'</div>'+
+        (id?'<div class="project-access-option-id">'+escapeHtml(id)+'</div>':'')+
+      '</div>'+
+    '</label>';
+  }).join("");
+}
+
+function adminRoleProjectAccessChanged(){
+  const existing=adminEditUserId
+    ?((adminUsersData.find(x=>x.userId===adminEditUserId)||{}).projectAccess||"")
+    :"";
+  renderAdminProjectAccess(existing);
+}
+
+function setAllAdminProjectAccess(checked){
+  document.querySelectorAll(".admin-project-access-check").forEach(x=>x.checked=!!checked);
+}
+
+function getAdminProjectAccessValue(){
+  if(adminRoleHasAutomaticAllProjects_(value("adminRole")))return "";
+  return Array.from(document.querySelectorAll(".admin-project-access-check:checked"))
+    .map(x=>x.getAttribute("data-project-id")||x.getAttribute("data-project-name"))
+    .filter(Boolean)
+    .join(", ");
+}
+
+function adminProjectAccessSummary_(u){
+  if(adminRoleHasAutomaticAllProjects_(u.role)){
+    return '<div class="user-access-summary"><span class="user-access-chip user-access-all">All Projects</span></div>';
+  }
+
+  const tokens=adminAccessTokens_(u.projectAccess);
+  if(!tokens.length){
+    return '<div class="user-access-summary"><span class="user-access-chip user-access-none">No Projects</span></div>';
+  }
+
+  const rows=adminActiveProjectRows_();
+  const labels=tokens.map(t=>{
+    const key=adminAccessKey_(t);
+    const row=rows.find(r=>adminAccessKey_(adminProjectRowId_(r))===key||adminAccessKey_(adminProjectRowName_(r))===key);
+    return row?adminProjectRowName_(row):t;
+  });
+
+  const unique=[...new Set(labels)];
+  const shown=unique.slice(0,3);
+  let h='<div class="user-access-summary">'+shown.map(x=>'<span class="user-access-chip">'+escapeHtml(x)+'</span>').join("");
+  if(unique.length>3)h+='<span class="user-access-chip">+'+(unique.length-3)+' more</span>';
+  h+='</div>';
+  return h;
+}
+
 function renderAdminUsers(){
   const c=document.getElementById("adminUsersContainer");
   const q=(document.getElementById("adminUserSearch").value||"").toLowerCase().trim();
   const rows=adminUsersData.filter(u=>{
-    const s=[u.supervisorName,u.employeeId,u.username,u.role,u.status].join(" ").toLowerCase();
+    const s=[u.supervisorName,u.employeeId,u.username,u.role,u.status,u.projectAccess].join(" ").toLowerCase();
     return !q||s.includes(q);
   });
 
   if(!rows.length){c.innerHTML='<div class="empty-state">No users found.</div>';return;}
   let h='<div class="admin-table-wrap"><table class="admin-table"><thead><tr>'+
-    '<th>User ID</th><th>Name</th><th>Employee ID</th><th>Username</th><th>Role</th><th>Status</th><th>Created</th><th>Last Login</th><th>Actions</th>'+
+    '<th>User ID</th><th>Name</th><th>Employee ID</th><th>Username</th><th>Role</th><th>Project Access</th><th>Status</th><th>Created</th><th>Last Login</th><th>Actions</th>'+
     '</tr></thead><tbody>';
   rows.forEach(u=>{
     const statusClass=String(u.status).toLowerCase()==="active"?"active":"inactive";
@@ -5747,6 +5931,7 @@ function renderAdminUsers(){
       '<td>'+escapeHtml(u.employeeId)+'</td>'+
       '<td>'+escapeHtml(u.username)+'</td>'+
       '<td>'+escapeHtml(u.role)+'</td>'+
+      '<td>'+adminProjectAccessSummary_(u)+'</td>'+
       '<td><span class="admin-badge '+statusClass+'">'+escapeHtml(u.status)+'</span></td>'+
       '<td>'+escapeHtml(u.createdAt)+'</td>'+
       '<td>'+escapeHtml(u.lastLogin||"-")+'</td>'+
@@ -6131,6 +6316,7 @@ function openCreateUserModal(){
   document.getElementById("adminRole").value="";
   document.getElementById("adminUsername").disabled=false;
   document.getElementById("adminPasswordGroup").style.display="block";
+  renderAdminProjectAccess("");
   document.getElementById("adminUserMessage").innerText="";
   document.getElementById("adminUserModal").style.display="block";
   document.body.style.overflow="hidden";
@@ -6147,6 +6333,7 @@ function openEditUserModal(userId){
   document.getElementById("adminUsername").disabled=true;
   document.getElementById("adminRole").value=u.role||"";
   document.getElementById("adminPasswordGroup").style.display="none";
+  renderAdminProjectAccess(u.projectAccess||"");
   document.getElementById("adminUserMessage").innerText="";
   document.getElementById("adminUserModal").style.display="block";
   document.body.style.overflow="hidden";
@@ -6167,11 +6354,16 @@ function saveAdminUser(){
     employeeId:value("adminEmployeeId"),
     username:value("adminUsername"),
     role:value("adminRole"),
-    password:document.getElementById("adminPassword").value
+    password:document.getElementById("adminPassword").value,
+    projectAccess:getAdminProjectAccessValue()
   };
   const msg=document.getElementById("adminUserMessage");
   if(!payload.supervisorName||!payload.employeeId||!payload.username||!payload.role||(!adminEditUserId&&!payload.password)){
     msg.style.color="#dc2626";msg.innerText="Please complete all mandatory fields.";return;
+  }
+  if(!adminRoleHasAutomaticAllProjects_(payload.role)&&!payload.projectAccess){
+    const ok=confirm("No project is selected. This user will not be able to open any project until Admin assigns one. Continue?");
+    if(!ok)return;
   }
   const btn=document.getElementById("adminSaveUserButton");
   btn.disabled=true;msg.style.color="#475569";msg.innerText="Saving user...";
