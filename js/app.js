@@ -2728,49 +2728,188 @@ function cockpitPopulateProjectFilter(data){
 }
 
 function cockpitPopulateTowerFilter(data,project){
-  const sel=document.getElementById(
-    'cockpitTowerFilter'
-  );
+  const sel=document.getElementById("cockpitTowerFilter");
 
   if(!sel){
     return;
   }
 
-  const previous=sel.value||'';
+  const previous=sel.value||"";
+  const activeProject=normalizeProjectName_(
+    project || getActiveProject() || ""
+  );
 
-  const towers=[
+  let towers=[];
+
+  /*
+   * 1. PRIMARY SOURCE:
+   * Project Master Data.
+   *
+   * This ensures towers are available even when Daily Summary,
+   * BOQ, Cash Flow, Drawings etc. do not yet contain any records.
+   */
+  if(
+    typeof masterData!=="undefined" &&
+    masterData &&
+    Array.isArray(masterData.towers)
+  ){
+    masterData.towers.forEach(function(r){
+
+      const rowProject=normalizeProjectName_(
+        r["Project"] ||
+        r["Project Name"] ||
+        r.project ||
+        ""
+      );
+
+      const tower=String(
+        r["Tower / Block"] ||
+        r["Tower"] ||
+        r.tower ||
+        ""
+      ).trim();
+
+      if(
+        tower &&
+        rowProject===activeProject
+      ){
+        towers.push(tower);
+      }
+    });
+  }
+
+  /*
+   * 2. SECONDARY SOURCE:
+   * Merge tower / area names already present in live module data.
+   *
+   * This keeps compatibility with External Development,
+   * Overall Areas or future project-specific areas.
+   */
+  [
+    ...(data?.daily||[]),
+    ...(data?.inspections||[]),
+    ...(data?.cash||[]),
+    ...(data?.boq||[]),
+    ...(data?.drawings||[]),
+    ...(data?.actions||[]),
+    ...(data?.programme||[]),
+    ...(data?.procurement||[])
+  ].forEach(function(r){
+
+    const rowProject=normalizeProjectName_(
+      cockpitRowProject(r)
+    );
+
+    const tower=String(
+      cockpitRowTower(r)||""
+    ).trim();
+
+    if(
+      tower &&
+      rowProject===activeProject
+    ){
+      towers.push(tower);
+    }
+  });
+
+  /*
+   * 3. LEGACY SAFETY FALLBACK
+   *
+   * Preserve our existing LCRG / OLC structure if Master Data
+   * temporarily fails to load.
+   */
+  if(!towers.length){
+
+    if(activeProject==="Lake City Roof Garden"){
+      towers=[
+        "Tower I",
+        "L1",
+        "L2"
+      ];
+    }
+
+    else if(activeProject==="One Lake City"){
+      towers=[
+        "Tower 1",
+        "Tower 2"
+      ];
+    }
+  }
+
+  /*
+   * Remove duplicates and blank values.
+   */
+  towers=[
     ...new Set(
-      []
-        .concat(
-          data.daily,
-          data.inspections,
-          data.cash,
-          data.boq,
-          data.drawings
-        )
-        .filter(
-          r=>
-            !project ||
-            cockpitRowProject(r)===project
-        )
-        .map(cockpitRowTower)
+      towers
+        .map(function(v){
+          return String(v||"").trim();
+        })
         .filter(Boolean)
     )
-  ].sort();
+  ];
+
+  /*
+   * Keep sensible project order for the two current projects.
+   * Future projects remain dynamically driven by Master Data.
+   */
+  if(activeProject==="Lake City Roof Garden"){
+
+    const order={
+      "Tower I":1,
+      "L1":2,
+      "L2":3
+    };
+
+    towers.sort(function(a,b){
+      return (
+        (order[a]||999) -
+        (order[b]||999) ||
+        a.localeCompare(b)
+      );
+    });
+
+  }else if(activeProject==="One Lake City"){
+
+    const order={
+      "Tower 1":1,
+      "Tower 2":2
+    };
+
+    towers.sort(function(a,b){
+      return (
+        (order[a]||999) -
+        (order[b]||999) ||
+        a.localeCompare(b)
+      );
+    });
+
+  }else{
+
+    towers.sort(function(a,b){
+      return a.localeCompare(b);
+    });
+  }
 
   sel.innerHTML=
     '<option value="">All Towers / Areas</option>'+
-    towers.map(
-      t=>
+    towers.map(function(t){
+      return (
         '<option value="'+
         escapeHtml(t)+
         '">'+
         escapeHtml(t)+
         '</option>'
-    ).join('');
+      );
+    }).join("");
 
+  /*
+   * Keep the previously selected tower where possible.
+   */
   if(towers.includes(previous)){
     sel.value=previous;
+  }else{
+    sel.value="";
   }
 }
 
