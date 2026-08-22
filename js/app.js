@@ -1976,43 +1976,91 @@ function renderProjectLauncher(){
 function loadProjectLauncher(){
   const grid=document.getElementById("projectLauncherGrid");
   const count=document.getElementById("projectLauncherCount");
-  if(grid)grid.innerHTML='<div class="project-launcher-loading">Loading active projects...</div>';
-  if(count)count.innerText="Loading projects...";
 
-  google.script.run
-    .withSuccessHandler(function(d){
+  if(grid){
+    grid.innerHTML=
+      '<div class="project-launcher-loading">Loading active projects...</div>';
+  }
+
+  if(count){
+    count.innerText="Loading projects...";
+  }
+
+  function useFallback(){
+    /*
+     * Preserve our existing LCRG / OLC projects.
+     * This also prevents the launcher from becoming unusable
+     * while Projects Master Data is being connected.
+     */
+    projectLauncherData=[
+      {
+        "Project ID":"PRJ-001",
+        "Project Name":"Lake City Roof Garden",
+        "Status":"Active"
+      },
+      {
+        "Project ID":"PRJ-002",
+        "Project Name":"One Lake City",
+        "Status":"Active"
+      }
+    ];
+
+    renderProjectLauncher();
+  }
+
+  /*
+   * GitHub Pages version:
+   * use API shim instead of google.script.run.
+   */
+  if(
+    window.LCRG_API &&
+    typeof window.LCRG_API.call==="function"
+  ){
+    window.LCRG_API.call(
+      "masterData",
+      {}
+    )
+    .then(function(d){
+
       masterData=d||masterData||{};
-      projectLauncherData=Array.isArray(d?.projects)?d.projects:[];
 
-      /* Emergency compatibility fallback:
-         only used if master data cannot return project rows.
-         This prevents the existing LCRG/OLC system from becoming inaccessible. */
-      if(!projectLauncherData.length&&userHasAllProjectAccess_()){
-        projectLauncherData=[
-          {"Project ID":"PRJ-001","Project Name":"Lake City Roof Garden","Status":"Active"},
-          {"Project ID":"PRJ-002","Project Name":"One Lake City","Status":"Active"}
-        ];
+      projectLauncherData=
+        Array.isArray(d?.projects)
+          ?d.projects
+          :[];
+
+      /*
+       * Existing projects must never be lost.
+       */
+      if(!projectLauncherData.length){
+        useFallback();
+        return;
       }
 
       renderProjectLauncher();
     })
-    .withFailureHandler(function(e){
-      console.error("Project launcher master-data load failed:",e);
+    .catch(function(err){
 
-      projectLauncherData=userHasAllProjectAccess_()
-        ?[
-          {"Project ID":"PRJ-001","Project Name":"Lake City Roof Garden","Status":"Active"},
-          {"Project ID":"PRJ-002","Project Name":"One Lake City","Status":"Active"}
-        ]
-        :[];
+      console.error(
+        "Project launcher master-data API failed:",
+        err
+      );
 
-      renderProjectLauncher();
+      useFallback();
+    });
 
-      if(count)count.title="Master Data could not be loaded. Legacy LCRG / OLC fallback is active.";
-    })
-    .getMasterData();
+    return;
+  }
+
+  /*
+   * Safety fallback.
+   */
+  console.warn(
+    "LCRG_API unavailable. Using existing project list."
+  );
+
+  useFallback();
 }
-
 function syncActiveProjectDashboard_(){
   const active=getActiveProject();
   const label=document.getElementById("activeProjectDisplay");
