@@ -1,10 +1,13 @@
-const CACHE_NAME = "pmc-management-pwa-v3";
+const CACHE_NAME = "pmc-management-pwa-v4";
 
 const APP_SHELL = [
   "./",
   "./index.html",
   "./app-config.js",
   "./api-shim.js",
+  "./css/app.css",
+  "./js/app.js",
+  "./js/project-launcher-fix.js",
   "./manifest.webmanifest",
   "./icons/pmc-app-192-v3.png",
   "./icons/pmc-app-512-v3.png"
@@ -14,7 +17,6 @@ self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL))
   );
-
   self.skipWaiting();
 });
 
@@ -28,7 +30,6 @@ self.addEventListener("activate", event => {
       )
     )
   );
-
   self.clients.claim();
 });
 
@@ -36,47 +37,38 @@ self.addEventListener("fetch", event => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // Only handle GET requests from this app
-  if (req.method !== "GET" || url.origin !== self.location.origin) {
-    return;
-  }
+  if (req.method !== "GET" || url.origin !== self.location.origin) return;
 
-  // Navigation requests:
-  // Try the latest online index first.
-  // If offline, use the cached version.
-  if (req.mode === "navigate") {
+  // Navigation and code/style files: always prefer the latest network copy.
+  if (
+    req.mode === "navigate" ||
+    url.pathname.endsWith(".html") ||
+    url.pathname.endsWith(".js") ||
+    url.pathname.endsWith(".css")
+  ) {
     event.respondWith(
-      fetch(req)
+      fetch(req, { cache: "no-store" })
         .then(response => {
-          const copy = response.clone();
-
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put("./index.html", copy);
-          });
-
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
+          }
           return response;
         })
-        .catch(() => caches.match("./index.html"))
+        .catch(() => caches.match(req).then(cached => cached || caches.match("./index.html")))
     );
-
     return;
   }
 
-  // Other app files:
-  // Use cache first, then network.
+  // Images/manifest/static assets: cache first for fast/offline startup.
   event.respondWith(
     caches.match(req).then(cached => {
-      if (cached) {
-        return cached;
-      }
-
+      if (cached) return cached;
       return fetch(req).then(response => {
-        const copy = response.clone();
-
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(req, copy);
-        });
-
+        if (response && response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(req, copy));
+        }
         return response;
       });
     })
