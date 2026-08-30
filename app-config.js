@@ -61,6 +61,14 @@ window.addEventListener("load", function () {
     bulkJs.src = "design-bulk-upload.js?v=20260830-1";
     document.head.appendChild(bulkJs);
   }
+
+  if (!document.getElementById("designActionLayoutCss")) {
+    var actionCss = document.createElement("link");
+    actionCss.id = "designActionLayoutCss";
+    actionCss.rel = "stylesheet";
+    actionCss.href = "design-action-layout.css?v=20260830-1";
+    document.head.appendChild(actionCss);
+  }
 })();
 
 /* Project Launcher hotfix loader — loaded after the main application so it can safely override only the launcher functions. */
