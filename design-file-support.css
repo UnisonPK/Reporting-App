@@ -1,0 +1,2 @@
+/* Design Management - drawing file type badges */
+.drawing-file-badge{display:inline-block!important;margin:2px 6px 0 0!important;padding:2px 5px!important;border-radius:999px!important;font-size:7px!important;font-weight:900!important;letter-spacing:.03em!important;vertical-align:middle}.drawing-file-badge.pdf{background:#fee2e2;color:#991b1b}.drawing-file-badge.dwg{background:#dbeafe;color:#1d4ed8}.drawing-file-badge.dxf{background:#dcfce7;color:#166534}
