@@ -1,0 +1,7 @@
+/* Design Management - compact drawing attachment bundle */
+.drawing-bundle-files{display:flex;gap:4px;flex-wrap:wrap;align-items:center;min-width:92px}
+.drawing-bundle-link{display:inline-flex;align-items:center;justify-content:center;min-width:34px;padding:4px 6px;border-radius:6px;text-decoration:none!important;font-size:8px;font-weight:900;letter-spacing:.02em;border:1px solid transparent}
+.drawing-bundle-link.pdf{background:#fff1f2;color:#9f1239;border-color:#fecdd3}
+.drawing-bundle-link.dwg{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.drawing-bundle-link.dxf{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.bulk-file .bundle-mark{color:#166534!important;background:#dcfce7!important}
