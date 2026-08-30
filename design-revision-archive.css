@@ -1,0 +1,7 @@
+/* Design Management - revision archive */
+#drawingsPage .revision-archive-switch{margin-left:auto;display:flex;gap:3px;padding:3px;background:#eef2f7;border:1px solid #dbe3ee;border-radius:9px;white-space:nowrap}
+#drawingsPage .revision-archive-switch button{border:0;background:transparent;color:#64748b;padding:6px 10px;border-radius:6px;font-size:10px;font-weight:900;cursor:pointer}
+#drawingsPage .revision-archive-switch button.active{background:#fff;color:#0b3f88;box-shadow:0 1px 4px rgba(15,23,42,.10)}
+#drawingsPage .archive-mark{display:block;width:max-content;margin-top:3px;padding:2px 5px;border-radius:4px;background:#f1f5f9;color:#64748b;font-size:7px;font-weight:900;letter-spacing:.04em}
+#drawingsPage .drawing-status.superseded{background:#f1f5f9;color:#64748b}
+@media(max-width:760px){#drawingsPage .revision-archive-switch{margin-left:0;width:100%}#drawingsPage .revision-archive-switch button{flex:1}}
