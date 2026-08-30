@@ -1,0 +1,146 @@
+/* Design Management - Add Drawing compact desktop form V2 */
+
+/* Keep the modal above the underlying page and make it a true work dialog. */
+#drawingModal.admin-modal{
+  z-index:2200!important;
+  padding:18px!important;
+  align-items:flex-start;
+}
+
+#drawingModal .admin-modal-card{
+  width:min(94vw,1320px)!important;
+  max-width:1320px!important;
+  max-height:94vh!important;
+  margin:1vh auto!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+  border-radius:16px!important;
+}
+
+#drawingModal .admin-modal-head{
+  position:sticky;
+  top:0;
+  z-index:8;
+  flex:0 0 auto;
+  padding:14px 18px!important;
+  background:#f8fafc!important;
+  border-bottom:1px solid #e5e7eb!important;
+}
+
+#drawingModal .admin-modal-title{font-size:19px!important}
+#drawingModal .admin-modal-head .app-subtitle{font-size:11px!important;margin-top:3px!important}
+
+#drawingModal .admin-modal-body{
+  overflow:auto!important;
+  padding:12px 18px 0!important;
+  flex:1 1 auto;
+}
+
+/* Three compact columns on desktop. */
+#drawingModal .drawing-form-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px 12px!important;
+  align-items:end;
+}
+
+#drawingModal .drawing-form-grid>div{min-width:0}
+#drawingModal label{
+  margin-top:4px!important;
+  margin-bottom:4px!important;
+  font-size:11px!important;
+  color:#344054;
+}
+#drawingModal input,
+#drawingModal select,
+#drawingModal textarea{
+  padding:9px 10px!important;
+  min-height:39px!important;
+  border-radius:8px!important;
+  font-size:12px!important;
+}
+#drawingModal textarea{min-height:60px!important;max-height:95px!important}
+
+/* Baseline marks title as full-width; return it to one normal column. */
+#drawingModal .drawing-form-grid>div:has(#drawingTitle){grid-column:auto!important}
+
+/* Keep PDF and Remarks as useful full-width rows. */
+#drawingModal .drawing-form-grid>div:has(#drawingPdf),
+#drawingModal .drawing-form-grid>div:has(#drawingRemarks){grid-column:1/-1!important}
+
+/* Hidden legacy discipline must not consume a grid cell. */
+#drawingModal .design-hidden-discipline{display:none!important}
+
+#drawingModal .upload-note,
+#drawingModal .drawing-file-selected{font-size:10px!important;margin-top:4px!important}
+
+/* Compact PDF input area. */
+#drawingModal input[type="file"]{min-height:40px!important;padding:7px 9px!important}
+
+/* Turn existing action area into a sticky footer. */
+#drawingModal .decision-actions{
+  position:sticky!important;
+  bottom:0;
+  z-index:8;
+  margin:10px -18px 0!important;
+  padding:11px 18px!important;
+  background:#fff!important;
+  border-top:1px solid #e5e7eb!important;
+  display:flex!important;
+  justify-content:flex-end!important;
+  gap:9px!important;
+  box-shadow:0 -5px 14px rgba(15,23,42,.05);
+}
+
+#drawingModal .decision-save{
+  min-width:190px;
+  padding:10px 16px!important;
+  border-radius:8px!important;
+  font-size:12px!important;
+}
+
+/* Inserted automatically so Cancel is always available next to Save. */
+#drawingModal .design-modal-cancel{
+  min-width:100px;
+  border:1px solid #cbd5e1;
+  background:#fff;
+  color:#475569;
+  border-radius:8px;
+  padding:10px 15px;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+#drawingModal #drawingMessage{
+  margin:0!important;
+  padding:5px 0 10px!important;
+  font-size:11px!important;
+}
+
+/* Tablet: two columns. */
+@media(max-width:980px){
+  #drawingModal .admin-modal-card{width:min(96vw,900px)!important}
+  #drawingModal .drawing-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #drawingModal .drawing-form-grid>div:has(#drawingTitle){grid-column:1/-1!important}
+}
+
+/* Mobile: normal single column and full-height dialog. */
+@media(max-width:650px){
+  #drawingModal.admin-modal{padding:0!important}
+  #drawingModal .admin-modal-card{
+    width:100vw!important;
+    max-width:none!important;
+    max-height:100vh!important;
+    min-height:100vh!important;
+    margin:0!important;
+    border-radius:0!important;
+  }
+  #drawingModal .drawing-form-grid{grid-template-columns:1fr!important;gap:7px!important}
+  #drawingModal .drawing-form-grid>div:has(#drawingTitle),
+  #drawingModal .drawing-form-grid>div:has(#drawingPdf),
+  #drawingModal .drawing-form-grid>div:has(#drawingRemarks){grid-column:auto!important}
+  #drawingModal .decision-actions{justify-content:stretch!important}
+  #drawingModal .decision-actions button{flex:1;min-width:0!important}
+}
