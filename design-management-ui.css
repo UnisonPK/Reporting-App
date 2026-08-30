@@ -127,6 +127,21 @@
 #drawingsPage .step-subtitle{font-size:11px!important;margin-top:3px!important}
 #drawingsPage .admin-primary-btn{padding:9px 13px!important;border-radius:7px!important;font-size:11px!important}
 
+/* Keep Design Management actions grouped neatly on the right. */
+#drawingsPage .admin-toolbar{
+  display:flex!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+}
+#drawingsPage .admin-toolbar>div:first-child{flex:1 1 auto!important;min-width:0}
+#drawingsPage #bulkDrawingsButton,
+#drawingsPage .admin-toolbar>.admin-primary-btn{
+  flex:0 0 auto!important;
+  margin:0!important;
+  white-space:nowrap!important;
+}
+#drawingsPage #bulkDrawingsButton{background:#0b3f88!important;color:#fff!important}
+
 #designManagementTabs.design-tabs{
   gap:5px!important;
   margin:0 0 10px!important;
@@ -281,6 +296,10 @@
   #drawingModal .decision-actions button{flex:1;min-width:0!important}
   #drawingsPage .container{padding:12px!important}
   #drawingsPage .form-card{padding:13px!important}
+  #drawingsPage .admin-toolbar{flex-wrap:wrap!important}
+  #drawingsPage .admin-toolbar>div:first-child{flex:1 0 100%!important}
+  #drawingsPage #bulkDrawingsButton,
+  #drawingsPage .admin-toolbar>.admin-primary-btn{flex:1 1 calc(50% - 4px)!important;text-align:center!important}
   .design-category-metrics{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:5px!important;border-top:0!important;padding-top:5px!important}
   .design-mini{padding:5px 0!important;border-top:1px solid #eef2f6!important}
   .design-mini:not(:last-child):after{display:none!important}
