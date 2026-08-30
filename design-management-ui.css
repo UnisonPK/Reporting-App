@@ -148,60 +148,93 @@
 .design-category-grid{
   grid-template-columns:repeat(3,minmax(0,1fr))!important;
   gap:9px!important;
-  margin:0 0 9px!important;
+  margin:0 0 8px!important;
 }
 .design-category-card{
   position:relative;
-  min-height:116px!important;
-  padding:11px 12px!important;
-  border-radius:10px!important;
+  min-height:92px!important;
+  padding:10px 12px 9px!important;
+  border-radius:9px!important;
   box-shadow:none!important;
   border:1px solid #e4eaf1!important;
   overflow:hidden;
 }
-.design-category-card:hover{transform:none!important;box-shadow:0 2px 8px rgba(15,23,42,.055)!important;border-color:#cfd9e6!important}
+.design-category-card:hover{transform:none!important;box-shadow:0 2px 8px rgba(15,23,42,.045)!important;border-color:#cfd9e6!important}
 .design-category-card.arch,.design-category-card.struct,.design-category-card.mep{border-top-width:2px!important}
 .design-category-title{font-size:12px!important;line-height:1.2!important;letter-spacing:.005em}
-.design-category-total{font-size:21px!important;line-height:1!important;margin:6px 0 8px!important}
+.design-category-total{font-size:20px!important;line-height:1!important;margin:5px 0 7px!important}
+
+/* Turn the four internal metric boxes into one thin status line. */
 .design-category-metrics{
-  display:grid!important;
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:5px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:0!important;
+  padding-top:6px!important;
+  border-top:1px solid #eef2f6!important;
 }
 .design-mini{
-  padding:5px 5px!important;
-  min-width:0;
-  border-radius:6px!important;
-  background:#f8fafc!important;
-  text-align:center;
+  position:relative!important;
+  flex:1 1 0!important;
+  min-width:0!important;
+  padding:0 7px!important;
+  border-radius:0!important;
+  background:transparent!important;
+  text-align:left!important;
 }
-.design-mini span{font-size:7px!important;letter-spacing:.025em!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.design-mini b{font-size:11px!important;margin-top:2px!important}
+.design-mini:first-child{padding-left:0!important}
+.design-mini:last-child{padding-right:0!important}
+.design-mini:not(:last-child):after{
+  content:"";
+  position:absolute;
+  right:0;
+  top:1px;
+  bottom:1px;
+  width:1px;
+  background:#e8edf3;
+}
+.design-mini span{
+  font-size:6.5px!important;
+  line-height:1.15!important;
+  letter-spacing:.02em!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  color:#7a8796!important;
+}
+.design-mini b{font-size:10px!important;line-height:1!important;margin-top:2px!important;color:#23324a!important}
 
+/* Executive band: one continuous strip rather than four separate cards. */
 .design-management-indicators{
+  display:grid!important;
   grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:7px!important;
-  margin:0 0 8px!important;
+  gap:0!important;
+  margin:0 0 6px!important;
+  border:1px solid #e3e8ef!important;
+  border-radius:8px!important;
+  overflow:hidden!important;
+  background:#fbfcfe!important;
 }
 .design-indicator{
-  min-height:54px!important;
-  padding:8px 10px!important;
-  border-radius:8px!important;
+  min-height:42px!important;
+  padding:7px 11px!important;
+  border:0!important;
+  border-radius:0!important;
   box-shadow:none!important;
-  border:1px solid #e5eaf0!important;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
+  background:transparent!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
 }
-.design-indicator span{font-size:8px!important;line-height:1.25}
-.design-indicator b{font-size:17px!important;line-height:1!important;margin:0!important}
+.design-indicator:not(:last-child){border-right:1px solid #e5eaf0!important}
+.design-indicator span{font-size:7px!important;line-height:1.2!important;color:#6f7c8c!important}
+.design-indicator b{font-size:15px!important;line-height:1!important;margin:0!important;color:#1b2b46!important}
 .design-dashboard-note{
-  margin:5px 0 3px!important;
-  padding-top:7px!important;
-  border-top:1px solid #f0f2f5;
-  font-size:9px!important;
-  color:#7b8794!important;
+  margin:3px 0 0!important;
+  padding-top:5px!important;
+  border-top:0!important;
+  font-size:8.5px!important;
+  color:#8793a1!important;
 }
 
 #designDrawingsViewHead.design-view-head{margin-bottom:8px!important}
@@ -225,6 +258,8 @@
   .design-category-grid{grid-template-columns:1fr!important}
   .design-category-card{min-height:auto!important}
   .design-management-indicators{grid-template-columns:repeat(2,1fr)!important}
+  .design-indicator:nth-child(2){border-right:0!important}
+  .design-indicator:nth-child(-n+2){border-bottom:1px solid #e5eaf0!important}
 }
 
 /* Mobile: normal single column and full-height dialog. */
@@ -246,6 +281,8 @@
   #drawingModal .decision-actions button{flex:1;min-width:0!important}
   #drawingsPage .container{padding:12px!important}
   #drawingsPage .form-card{padding:13px!important}
-  .design-category-metrics{grid-template-columns:repeat(2,1fr)!important}
-  .design-management-indicators{grid-template-columns:repeat(2,1fr)!important}
+  .design-category-metrics{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:5px!important;border-top:0!important;padding-top:5px!important}
+  .design-mini{padding:5px 0!important;border-top:1px solid #eef2f6!important}
+  .design-mini:not(:last-child):after{display:none!important}
+  .design-management-indicators{grid-template-columns:1fr 1fr!important}
 }
