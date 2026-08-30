@@ -23,15 +23,29 @@ window.addEventListener("load", function () {
   }
 });
 
-/* Design Management Stage 1 loader.
-   Loaded while index.html is parsing; the enhancement initializes on window load,
-   after the large baseline has defined its existing Drawings functions. */
+/* Design Management Stage 1 loader. */
 (function () {
-  if (document.getElementById("designManagementStage1Script")) return;
-  var s = document.createElement("script");
-  s.id = "designManagementStage1Script";
-  s.src = "design-management.js?v=20260830-1";
-  document.head.appendChild(s);
+  if (!document.getElementById("designManagementStage1Script")) {
+    var s = document.createElement("script");
+    s.id = "designManagementStage1Script";
+    s.src = "design-management.js?v=20260830-1";
+    document.head.appendChild(s);
+  }
+
+  if (!document.getElementById("designManagementUiCss")) {
+    var css = document.createElement("link");
+    css.id = "designManagementUiCss";
+    css.rel = "stylesheet";
+    css.href = "design-management-ui.css?v=20260830-2";
+    document.head.appendChild(css);
+  }
+
+  if (!document.getElementById("designManagementUiScript")) {
+    var ui = document.createElement("script");
+    ui.id = "designManagementUiScript";
+    ui.src = "design-management-ui.js?v=20260830-2";
+    document.head.appendChild(ui);
+  }
 })();
 
 /* Project Launcher hotfix loader — loaded after the main application so it can safely override only the launcher functions. */
