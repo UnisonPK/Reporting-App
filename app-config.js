@@ -38,11 +38,14 @@ window.addEventListener("load", function () {
   addCss("designManagementUiCss","design-management-ui.css?v=20260830-3");
   addScript("designManagementUiScript","design-management-ui.js?v=20260830-2");
 
-  addCss("designBulkUploadCss","design-bulk-upload.css?v=20260830-2");
-  addScript("designBulkUploadScript","design-bulk-upload-v2.js?v=20260830-2");
+  addCss("designBulkUploadCss","design-bulk-upload.css?v=20260830-3");
+  addScript("designBulkUploadScript","design-bulk-upload-v3.js?v=20260830-1");
 
   addCss("designFileSupportCss","design-file-support.css?v=20260830-1");
   addScript("designFileSupportScript","design-file-support.js?v=20260830-2");
+
+  addCss("designBundleCss","design-drawing-bundle.css?v=20260830-1");
+  addScript("designBundleScript","design-drawing-bundle.js?v=20260830-1");
 
   addCss("designActionLayoutCss","design-action-layout.css?v=20260830-1");
 })();
