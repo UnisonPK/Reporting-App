@@ -22,6 +22,7 @@ window.addEventListener("load", function () {
   addCss("designBundleCss","design-drawing-bundle.css?v=20260830-1");
   addCss("designRevisionArchiveCss","design-revision-archive.css?v=20260830-1");
   addScript("designRegisterControlScript","design-register-control.js?v=20260830-1");
+  addScript("designDashboardCurrentScript","design-dashboard-current.js?v=20260830-1");
   addCss("designActionLayoutCss","design-action-layout.css?v=20260830-1");
 })();
 
