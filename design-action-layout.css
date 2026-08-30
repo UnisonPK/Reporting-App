@@ -1,0 +1,36 @@
+/* Design Management - top action group fix */
+#drawingsPage .admin-toolbar{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px!important;
+}
+#drawingsPage .admin-toolbar>div:first-child{
+  margin-right:auto!important;
+  min-width:0;
+}
+#drawingsPage .admin-toolbar #bulkDrawingsButton,
+#drawingsPage .admin-toolbar .admin-primary-btn{
+  flex:0 0 auto!important;
+  margin:0!important;
+}
+#drawingsPage .admin-toolbar #bulkDrawingsButton{
+  order:2;
+}
+#drawingsPage .admin-toolbar .admin-primary-btn:not(#bulkDrawingsButton){
+  order:3;
+}
+@media(max-width:650px){
+  #drawingsPage .admin-toolbar{
+    flex-wrap:wrap!important;
+  }
+  #drawingsPage .admin-toolbar>div:first-child{
+    flex:0 0 100%;
+    margin-right:0!important;
+  }
+  #drawingsPage .admin-toolbar #bulkDrawingsButton,
+  #drawingsPage .admin-toolbar .admin-primary-btn:not(#bulkDrawingsButton){
+    flex:1 1 calc(50% - 4px)!important;
+    text-align:center;
+  }
+}
