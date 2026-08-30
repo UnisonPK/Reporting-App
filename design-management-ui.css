@@ -119,11 +119,112 @@
   font-size:11px!important;
 }
 
+/* ================= DESIGN MANAGEMENT DASHBOARD - THIN EXECUTIVE POLISH ================= */
+#drawingsPage .container{max-width:1240px!important;padding-top:18px!important}
+#drawingsPage .form-card{padding:18px 20px!important;border-radius:12px!important;box-shadow:0 2px 9px rgba(15,23,42,.045)!important}
+#drawingsPage .admin-toolbar{margin-bottom:10px!important;align-items:center!important}
+#drawingsPage .step-title{font-size:19px!important;letter-spacing:-.01em}
+#drawingsPage .step-subtitle{font-size:11px!important;margin-top:3px!important}
+#drawingsPage .admin-primary-btn{padding:9px 13px!important;border-radius:7px!important;font-size:11px!important}
+
+#designManagementTabs.design-tabs{
+  gap:5px!important;
+  margin:0 0 10px!important;
+  padding-bottom:9px!important;
+  border-bottom:1px solid #edf0f4!important;
+}
+#designManagementTabs .design-tab{
+  padding:7px 11px!important;
+  border-radius:7px!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  background:#f1f5f9!important;
+  color:#536273!important;
+}
+#designManagementTabs .design-tab.active{background:#0b3f88!important;color:#fff!important}
+#designManagementTabs .design-tab:disabled{opacity:.5!important}
+
+#designDashboardPanel{padding-top:1px}
+.design-category-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:9px!important;
+  margin:0 0 9px!important;
+}
+.design-category-card{
+  position:relative;
+  min-height:116px!important;
+  padding:11px 12px!important;
+  border-radius:10px!important;
+  box-shadow:none!important;
+  border:1px solid #e4eaf1!important;
+  overflow:hidden;
+}
+.design-category-card:hover{transform:none!important;box-shadow:0 2px 8px rgba(15,23,42,.055)!important;border-color:#cfd9e6!important}
+.design-category-card.arch,.design-category-card.struct,.design-category-card.mep{border-top-width:2px!important}
+.design-category-title{font-size:12px!important;line-height:1.2!important;letter-spacing:.005em}
+.design-category-total{font-size:21px!important;line-height:1!important;margin:6px 0 8px!important}
+.design-category-metrics{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:5px!important;
+}
+.design-mini{
+  padding:5px 5px!important;
+  min-width:0;
+  border-radius:6px!important;
+  background:#f8fafc!important;
+  text-align:center;
+}
+.design-mini span{font-size:7px!important;letter-spacing:.025em!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.design-mini b{font-size:11px!important;margin-top:2px!important}
+
+.design-management-indicators{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:7px!important;
+  margin:0 0 8px!important;
+}
+.design-indicator{
+  min-height:54px!important;
+  padding:8px 10px!important;
+  border-radius:8px!important;
+  box-shadow:none!important;
+  border:1px solid #e5eaf0!important;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.design-indicator span{font-size:8px!important;line-height:1.25}
+.design-indicator b{font-size:17px!important;line-height:1!important;margin:0!important}
+.design-dashboard-note{
+  margin:5px 0 3px!important;
+  padding-top:7px!important;
+  border-top:1px solid #f0f2f5;
+  font-size:9px!important;
+  color:#7b8794!important;
+}
+
+#designDrawingsViewHead.design-view-head{margin-bottom:8px!important}
+#designDrawingsViewHead b{font-size:12px!important}
+#designDrawingsViewHead span{font-size:9px!important;margin-top:2px!important;display:block}
+.design-filter-pill{padding:6px 9px!important;font-size:9px!important}
+
+/* Also keep the register area compact when the Drawings tab is active. */
+#drawingsPage .module-note{padding:8px 10px!important;margin-bottom:9px!important;font-size:10px!important;border-radius:8px!important}
+#drawingsPage .drawings-toolbar{gap:7px!important;margin-bottom:8px!important}
+#drawingsPage .drawings-toolbar input,#drawingsPage .drawings-toolbar select{padding:8px 9px!important;min-height:36px!important;font-size:10px!important;border-radius:7px!important}
+#drawingsPage .reset-filter-btn{padding:8px 10px!important;font-size:10px!important}
+#drawingsPage .drawings-summary{gap:6px!important;margin-bottom:8px!important}
+#drawingsPage .drawing-chip{padding:5px 8px!important;font-size:9px!important}
+
 /* Tablet: two columns. */
 @media(max-width:980px){
   #drawingModal .admin-modal-card{width:min(96vw,900px)!important}
   #drawingModal .drawing-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   #drawingModal .drawing-form-grid>div:has(#drawingTitle){grid-column:1/-1!important}
+  .design-category-grid{grid-template-columns:1fr!important}
+  .design-category-card{min-height:auto!important}
+  .design-management-indicators{grid-template-columns:repeat(2,1fr)!important}
 }
 
 /* Mobile: normal single column and full-height dialog. */
@@ -143,4 +244,8 @@
   #drawingModal .drawing-form-grid>div:has(#drawingRemarks){grid-column:auto!important}
   #drawingModal .decision-actions{justify-content:stretch!important}
   #drawingModal .decision-actions button{flex:1;min-width:0!important}
+  #drawingsPage .container{padding:12px!important}
+  #drawingsPage .form-card{padding:13px!important}
+  .design-category-metrics{grid-template-columns:repeat(2,1fr)!important}
+  .design-management-indicators{grid-template-columns:repeat(2,1fr)!important}
 }
