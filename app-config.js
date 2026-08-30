@@ -36,7 +36,7 @@ window.addEventListener("load", function () {
     var css = document.createElement("link");
     css.id = "designManagementUiCss";
     css.rel = "stylesheet";
-    css.href = "design-management-ui.css?v=20260830-2";
+    css.href = "design-management-ui.css?v=20260830-3";
     document.head.appendChild(css);
   }
 
@@ -45,6 +45,21 @@ window.addEventListener("load", function () {
     ui.id = "designManagementUiScript";
     ui.src = "design-management-ui.js?v=20260830-2";
     document.head.appendChild(ui);
+  }
+
+  if (!document.getElementById("designBulkUploadCss")) {
+    var bulkCss = document.createElement("link");
+    bulkCss.id = "designBulkUploadCss";
+    bulkCss.rel = "stylesheet";
+    bulkCss.href = "design-bulk-upload.css?v=20260830-1";
+    document.head.appendChild(bulkCss);
+  }
+
+  if (!document.getElementById("designBulkUploadScript")) {
+    var bulkJs = document.createElement("script");
+    bulkJs.id = "designBulkUploadScript";
+    bulkJs.src = "design-bulk-upload.js?v=20260830-1";
+    document.head.appendChild(bulkJs);
   }
 })();
 
