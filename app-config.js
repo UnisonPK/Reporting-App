@@ -25,50 +25,26 @@ window.addEventListener("load", function () {
 
 /* Design Management Stage 1 loader. */
 (function () {
-  if (!document.getElementById("designManagementStage1Script")) {
-    var s = document.createElement("script");
-    s.id = "designManagementStage1Script";
-    s.src = "design-management.js?v=20260830-1";
-    document.head.appendChild(s);
+  function addScript(id,src){
+    if(document.getElementById(id))return;
+    var s=document.createElement("script");s.id=id;s.src=src;document.head.appendChild(s);
+  }
+  function addCss(id,href){
+    if(document.getElementById(id))return;
+    var c=document.createElement("link");c.id=id;c.rel="stylesheet";c.href=href;document.head.appendChild(c);
   }
 
-  if (!document.getElementById("designManagementUiCss")) {
-    var css = document.createElement("link");
-    css.id = "designManagementUiCss";
-    css.rel = "stylesheet";
-    css.href = "design-management-ui.css?v=20260830-3";
-    document.head.appendChild(css);
-  }
+  addScript("designManagementStage1Script","design-management.js?v=20260830-1");
+  addCss("designManagementUiCss","design-management-ui.css?v=20260830-3");
+  addScript("designManagementUiScript","design-management-ui.js?v=20260830-2");
 
-  if (!document.getElementById("designManagementUiScript")) {
-    var ui = document.createElement("script");
-    ui.id = "designManagementUiScript";
-    ui.src = "design-management-ui.js?v=20260830-2";
-    document.head.appendChild(ui);
-  }
+  addCss("designBulkUploadCss","design-bulk-upload.css?v=20260830-2");
+  addScript("designBulkUploadScript","design-bulk-upload-v2.js?v=20260830-2");
 
-  if (!document.getElementById("designBulkUploadCss")) {
-    var bulkCss = document.createElement("link");
-    bulkCss.id = "designBulkUploadCss";
-    bulkCss.rel = "stylesheet";
-    bulkCss.href = "design-bulk-upload.css?v=20260830-1";
-    document.head.appendChild(bulkCss);
-  }
+  addCss("designFileSupportCss","design-file-support.css?v=20260830-1");
+  addScript("designFileSupportScript","design-file-support.js?v=20260830-1");
 
-  if (!document.getElementById("designBulkUploadScript")) {
-    var bulkJs = document.createElement("script");
-    bulkJs.id = "designBulkUploadScript";
-    bulkJs.src = "design-bulk-upload.js?v=20260830-1";
-    document.head.appendChild(bulkJs);
-  }
-
-  if (!document.getElementById("designActionLayoutCss")) {
-    var actionCss = document.createElement("link");
-    actionCss.id = "designActionLayoutCss";
-    actionCss.rel = "stylesheet";
-    actionCss.href = "design-action-layout.css?v=20260830-1";
-    document.head.appendChild(actionCss);
-  }
+  addCss("designActionLayoutCss","design-action-layout.css?v=20260830-1");
 })();
 
 /* Project Launcher hotfix loader — loaded after the main application so it can safely override only the launcher functions. */
