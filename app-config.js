@@ -42,7 +42,7 @@ window.addEventListener("load", function () {
   addScript("designBulkUploadScript","design-bulk-upload-v2.js?v=20260830-2");
 
   addCss("designFileSupportCss","design-file-support.css?v=20260830-1");
-  addScript("designFileSupportScript","design-file-support.js?v=20260830-1");
+  addScript("designFileSupportScript","design-file-support.js?v=20260830-2");
 
   addCss("designActionLayoutCss","design-action-layout.css?v=20260830-1");
 })();
