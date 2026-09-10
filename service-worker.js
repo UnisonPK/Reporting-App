@@ -1,4 +1,4 @@
-const CACHE_NAME = "pmc-management-pwa-v4";
+const CACHE_NAME = "pmc-management-pwa-v5";
 
 const APP_SHELL = [
   "./",
@@ -39,7 +39,6 @@ self.addEventListener("fetch", event => {
 
   if (req.method !== "GET" || url.origin !== self.location.origin) return;
 
-  // Navigation and code/style files: always prefer the latest network copy.
   if (
     req.mode === "navigate" ||
     url.pathname.endsWith(".html") ||
@@ -60,7 +59,6 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  // Images/manifest/static assets: cache first for fast/offline startup.
   event.respondWith(
     caches.match(req).then(cached => {
       if (cached) return cached;
