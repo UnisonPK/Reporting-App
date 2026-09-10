@@ -1,0 +1,10 @@
+/* Design Management compact controls */
+#drawingsPage .admin-toolbar.design-compact-toolbar{gap:7px!important;align-items:center!important}
+#drawingsPage .admin-toolbar.design-compact-toolbar .admin-primary-btn{padding:7px 11px!important;min-height:31px!important;border-radius:7px!important;font-size:10px!important;font-weight:800!important;line-height:1!important;box-shadow:none!important}
+#drawingsPage .admin-toolbar.design-compact-toolbar #bulkDrawingsButton{background:#0b3f88!important}
+#drawingsPage .admin-toolbar.design-compact-toolbar .admin-primary-btn:not(#bulkDrawingsButton){background:#0c9a4a!important}
+.design-dashboard-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px;padding:9px 12px;border:1px solid #e2e8f0;border-radius:10px;background:#f8fafc}
+.design-dashboard-actions>div{display:flex;flex-direction:column;gap:2px}.design-dashboard-actions b{font-size:11px;color:#172b4d}.design-dashboard-actions span{font-size:9px;color:#64748b}
+#downloadDrawingRegisterBtn{border:1px solid #cbd5e1;background:#fff;color:#0b3f88;border-radius:7px;padding:7px 10px;font-size:10px;font-weight:900;cursor:pointer;white-space:nowrap}
+#downloadDrawingRegisterBtn:hover{background:#eff6ff;border-color:#93c5fd}
+@media(max-width:650px){.design-dashboard-actions{align-items:flex-start;flex-direction:column}.design-compact-toolbar{flex-wrap:wrap}}
