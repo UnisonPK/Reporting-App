@@ -25,6 +25,8 @@ window.addEventListener("load", function () {
   addScript("designDashboardCurrentScript","design-dashboard-current.js?v=20260830-1");
   addCss("designIssuesCss","design-issues.css?v=20260830-1");
   addScript("designIssuesScript","design-issues.js?v=20260910-4");
+  addCss("designChangesCss","design-changes.css?v=20260910-1");
+  addScript("designChangesScript","design-changes.js?v=20260910-1");
   addCss("designActionLayoutCss","design-action-layout.css?v=20260830-1");
 })();
 
