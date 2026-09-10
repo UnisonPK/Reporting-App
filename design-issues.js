@@ -1,6 +1,7 @@
-/* Design Management - Design Issues Stage 2.1
-   Shared Apps Script data with safe local fallback.
+/* Design Management - Design Issues Stage 2.2
+   Shared Apps Script data with controlled local fallback.
    New issues no longer send a fake ID; backend generates the real Issue ID.
+   Shared save is always attempted even if the initial register load failed.
 */
 (function(){
   "use strict";
@@ -8,12 +9,17 @@
   const $=id=>document.getElementById(id);
   const esc=v=>String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;");
   const today=()=>new Date().toISOString().slice(0,10);
+  const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   let issues=[],editId="",backendAvailable=null,loading=false;
 
   function localData(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")||[];}catch(e){return[];}}
   function saveLocal(a){localStorage.setItem(KEY,JSON.stringify(a||[]));}
   function activeProject(){try{return typeof getActiveProject==="function"?getActiveProject():"";}catch(e){return"";}}
   function api(action,data){if(!window.LCRG_API||typeof window.LCRG_API.call!=="function")return Promise.reject(new Error("API not ready"));return window.LCRG_API.call(action,data||{});}
+
+  async function apiRetry(action,data){
+    try{return await api(action,data);}catch(first){await wait(800);try{return await api(action,data);}catch(second){throw second||first;}}
+  }
 
   function install(){
     const tabs=$("designManagementTabs");if(!tabs||$("designIssuesPanel"))return;
@@ -36,13 +42,14 @@
   async function loadIssues(){
     if(loading)return;loading=true;statusMessage("Loading design issues...");
     try{
-      const r=await api("designIssues",{project:activeProject()});
+      const r=await apiRetry("designIssues",{project:activeProject()});
       issues=Array.isArray(r)?r:(r&&Array.isArray(r.rows)?r.rows:[]);
       backendAvailable=true;saveLocal(issues);render();
     }catch(e){
       backendAvailable=false;issues=localData();render();
-      if(!issues.length)statusMessage("Design Issues backend is not available. Local test mode is active.");
-      console.warn("Design Issues backend fallback:",e);
+      const msg=e&&e.message?e.message:String(e||"Unknown backend error");
+      statusMessage("Shared Design Issues could not be loaded. "+msg+" You can still press + Add Design Issue; the app will retry the shared backend when you save.");
+      console.warn("Design Issues backend load failed:",e);
     }finally{loading=false;}
   }
 
@@ -74,18 +81,20 @@
     let r;try{r=collectIssue();}catch(e){alert(e.message);return;}
     const btn=$("saveDesignIssue");btn.disabled=true;btn.textContent="Saving...";
     try{
-      if(backendAvailable===false)throw new Error("Backend unavailable");
-      const result=await api("saveDesignIssue",r);
-      backendAvailable=true;closeModal();await loadIssues();
-      if(result&&result.message)console.log(result.message);
+      const result=await apiRetry("saveDesignIssue",r);
+      backendAvailable=true;
+      if(result&&result.id)r.id=result.id;
+      closeModal();
+      await loadIssues();
+      alert((result&&result.message)||"Design Issue saved to the shared register successfully.");
     }catch(e){
-      if(backendAvailable===false){
+      backendAvailable=false;
+      const msg=e&&e.message?e.message:String(e||"Unknown backend error");
+      console.error("Design Issue shared save failed:",e);
+      if(confirm("Shared Design Issues save failed: "+msg+"\n\nSave this issue locally on this device instead?")){
         const local=Object.assign({id:editId||("LOCAL-DI-"+Date.now())},r,{updatedAt:new Date().toISOString()});
         let a=localData(),n=a.findIndex(x=>x.id===local.id);if(n>=0)a[n]=local;else a.push(local);saveLocal(a);issues=a;closeModal();render();
-        alert("Saved in local test mode because the Design Issues backend is unavailable.");
-      }else{
-        console.error("Design Issue save failed:",e);
-        alert("Design Issue could not be saved to the shared register. "+(e&&e.message?e.message:"Please try again."));
+        alert("Saved locally on this device only. It is not yet in the shared Google Sheet.");
       }
     }finally{btn.disabled=false;btn.textContent="Save Issue";}
   }
