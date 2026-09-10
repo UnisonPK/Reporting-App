@@ -24,7 +24,7 @@ window.addEventListener("load", function () {
   addScript("designRegisterControlScript","design-register-control.js?v=20260830-1");
   addScript("designDashboardCurrentScript","design-dashboard-current.js?v=20260830-1");
   addCss("designIssuesCss","design-issues.css?v=20260830-1");
-  addScript("designIssuesScript","design-issues.js?v=20260830-1");
+  addScript("designIssuesScript","design-issues.js?v=20260910-1");
   addCss("designActionLayoutCss","design-action-layout.css?v=20260830-1");
 })();
 
