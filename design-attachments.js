@@ -1,15 +1,13 @@
-/* Design Management - Optional Attachments V1
+/* Design Management - Optional Attachments V2
    Adds optional supporting drawing/picture upload to Design Issues and Design Changes.
-   Design Issues uploads to shared Apps Script backend (V8+).
-   Design Changes is still local-first; attachment is stored locally for Stage 1 testing.
+   Both modules upload through the shared Apps Script backend and store files in Google Drive.
 */
 (function(){
   "use strict";
   const $=id=>document.getElementById(id);
   const ACCEPT=".pdf,.dwg,.dxf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp";
-  const CHANGE_KEY="pmcDesignChangesV1";
   let issueRows=[];
-  let bypassChangeCapture=false;
+  let changeRows=[];
 
   function addStyles(){
     if($("designAttachmentStyles"))return;
@@ -47,16 +45,18 @@
     if(!form||$("dcAttachment"))return;
     const wrap=document.createElement("div");
     wrap.className="design-attachment-field";
-    wrap.innerHTML='<label>Supporting Drawing / Picture <span style="font-weight:500">(Optional)</span></label><input id="dcAttachment" type="file" accept="'+ACCEPT+'"><span class="design-attachment-note">PDF, DWG, DXF, JPG, PNG or WEBP. Design Changes is still in local-first Stage 1.</span><div id="dcAttachmentExisting" class="design-attachment-existing"></div>';
+    wrap.innerHTML='<label>Supporting Drawing / Picture <span style="font-weight:500">(Optional)</span></label><input id="dcAttachment" type="file" accept="'+ACCEPT+'"><span class="design-attachment-note">PDF, DWG, DXF, JPG, PNG or WEBP. Files are stored in the shared Google Drive design-support folder.</span><div id="dcAttachmentExisting" class="design-attachment-existing"></div>';
     form.appendChild(wrap);
   }
+
+  function safeHref(v){return String(v||"").replace(/"/g,"&quot;");}
 
   function refreshIssueExisting(){
     const box=$("diAttachmentExisting");
     if(!box)return;
     const ref=$("diRef")?$("diRef").value.trim():"";
     const r=issueRows.find(x=>String(x.ref||"").trim()===ref);
-    box.innerHTML=r&&r.attachmentLink?'<a target="_blank" rel="noopener" href="'+String(r.attachmentLink).replace(/"/g,"&quot;")+'">📎 View existing attachment'+(r.attachmentName?' — '+r.attachmentName:'')+'</a>':'';
+    box.innerHTML=r&&r.attachmentLink?'<a target="_blank" rel="noopener" href="'+safeHref(r.attachmentLink)+'">📎 View existing attachment'+(r.attachmentName?' — '+r.attachmentName:'')+'</a>':'';
     if($("diAttachment"))$("diAttachment").value="";
   }
 
@@ -64,9 +64,8 @@
     const box=$("dcAttachmentExisting");
     if(!box)return;
     const ref=$("dcRef")?$("dcRef").value.trim():"";
-    let rows=[];try{rows=JSON.parse(localStorage.getItem(CHANGE_KEY)||"[]")||[];}catch(_e){}
-    const r=rows.find(x=>String(x.ref||"").trim()===ref);
-    box.innerHTML=r&&r.attachmentData?'<a class="design-attachment-link" download="'+(r.attachmentName||'attachment')+'" href="'+r.attachmentData+'">📎 Open local attachment'+(r.attachmentName?' — '+r.attachmentName:'')+'</a>':'';
+    const r=changeRows.find(x=>String(x.ref||"").trim()===ref);
+    box.innerHTML=r&&r.attachmentLink?'<a target="_blank" rel="noopener" href="'+safeHref(r.attachmentLink)+'">📎 View existing attachment'+(r.attachmentName?' — '+r.attachmentName:'')+'</a>':'';
     if($("dcAttachment"))$("dcAttachment").value="";
   }
 
@@ -77,20 +76,28 @@
       if(action==="saveDesignIssue"){
         const input=$("diAttachment");
         const file=input&&input.files&&input.files[0];
-        if(file){data=Object.assign({},data,{attachment:await fileToPayload(file)});}
+        if(file)data=Object.assign({},data,{attachment:await fileToPayload(file)});
+      }
+      if(action==="saveDesignChange"){
+        const input=$("dcAttachment");
+        const file=input&&input.files&&input.files[0];
+        if(file)data=Object.assign({},data,{attachment:await fileToPayload(file)});
       }
       const result=await original(action,data);
       if(action==="designIssues"){
         issueRows=Array.isArray(result)?result:(result&&Array.isArray(result.rows)?result.rows:[]);
         setTimeout(augmentIssueRegister,50);
       }
+      if(action==="designChanges"){
+        changeRows=Array.isArray(result)?result:(result&&Array.isArray(result.rows)?result.rows:[]);
+        setTimeout(augmentChangeRegister,50);
+      }
       return result;
     };
     window.LCRG_API.__designAttachmentsPatched=true;
   }
 
-  function augmentIssueRegister(){
-    const table=document.querySelector("#designIssueTable table");
+  function addAttachmentColumn(table,rows){
     if(!table||table.dataset.attachmentsAugmented==="1")return;
     const header=table.querySelector("thead tr");
     if(!header)return;
@@ -98,40 +105,25 @@
     header.insertBefore(th,header.lastElementChild);
     table.querySelectorAll("tbody tr").forEach(tr=>{
       const ref=(tr.cells[0]&&tr.cells[0].textContent||"").trim();
-      const r=issueRows.find(x=>String(x.ref||"").trim()===ref);
+      const r=rows.find(x=>String(x.ref||"").trim()===ref);
       const td=document.createElement("td");
-      td.innerHTML=r&&r.attachmentLink?'<a class="design-attachment-link" target="_blank" rel="noopener" href="'+String(r.attachmentLink).replace(/"/g,"&quot;")+'">📎 View</a>':'-';
+      td.innerHTML=r&&r.attachmentLink?'<a class="design-attachment-link" target="_blank" rel="noopener" href="'+safeHref(r.attachmentLink)+'">📎 View</a>':'-';
       tr.insertBefore(td,tr.lastElementChild);
     });
     table.dataset.attachmentsAugmented="1";
   }
 
-  async function handleChangeSaveCapture(e){
-    if(bypassChangeCapture)return;
-    const btn=e.target.closest&&e.target.closest("#saveDesignChange");
-    if(!btn)return;
-    const input=$("dcAttachment");
-    const file=input&&input.files&&input.files[0];
-    if(!file)return;
-    e.preventDefault();e.stopImmediatePropagation();
-    try{
-      const dataUrl=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||""));r.onerror=()=>reject(new Error("Could not read attachment."));r.readAsDataURL(file);});
-      if(dataUrl.length>2500000){alert("For the current local Design Changes test, please keep the optional attachment below about 1.8 MB. Once Design Changes is connected to the shared backend, larger files will be stored in Google Drive.");return;}
-      bypassChangeCapture=true;btn.click();bypassChangeCapture=false;
-      const ref=$("dcRef")?$("dcRef").value.trim():"";
-      let rows=[];try{rows=JSON.parse(localStorage.getItem(CHANGE_KEY)||"[]")||[];}catch(_e){}
-      const idx=rows.findIndex(x=>String(x.ref||"").trim()===ref);
-      if(idx>=0){rows[idx].attachmentName=file.name;rows[idx].attachmentType=file.type||"application/octet-stream";rows[idx].attachmentData=dataUrl;localStorage.setItem(CHANGE_KEY,JSON.stringify(rows));}
-    }catch(err){alert(err.message||"Attachment could not be stored.");}
-  }
+  function augmentIssueRegister(){addAttachmentColumn(document.querySelector("#designIssueTable table"),issueRows);}
+  function augmentChangeRegister(){addAttachmentColumn(document.querySelector("#designChangeTable table"),changeRows);}
 
   function watch(){
     addStyles();patchApi();injectIssueField();injectChangeField();
-    const issueModal=$("designIssueModal");if(issueModal&&!issueModal.__attachWatch){issueModal.__attachWatch=true;new MutationObserver(()=>{if(issueModal.classList.contains("show"))setTimeout(refreshIssueExisting,0);}).observe(issueModal,{attributes:true,attributeFilter:["class"]});}
-    const changeModal=$("designChangeModal");if(changeModal&&!changeModal.__attachWatch){changeModal.__attachWatch=true;new MutationObserver(()=>{if(changeModal.classList.contains("show"))setTimeout(refreshChangeExisting,0);}).observe(changeModal,{attributes:true,attributeFilter:["class"]});}
-    augmentIssueRegister();
+    const issueModal=$("designIssueModal");
+    if(issueModal&&!issueModal.__attachWatch){issueModal.__attachWatch=true;new MutationObserver(()=>{if(issueModal.classList.contains("show"))setTimeout(refreshIssueExisting,0);}).observe(issueModal,{attributes:true,attributeFilter:["class"]});}
+    const changeModal=$("designChangeModal");
+    if(changeModal&&!changeModal.__attachWatch){changeModal.__attachWatch=true;new MutationObserver(()=>{if(changeModal.classList.contains("show"))setTimeout(refreshChangeExisting,0);}).observe(changeModal,{attributes:true,attributeFilter:["class"]});}
+    augmentIssueRegister();augmentChangeRegister();
   }
 
-  document.addEventListener("click",handleChangeSaveCapture,true);
   window.addEventListener("load",()=>{let n=0;const t=setInterval(()=>{watch();if(++n>20)clearInterval(t);},400);});
 })();
