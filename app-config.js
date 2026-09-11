@@ -30,7 +30,7 @@ window.addEventListener("load", function () {
   addScript("designChangesScript","design-changes.js?v=20260911-3");
   addScript("designAttachmentsScript","design-attachments.js?v=20260911-2");
   addScript("designChangeImpactScript","design-change-impact.js?v=20260911-1");
-  addScript("designLookAheadScript","design-lookahead.js?v=20260911-2");
+  addScript("designLookAheadScript","design-lookahead-stage2.js?v=20260911-1");
   addCss("designManagementControlsCss","design-management-controls.css?v=20260910-1");
   addScript("designManagementControlsScript","design-management-controls.js?v=20260910-1");
   addCss("designActionLayoutCss","design-action-layout.css?v=20260830-1");
