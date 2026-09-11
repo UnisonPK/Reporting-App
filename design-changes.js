@@ -1,5 +1,7 @@
-/* Design Management - Design Changes Stage 1
-   Local-first visual/workflow module. Backend connection follows after UI approval.
+/* Design Management - Design Changes Stage 2
+   Shared Apps Script data with controlled local fallback.
+   New changes do not send a fake ID; backend generates the real Change ID.
+   Shared save is always attempted even if the initial register load failed.
 */
 (function(){
   "use strict";
@@ -7,11 +9,14 @@
   const $=id=>document.getElementById(id);
   const esc=v=>String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;");
   const today=()=>new Date().toISOString().slice(0,10);
-  let rows=[],editId="";
+  const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  let rows=[],editId="",backendAvailable=null,loading=false;
 
   function activeProject(){try{return typeof getActiveProject==="function"?getActiveProject():"";}catch(e){return"";}}
   function loadLocal(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")||[];}catch(e){return[];}}
   function saveLocal(a){localStorage.setItem(KEY,JSON.stringify(a||[]));}
+  function api(action,data){if(!window.LCRG_API||typeof window.LCRG_API.call!=="function")return Promise.reject(new Error("API not ready"));return window.LCRG_API.call(action,data||{});}
+  async function apiRetry(action,data){try{return await api(action,data);}catch(first){await wait(800);try{return await api(action,data);}catch(second){throw second||first;}}}
 
   function install(){
     const tabs=$("designManagementTabs");
@@ -45,8 +50,24 @@
     hideOtherViews();
     $("designChangesTab").classList.add("active");
     $("designChangesPanel").style.display="block";
-    rows=loadLocal();render();
+    loadChanges();
   }
+
+  async function loadChanges(){
+    if(loading)return;loading=true;statusMessage("Loading design changes...");
+    try{
+      const r=await apiRetry("designChanges",{project:activeProject()});
+      rows=Array.isArray(r)?r:(r&&Array.isArray(r.rows)?r.rows:[]);
+      backendAvailable=true;saveLocal(rows);render();
+    }catch(e){
+      backendAvailable=false;rows=loadLocal();render();
+      const msg=e&&e.message?e.message:String(e||"Unknown backend error");
+      statusMessage("Shared Design Changes could not be loaded. "+msg+" You can still press + Add Design Change; the app will retry the shared backend when you save.");
+      console.warn("Design Changes backend load failed:",e);
+    }finally{loading=false;}
+  }
+
+  function statusMessage(text){if($("designChangeTable"))$("designChangeTable").innerHTML='<div class="design-change-empty">'+esc(text)+'</div>';}
 
   function makeModal(){
     if($("designChangeModal"))return;
@@ -63,11 +84,34 @@
   }
   function closeModal(){$("designChangeModal").classList.remove("show");}
 
-  function saveChange(){
+  function collectChange(){
     const ref=$("dcRef").value.trim(),title=$("dcTitle").value.trim(),initiatedBy=$("dcInitiatedBy").value.trim(),responsible=$("dcResponsible").value.trim();
-    if(!ref||!title||!initiatedBy||!responsible){alert("Change reference, description, initiated by and responsible party are required.");return;}
-    const r={id:editId||("LOCAL-DC-"+Date.now()),project:activeProject(),ref,category:$("dcCategory").value,title,tower:$("dcTower").value.trim(),floor:$("dcFloor").value.trim(),source:$("dcSource").value,initiatedBy,responsible,status:$("dcStatus").value,raised:$("dcRaised").value,target:$("dcTarget").value,impact:$("dcImpact").value,costImpact:Number($("dcCost").value||0),programmeDays:Number($("dcDays").value||0),linkedIssue:$("dcLinkedIssue").value.trim(),drawingRevision:$("dcDrawingRevision").value,decision:$("dcDecision").value.trim(),remarks:$("dcRemarks").value.trim(),updatedAt:new Date().toISOString()};
-    let a=loadLocal(),n=a.findIndex(x=>x.id===r.id);if(n>=0)a[n]=r;else a.push(r);saveLocal(a);rows=a;closeModal();render();
+    if(!ref||!title||!initiatedBy||!responsible)throw new Error("Change reference, description, initiated by and responsible party are required.");
+    const r={project:activeProject(),ref,category:$("dcCategory").value,title,tower:$("dcTower").value.trim(),floor:$("dcFloor").value.trim(),source:$("dcSource").value,initiatedBy,responsible,status:$("dcStatus").value,raised:$("dcRaised").value,target:$("dcTarget").value,impact:$("dcImpact").value,costImpact:Number($("dcCost").value||0),programmeDays:Number($("dcDays").value||0),linkedIssue:$("dcLinkedIssue").value.trim(),drawingRevision:$("dcDrawingRevision").value,decision:$("dcDecision").value.trim(),remarks:$("dcRemarks").value.trim()};
+    if(editId)r.id=editId;
+    return r;
+  }
+
+  async function saveChange(){
+    let r;try{r=collectChange();}catch(e){alert(e.message);return;}
+    const btn=$("saveDesignChange");btn.disabled=true;btn.textContent="Saving...";
+    try{
+      const result=await apiRetry("saveDesignChange",r);
+      backendAvailable=true;
+      if(result&&result.id)r.id=result.id;
+      closeModal();
+      await loadChanges();
+      alert((result&&result.message)||"Design Change saved to the shared register successfully.");
+    }catch(e){
+      backendAvailable=false;
+      const msg=e&&e.message?e.message:String(e||"Unknown backend error");
+      console.error("Design Change shared save failed:",e);
+      if(confirm("Shared Design Changes save failed: "+msg+"\n\nSave this change locally on this device instead?")){
+        const local=Object.assign({id:editId||("LOCAL-DC-"+Date.now())},r,{updatedAt:new Date().toISOString()});
+        let a=loadLocal(),n=a.findIndex(x=>x.id===local.id);if(n>=0)a[n]=local;else a.push(local);saveLocal(a);rows=a;closeModal();render();
+        alert("Saved locally on this device only. It is not yet in the shared Google Sheet.");
+      }
+    }finally{btn.disabled=false;btn.textContent="Save Change";}
   }
 
   function render(){
@@ -79,10 +123,11 @@
     const cost=all.filter(r=>r.costImpact>0||["Cost","Cost + Programme"].includes(r.impact)).length;
     const prog=all.filter(r=>r.programmeDays>0||["Programme","Cost + Programme"].includes(r.impact)).length;
     $("designChangeKpis").innerHTML='<div><span>Pending Approval</span><b>'+pending+'</b></div><div><span>Approved / Implemented</span><b>'+approved+'</b></div><div><span>Cost Impact</span><b>'+cost+'</b></div><div><span>Programme Impact</span><b>'+prog+'</b></div>';
-    if(!a.length){$("designChangeTable").innerHTML='<div class="design-change-empty">No design changes recorded for this view.</div>';return;}
+    if(!a.length){statusMessage("No design changes recorded for this view.");return;}
     $("designChangeTable").innerHTML='<div class="design-change-table-wrap"><table><thead><tr><th>Ref.</th><th>Change Description</th><th>Category</th><th>Location</th><th>Initiated By</th><th>Responsible</th><th>Status</th><th>Impact</th><th>Target</th><th></th></tr></thead><tbody>'+a.sort((x,y)=>String(x.target||"9999").localeCompare(String(y.target||"9999"))).map(r=>'<tr><td><b>'+esc(r.ref)+'</b></td><td>'+esc(r.title)+'</td><td>'+esc(r.category)+'</td><td>'+esc([r.tower,r.floor].filter(Boolean).join(" / ")||"-")+'</td><td>'+esc(r.initiatedBy)+'</td><td>'+esc(r.responsible)+'</td><td><span class="dc-status">'+esc(r.status)+'</span></td><td>'+esc(r.impact)+(r.costImpact?'<small>PKR '+Number(r.costImpact).toLocaleString()+'</small>':'')+(r.programmeDays?'<small>'+esc(r.programmeDays)+' day(s)</small>':'')+'</td><td>'+esc(r.target||"-")+'</td><td><button class="dc-edit" data-id="'+esc(r.id)+'">Edit</button></td></tr>').join("")+'</tbody></table></div>';
     $("designChangeTable").querySelectorAll(".dc-edit").forEach(b=>b.onclick=()=>openModal(b.dataset.id));
   }
 
+  window.refreshDesignChanges=loadChanges;
   window.addEventListener("load",()=>setTimeout(install,850));
 })();
