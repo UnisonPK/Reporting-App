@@ -27,7 +27,7 @@ window.addEventListener("load", function () {
   addScript("designIssuesScript","design-issues.js?v=20260910-4");
   addCss("designChangesCss","design-changes.css?v=20260910-1");
   addScript("designChangesScript","design-changes.js?v=20260911-1");
-  addScript("designAttachmentsScript","design-attachments.js?v=20260910-1");
+  addScript("designAttachmentsScript","design-attachments.js?v=20260911-2");
   addCss("designManagementControlsCss","design-management-controls.css?v=20260910-1");
   addScript("designManagementControlsScript","design-management-controls.js?v=20260910-1");
   addCss("designActionLayoutCss","design-action-layout.css?v=20260830-1");
