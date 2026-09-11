@@ -1,7 +1,6 @@
-/* Design Management - Design Changes Stage 2
+/* Design Management - Design Changes Stage 2.1
    Shared Apps Script data with controlled local fallback.
-   New changes do not send a fake ID; backend generates the real Change ID.
-   Shared save is always attempted even if the initial register load failed.
+   Reads may retry; writes are single-shot to prevent duplicate records.
 */
 (function(){
   "use strict";
@@ -10,7 +9,7 @@
   const esc=v=>String(v==null?"":v).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#039;");
   const today=()=>new Date().toISOString().slice(0,10);
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-  let rows=[],editId="",backendAvailable=null,loading=false;
+  let rows=[],editId="",backendAvailable=null,loading=false,saving=false;
 
   function activeProject(){try{return typeof getActiveProject==="function"?getActiveProject():"";}catch(e){return"";}}
   function loadLocal(){try{return JSON.parse(localStorage.getItem(KEY)||"[]")||[];}catch(e){return[];}}
@@ -93,10 +92,13 @@
   }
 
   async function saveChange(){
+    if(saving)return;
     let r;try{r=collectChange();}catch(e){alert(e.message);return;}
-    const btn=$("saveDesignChange");btn.disabled=true;btn.textContent="Saving...";
+    const btn=$("saveDesignChange");saving=true;btn.disabled=true;btn.textContent="Saving...";
     try{
-      const result=await apiRetry("saveDesignChange",r);
+      /* IMPORTANT: writes are intentionally NOT retried. A delayed response from
+         Apps Script must never cause the same new record to be posted twice. */
+      const result=await api("saveDesignChange",r);
       backendAvailable=true;
       if(result&&result.id)r.id=result.id;
       closeModal();
@@ -111,7 +113,7 @@
         let a=loadLocal(),n=a.findIndex(x=>x.id===local.id);if(n>=0)a[n]=local;else a.push(local);saveLocal(a);rows=a;closeModal();render();
         alert("Saved locally on this device only. It is not yet in the shared Google Sheet.");
       }
-    }finally{btn.disabled=false;btn.textContent="Save Change";}
+    }finally{saving=false;btn.disabled=false;btn.textContent="Save Change";}
   }
 
   function render(){
