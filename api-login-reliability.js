@@ -1,9 +1,7 @@
-/* Reporting App - API Reliability V2
+/* Reporting App - API Reliability V3
    Keeps the existing API shim intact.
-   1) LOGIN: fail fast and retry once for transient Apps Script failures.
+   1) LOGIN: allow realistic Apps Script cold-start time, validate JSON, retry once only for transient failures.
    2) DESIGN CHANGES: block an identical save request repeated within 5 seconds.
-      This prevents a successful server write from being duplicated when the
-      browser loses/invalidates only the first response and Stage 2 retries it.
 */
 (function () {
   "use strict";
@@ -12,8 +10,8 @@
   window.__pmcLoginFetchReliabilityInstalled = true;
 
   const nativeFetch = window.fetch.bind(window);
-  const TIMEOUT_MS = 10000;
-  const RETRY_DELAY_MS = 450;
+  const LOGIN_TIMEOUT_MS = 30000;
+  const RETRY_DELAY_MS = 900;
   const MUTATION_GUARD_MS = 5000;
   let lastMutationKey = "";
   let lastMutationAt = 0;
@@ -43,9 +41,9 @@
     }
   }
 
-  async function fetchWithTimeout(input, init) {
+  async function fetchWithTimeout(input, init, timeoutMs) {
     const controller = new AbortController();
-    const timer = setTimeout(function () { controller.abort(); }, TIMEOUT_MS);
+    const timer = setTimeout(function () { controller.abort(); }, timeoutMs || LOGIN_TIMEOUT_MS);
     const options = Object.assign({}, init || {}, { signal: controller.signal });
 
     try {
@@ -55,19 +53,21 @@
     }
   }
 
+  async function inspectResponse(response) {
+    try {
+      const text = await response.clone().text();
+      JSON.parse(text);
+      return true;
+    } catch (_e) {
+      return false;
+    }
+  }
+
   async function loginAttempt(input, init, attempt) {
     try {
-      const response = await fetchWithTimeout(input, init);
-      let validJson = false;
-      try {
-        const text = await response.clone().text();
-        JSON.parse(text);
-        validJson = true;
-      } catch (_e) {
-        validJson = false;
-      }
-
-      const transientStatus = [429, 500, 502, 503, 504].indexOf(response.status) !== -1;
+      const response = await fetchWithTimeout(input, init, LOGIN_TIMEOUT_MS);
+      const validJson = await inspectResponse(response);
+      const transientStatus = [408, 429, 500, 502, 503, 504].indexOf(response.status) !== -1;
 
       if (attempt === 0 && (!validJson || transientStatus)) {
         await wait(RETRY_DELAY_MS);
@@ -82,7 +82,7 @@
       }
 
       if (err && err.name === "AbortError") {
-        throw new Error("Login server took too long to respond. Please try again.");
+        throw new Error("Login server is taking longer than expected. Please try again once; Apps Script may be starting after being idle.");
       }
 
       throw err;
