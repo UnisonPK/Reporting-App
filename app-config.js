@@ -13,6 +13,7 @@ window.addEventListener("load", function () {
   function addScript(id,src){if(document.getElementById(id))return;var s=document.createElement("script");s.id=id;s.src=src;document.head.appendChild(s);}
   function addCss(id,href){if(document.getElementById(id))return;var c=document.createElement("link");c.id=id;c.rel="stylesheet";c.href=href;document.head.appendChild(c);}
   addScript("apiLoginReliabilityScript","api-login-reliability.js?v=20260911-1");
+  addScript("programmeControlEnhancementScript","programme-control-enhancement.js?v=20260912-1");
   addScript("designManagementStage1Script","design-management.js?v=20260830-1");
   addCss("designManagementUiCss","design-management-ui.css?v=20260830-3");
   addScript("designManagementUiScript","design-management-ui.js?v=20260830-2");
