@@ -15,6 +15,7 @@ window.addEventListener("load", function () {
   addScript("apiLoginReliabilityScript","api-login-reliability.js?v=20260911-1");
   addScript("programmeControlEnhancementScript","programme-control-enhancement.js?v=20260912-2");
   addScript("programmeScheduleImportScript","programme-schedule-import.js?v=20260912-2");
+  addScript("programmeDelayLookAheadScript","programme-delay-lookahead.js?v=20260912-1");
   addScript("designManagementStage1Script","design-management.js?v=20260830-1");
   addCss("designManagementUiCss","design-management-ui.css?v=20260830-3");
   addScript("designManagementUiScript","design-management-ui.js?v=20260830-2");
