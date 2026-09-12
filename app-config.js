@@ -12,7 +12,7 @@ window.addEventListener("load", function () {
 (function () {
   function addScript(id,src){if(document.getElementById(id))return;var s=document.createElement("script");s.id=id;s.src=src;document.head.appendChild(s);}
   function addCss(id,href){if(document.getElementById(id))return;var c=document.createElement("link");c.id=id;c.rel="stylesheet";c.href=href;document.head.appendChild(c);}
-  addScript("apiLoginReliabilityScript","api-login-reliability.js?v=20260911-1");
+  addScript("apiLoginReliabilityScript","api-login-reliability.js?v=20260912-2");
   addScript("programmeControlEnhancementScript","programme-control-enhancement.js?v=20260912-2");
   addScript("programmeScheduleImportScript","programme-schedule-import.js?v=20260912-2");
   addScript("programmeDelayLookAheadScript","programme-delay-lookahead.js?v=20260912-1");
