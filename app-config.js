@@ -10,7 +10,7 @@ window.addEventListener("load", function () {
 });
 
 (function () {
-  function addScript(id,src){if(document.getElementById(id))return;var s=document.createElement("script");s.id=id;s.src=src;document.head.appendChild(s);}
+  function addScript(id,src){if(document.getElementById(id))return;var s=document.createElement("script");s.id=id;s.src=src;s.async=false;document.head.appendChild(s);}
   function addCss(id,href){if(document.getElementById(id))return;var c=document.createElement("link");c.id=id;c.rel="stylesheet";c.href=href;document.head.appendChild(c);}
 
   /* Core reliability/performance only at startup. */
