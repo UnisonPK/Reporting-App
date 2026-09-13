@@ -12,15 +12,15 @@ window.addEventListener("load", function () {
 (function () {
   function addScript(id,src){if(document.getElementById(id))return;var s=document.createElement("script");s.id=id;s.src=src;document.head.appendChild(s);}
   function addCss(id,href){if(document.getElementById(id))return;var c=document.createElement("link");c.id=id;c.rel="stylesheet";c.href=href;document.head.appendChild(c);}
+
+  /* Core reliability/performance only at startup. */
   addScript("apiLoginReliabilityScript","api-login-reliability.js?v=20260913-2");
-  addScript("appStabilityV1Script","app-stability-v1.js?v=20260913-1");
-  addScript("programmeControlEnhancementScript","programme-control-enhancement.js?v=20260912-2");
-  addScript("programmeScheduleImportScript","programme-schedule-import.js?v=20260912-2");
-  addScript("programmeDelayLookAheadScript","programme-delay-lookahead.js?v=20260912-1");
-  addScript("programmeReadinessControlScript","programme-readiness-control.js?v=20260912-1");
-  addScript("managementCockpitProgrammeScript","management-cockpit-programme.js?v=20260912-1");
-  addScript("programmeFloatControlScript","programme-float-control.js?v=20260913-1");
-  addScript("programmeTopActionsScript","programme-top-actions.js?v=20260913-1");
+  addScript("appStabilityV1Script","app-stability-v1.js?v=20260913-2");
+  addScript("appPerformanceV2Script","app-performance-v2.js?v=20260913-1");
+
+  /* Design Management currently remains eagerly available to preserve its mature UI hooks.
+     Stage 2 removes the Programme/Cockpit enhancement bundle from login/startup; those scripts
+     are loaded progressively by app-performance-v2.js. */
   addScript("designManagementStage1Script","design-management.js?v=20260830-1");
   addCss("designManagementUiCss","design-management-ui.css?v=20260830-3");
   addScript("designManagementUiScript","design-management-ui.js?v=20260830-2");
@@ -41,8 +41,6 @@ window.addEventListener("load", function () {
   addScript("designLookAheadScript","design-lookahead-stage2.js?v=20260911-1");
   addScript("designDashboardLookAheadScript","design-dashboard-lookahead.js?v=20260911-1");
   addScript("designActionEngineScript","design-action-engine.js?v=20260911-1");
-  addScript("managementCockpitDesignScript","management-cockpit-design.js?v=20260911-1");
-  addScript("dashboardSectionOrderScript","dashboard-section-order.js?v=20260911-3");
   addCss("designManagementControlsCss","design-management-controls.css?v=20260910-1");
   addScript("designManagementControlsScript","design-management-controls.js?v=20260910-1");
   addCss("designActionLayoutCss","design-action-layout.css?v=20260830-1");
