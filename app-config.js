@@ -11,11 +11,7 @@ window.addEventListener("load", function () {
 
 (function () {
   function addScript(id,src){if(document.getElementById(id))return;var s=document.createElement("script");s.id=id;s.src=src;s.async=false;document.head.appendChild(s);}
-
-  /* Startup now contains only the core reliability/performance layer.
-     Programme and Design Management enhancement bundles are loaded on demand
-     by app-performance-v2.js. */
   addScript("apiLoginReliabilityScript","api-login-reliability.js?v=20260913-2");
   addScript("appStabilityV1Script","app-stability-v1.js?v=20260913-2");
-  addScript("appPerformanceV2Script","app-performance-v2.js?v=20260913-2");
+  addScript("appPerformanceV2Script","app-performance-v2.js?v=20260913-4");
 })();
