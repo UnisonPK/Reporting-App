@@ -1,13 +1,12 @@
-const CACHE_NAME = "pmc-management-pwa-v5";
+const CACHE_NAME = "pmc-management-pwa-v6";
 
 const APP_SHELL = [
   "./",
   "./index.html",
   "./app-config.js",
   "./api-shim.js",
-  "./css/app.css",
-  "./js/app.js",
-  "./js/project-launcher-fix.js",
+  "./api-login-reliability.js",
+  "./app-stability-v1.js",
   "./manifest.webmanifest",
   "./icons/pmc-app-192-v3.png",
   "./icons/pmc-app-512-v3.png"
