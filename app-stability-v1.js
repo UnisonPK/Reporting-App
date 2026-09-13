@@ -1,6 +1,6 @@
-/* PMC App Stability & Performance V1
+/* PMC App Stability & Performance V1.1
    - Central reliability layer for the Apps Script HTTP API.
-   - Deduplicates simultaneous read requests and keeps a very short memory cache.
+   - Deduplicates simultaneous read requests and keeps a short read memory cache.
    - Retries transient READ failures once; never auto-retries mutations.
    - Persists the last successful Master Data response for reliable project selection.
    - Replaces the legacy two-project emergency fallback with last-known-good Master Data.
@@ -14,7 +14,7 @@
   const MASTER_CACHE_KEY="pmcMasterDataApiResponseV1";
   const MASTER_CACHE_AT_KEY="pmcMasterDataApiResponseAtV1";
   const MASTER_MAX_AGE=24*60*60*1000;
-  const READ_MEMORY_TTL=8000;
+  const READ_MEMORY_TTL=45000;
   const RETRY_DELAY=700;
   const READ_TIMEOUT=25000;
   const previousFetch=window.fetch.bind(window);
@@ -102,11 +102,9 @@
     const req=parseRequest(init);
     if(!req.action)return previousFetch(input,init);
 
-    /* Login keeps the dedicated login reliability logic. */
     if(req.action==="login")return previousFetch(input,init);
 
     if(!READ_ACTIONS.has(req.action)){
-      /* A successful mutation can change any visible register; drop short read caches. */
       memory.clear();
       return previousFetch(input,init);
     }
@@ -120,7 +118,6 @@
     return p.then(r=>r.clone());
   };
 
-  /* Replace the obsolete project-launcher fallback once the large index has defined it. */
   function installProjectLauncherFix(){
     if(typeof window.loadProjectLauncher!=="function"||typeof window.renderProjectLauncher!=="function")return false;
     if(window.loadProjectLauncher.__pmcStable)return true;
@@ -170,7 +167,8 @@
   },250);
 
   window.PMC_STABILITY={
-    version:"1.0",
+    version:"1.1",
+    readCacheSeconds:45,
     clearReadCache:function(){memory.clear();},
     clearMasterDataCache:function(){localStorage.removeItem(MASTER_CACHE_KEY);localStorage.removeItem(MASTER_CACHE_AT_KEY);},
     masterDataCached:function(){return !!getMasterFallback();}
