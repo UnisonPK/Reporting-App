@@ -19,6 +19,7 @@ window.addEventListener("load", function () {
   addScript("programmeReadinessControlScript","programme-readiness-control.js?v=20260912-1");
   addScript("managementCockpitProgrammeScript","management-cockpit-programme.js?v=20260912-1");
   addScript("programmeFloatControlScript","programme-float-control.js?v=20260913-1");
+  addScript("programmeTopActionsScript","programme-top-actions.js?v=20260913-1");
   addScript("designManagementStage1Script","design-management.js?v=20260830-1");
   addCss("designManagementUiCss","design-management-ui.css?v=20260830-3");
   addScript("designManagementUiScript","design-management-ui.js?v=20260830-2");
