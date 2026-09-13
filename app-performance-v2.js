@@ -1,4 +1,4 @@
-/* PMC App Performance V2.1
+/* PMC App Performance V2.2
    Progressive dashboard loading + lazy Programme and Design Management loading.
    Keeps the large index.html baseline and existing module APIs intact.
 */
@@ -16,12 +16,14 @@
     ["programmeDelayLookAheadScript","programme-delay-lookahead.js?v=20260912-1"],
     ["programmeReadinessControlScript","programme-readiness-control.js?v=20260912-1"],
     ["programmeFloatControlScript","programme-float-control.js?v=20260913-1"],
-    ["programmeTopActionsScript","programme-top-actions.js?v=20260913-1"]
+    ["programmeTopActionsScript","programme-top-actions.js?v=20260913-1"],
+    ["programmeRiskRankingScript","programme-risk-ranking.js?v=20260913-1"]
   ];
 
   const cockpitScripts=[
     ["managementCockpitProgrammeScript","management-cockpit-programme.js?v=20260912-1"],
     ["managementCockpitDesignScript","management-cockpit-design.js?v=20260911-1"],
+    ["programmeRiskRankingScript","programme-risk-ranking.js?v=20260913-1"],
     ["dashboardSectionOrderScript","dashboard-section-order.js?v=20260911-3"]
   ];
 
@@ -160,15 +162,13 @@
       loadDesignBundle().then(function(){
         opening=false;
         original.apply(ctx,args);
-        /* The Design Stage-1 module may replace openDrawings while loading.
-           Give its dashboard hook one tick to finish after the base register opens. */
         setTimeout(function(){
           try{if(typeof window.setDesignTab==="function")window.setDesignTab("dashboard");}catch(_e){}
         },60);
       }).catch(function(e){
         opening=false;
         console.warn("Design Management lazy load:",e.message);
-        original.apply(ctx,args); /* never block the basic drawings register */
+        original.apply(ctx,args);
       });
     };
 
@@ -237,7 +237,7 @@
   window.addEventListener("load",boot,{once:true});
 
   window.PMC_PERFORMANCE={
-    version:"2.1",
+    version:"2.2",
     loadProgrammeEnhancements:()=>loadSequence(programmeScripts,false),
     loadDesignManagement:()=>loadDesignBundle(),
     loadCockpitEnhancements:()=>loadSequence(cockpitScripts,false)
