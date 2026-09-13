@@ -12,7 +12,8 @@ window.addEventListener("load", function () {
 (function () {
   function addScript(id,src){if(document.getElementById(id))return;var s=document.createElement("script");s.id=id;s.src=src;document.head.appendChild(s);}
   function addCss(id,href){if(document.getElementById(id))return;var c=document.createElement("link");c.id=id;c.rel="stylesheet";c.href=href;document.head.appendChild(c);}
-  addScript("apiLoginReliabilityScript","api-login-reliability.js?v=20260912-2");
+  addScript("apiLoginReliabilityScript","api-login-reliability.js?v=20260913-1");
+  addScript("appStabilityV1Script","app-stability-v1.js?v=20260913-1");
   addScript("programmeControlEnhancementScript","programme-control-enhancement.js?v=20260912-2");
   addScript("programmeScheduleImportScript","programme-schedule-import.js?v=20260912-2");
   addScript("programmeDelayLookAheadScript","programme-delay-lookahead.js?v=20260912-1");
@@ -46,8 +47,3 @@ window.addEventListener("load", function () {
   addScript("designManagementControlsScript","design-management-controls.js?v=20260910-1");
   addCss("designActionLayoutCss","design-action-layout.css?v=20260830-1");
 })();
-
-window.addEventListener("load", function () {
-  if (document.getElementById("projectLauncherHotfixScript")) return;
-  var s=document.createElement("script");s.id="projectLauncherHotfixScript";s.src="js/project-launcher-fix.js?v=20260822-1";document.body.appendChild(s);
-});
