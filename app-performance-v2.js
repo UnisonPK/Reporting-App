@@ -15,7 +15,7 @@
     ["programmeReadinessControlScript","programme-readiness-control.js?v=20260912-1"],
     ["programmeFloatControlScript","programme-float-control.js?v=20260913-1"],
     ["programmeTopActionsScript","programme-top-actions.js?v=20260913-1"],
-    ["programmeRiskRankingScript","programme-risk-ranking.js?v=20260913-2"]
+    ["programmeRiskRankingScript","programme-risk-ranking.js?v=20261016-1"]
   ];
   const cockpitScripts=[
     ["managementCockpitDesignScript","management-cockpit-design.js?v=20260911-1"],
