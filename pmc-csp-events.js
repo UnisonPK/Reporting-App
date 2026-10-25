@@ -1,0 +1,406 @@
+/* PMC V23 static-inline handler compatibility, staging branch only.
+   Only attributes in the source HTML are converted; dynamically produced HTML must be reviewed separately. */
+(function(){'use strict';
+const callbacks={
+  0:function(event){togglePassword()
+},
+  1:function(event){login()
+},
+  2:function(event){openForgotPasswordModal()
+},
+  3:function(event){this.src='icons/pmc-app-192-v3.png?v=20260819-6'
+},
+  4:function(event){renderProjectLauncher()
+},
+  5:function(event){toggleDashboardSidebar(false)
+},
+  6:function(event){showDashboard()
+},
+  7:function(event){openActionRegister()
+},
+  8:function(event){openActionRegister('decision')
+},
+  9:function(event){openActionRegister('critical')
+},
+  10:function(event){openExecutiveReport()
+},
+  11:function(event){openProgramme()
+},
+  12:function(event){openProcurement()
+},
+  13:function(event){openBOQCost()
+},
+  14:function(event){openCashFlow()
+},
+  15:function(event){openDrawings()
+},
+  16:function(event){openPlaceholderModule('📁','Documents / Submittals','Technical submittals, method statements, material approvals and project documents will be organized here.')
+},
+  17:function(event){openActivityForm()
+},
+  18:function(event){openMyReports()
+},
+  19:function(event){openPendingInspections()
+},
+  20:function(event){openDailySummary()
+},
+  21:function(event){openAdministrationSection('users')
+},
+  22:function(event){openChangePasswordModal()
+},
+  23:function(event){toggleDashboardSidebar(true)
+},
+  24:function(event){cockpitProjectChanged()
+},
+  25:function(event){renderManagementCockpitFromCache()
+},
+  26:function(event){changeActiveProject()
+},
+  27:function(event){loadDashboardStats();loadManagementCockpit()
+},
+  28:function(event){logout()
+},
+  29:function(event){openCashFlowModal()
+},
+  30:function(event){openCashFlowImport()
+},
+  31:function(event){updateCashFlowTowerFilter();renderCashFlow()
+},
+  32:function(event){renderCashFlow()
+},
+  33:function(event){resetCashFlowFilters()
+},
+  34:function(event){closeCashFlowModal(event)
+},
+  35:function(event){event.stopPropagation()
+},
+  36:function(event){closeCashFlowModal()
+},
+  37:function(event){updateCashFlowFormTowers()
+},
+  38:function(event){updateCashFlowCalcPreview()
+},
+  39:function(event){saveCashFlowRecord()
+},
+  40:function(event){closeCashFlowImport()
+},
+  41:function(event){loadCashFlowWorkbook()
+},
+  42:function(event){previewCashFlowExcel()
+},
+  43:function(event){commitCashFlowImport()
+},
+  44:function(event){updateCashFlowImportTowers()
+},
+  45:function(event){openBOQModal()
+},
+  46:function(event){openBOQBulkImport()
+},
+  47:function(event){renderBOQCost()
+},
+  48:function(event){updateBOQFilterTowers();renderBOQCost()
+},
+  49:function(event){updateBOQFilterFloors();renderBOQCost()
+},
+  50:function(event){renderBOQCost()
+},
+  51:function(event){resetBOQFilters()
+},
+  52:function(event){closeBOQModal(event)
+},
+  53:function(event){closeBOQModal()
+},
+  54:function(event){updateBOQTowers()
+},
+  55:function(event){updateBOQFloors()
+},
+  56:function(event){updateBOQCalcPreview()
+},
+  57:function(event){saveBOQItem()
+},
+  58:function(event){openDrawingModal()
+},
+  59:function(event){renderDrawings()
+},
+  60:function(event){updateDrawingFilterTowers();renderDrawings()
+},
+  61:function(event){updateDrawingFilterFloors();renderDrawings()
+},
+  62:function(event){renderDrawings()
+},
+  63:function(event){resetDrawingFilters()
+},
+  64:function(event){closeDrawingModal(event)
+},
+  65:function(event){closeDrawingModal()
+},
+  66:function(event){updateDrawingTowers()
+},
+  67:function(event){updateDrawingFloors()
+},
+  68:function(event){updateDrawingPdfName()
+},
+  69:function(event){saveDrawing()
+},
+  70:function(event){openActionModal()
+},
+  71:function(event){setActionQuickFilter('priority','Critical')
+},
+  72:function(event){setActionQuickFilter('priority','High')
+},
+  73:function(event){setActionQuickFilter('overdue','1')
+},
+  74:function(event){setActionQuickFilter('status','Open')
+},
+  75:function(event){setActionQuickFilter('status','In Progress')
+},
+  76:function(event){setActionQuickFilter('status','Closed')
+},
+  77:function(event){renderActionRegister()
+},
+  78:function(event){updateActionTowerFilter();renderActionRegister()
+},
+  79:function(event){renderActionRegister()
+},
+  80:function(event){resetActionFilters()
+},
+  81:function(event){closeActionModal(event)
+},
+  82:function(event){closeActionModal()
+},
+  83:function(event){actionProjectChanged()
+},
+  84:function(event){actionTowerChanged()
+},
+  85:function(event){saveActionRecord()
+},
+  86:function(event){closeActionDetailModal(event)
+},
+  87:function(event){closeActionDetailModal()
+},
+  88:function(event){appendActionUpdate()
+},
+  89:function(event){openProgrammeModal()
+},
+  90:function(event){renderProgramme()
+},
+  91:function(event){renderProgramme()
+},
+  92:function(event){resetProgrammeFilters()
+},
+  93:function(event){openProcurementModal()
+},
+  94:function(event){renderProcurement()
+},
+  95:function(event){renderProcurement()
+},
+  96:function(event){resetProcurementFilters()
+},
+  97:function(event){closeProgrammeModal()
+},
+  98:function(event){saveProgrammeItem()
+},
+  99:function(event){closeProcurementModal()
+},
+  100:function(event){saveProcurementItem()
+},
+  101:function(event){closeForgotPasswordModal(event)
+},
+  102:function(event){closeForgotPasswordModal()
+},
+  103:function(event){submitForgotPasswordRequest()
+},
+  104:function(event){closeChangePasswordModal(event)
+},
+  105:function(event){closeChangePasswordModal()
+},
+  106:function(event){saveOwnPasswordChange()
+},
+  107:function(event){showAdminSection('users')
+},
+  108:function(event){showAdminSection('master')
+},
+  109:function(event){showAdminSection('activities')
+},
+  110:function(event){openCreateUserModal()
+},
+  111:function(event){renderAdminUsers()
+},
+  112:function(event){openMasterDataModal()
+},
+  113:function(event){selectMasterType('Projects',this)
+},
+  114:function(event){selectMasterType('Towers',this)
+},
+  115:function(event){selectMasterType('Floors',this)
+},
+  116:function(event){selectMasterType('Trades',this)
+},
+  117:function(event){selectMasterType('Units',this)
+},
+  118:function(event){selectMasterType('Delay_Categories',this)
+},
+  119:function(event){renderAdminMasterData()
+},
+  120:function(event){openActivityMasterModal()
+},
+  121:function(event){renderAdminActivities()
+},
+  122:function(event){renderAdminActivities()
+},
+  123:function(event){closeAdminUserModal(event)
+},
+  124:function(event){closeAdminUserModal()
+},
+  125:function(event){adminRoleProjectAccessChanged()
+},
+  126:function(event){setAllAdminProjectAccess(true)
+},
+  127:function(event){setAllAdminProjectAccess(false)
+},
+  128:function(event){saveAdminUser()
+},
+  129:function(event){closeActivityMasterModal(event)
+},
+  130:function(event){closeActivityMasterModal()
+},
+  131:function(event){populateActivityMasterSubTrades()
+},
+  132:function(event){saveActivityMaster()
+},
+  133:function(event){closeMasterDataModal(event)
+},
+  134:function(event){closeMasterDataModal()
+},
+  135:function(event){buildMasterDataFields()
+},
+  136:function(event){saveMasterDataRecord()
+},
+  137:function(event){closeAdminPasswordModal(event)
+},
+  138:function(event){closeAdminPasswordModal()
+},
+  139:function(event){saveAdminPasswordReset()
+},
+  140:function(event){printExecutiveReport()
+},
+  141:function(event){renderExecutiveReport()
+},
+  142:function(event){loadExecutiveReport()
+},
+  143:function(event){changeSummaryDate(-1)
+},
+  144:function(event){setSummaryToday()
+},
+  145:function(event){changeSummaryDate(1)
+},
+  146:function(event){printDailySummary()
+},
+  147:function(event){loadDailySummary()
+},
+  148:function(event){updateSummaryDependentFilters();renderDailySummaryFromCache()
+},
+  149:function(event){updateSummaryFloorFilter();renderDailySummaryFromCache()
+},
+  150:function(event){renderDailySummaryFromCache()
+},
+  151:function(event){renderDailySummaryFromCache()
+},
+  152:function(event){resetSummaryFilters()
+},
+  153:function(event){scrollToRecentSummary()
+},
+  154:function(event){refreshInspectionWorkflow()
+},
+  155:function(event){showInspectionTab('pending')
+},
+  156:function(event){showInspectionTab('history')
+},
+  157:function(event){applyInspectionFilters()
+},
+  158:function(event){updateInspectionDependentFilters();applyInspectionFilters()
+},
+  159:function(event){updateInspectionFloorFilter();applyInspectionFilters()
+},
+  160:function(event){applyInspectionFilters()
+},
+  161:function(event){resetInspectionFilters()
+},
+  162:function(event){applyInspectionHistoryFilters()
+},
+  163:function(event){applyInspectionHistoryFilters()
+},
+  164:function(event){resetInspectionHistoryFilters()
+},
+  165:function(event){closeInspectionDecision(event)
+},
+  166:function(event){closeInspectionDecision()
+},
+  167:function(event){saveInspectionDecision()
+},
+  168:function(event){applyReportFilters()
+},
+  169:function(event){applyReportFilters()
+},
+  170:function(event){resetMyReportFilters()
+},
+  171:function(event){closeReportDetail(event)
+},
+  172:function(event){openReportEditModal()
+},
+  173:function(event){printCurrentReport()
+},
+  174:function(event){closeReportDetail()
+},
+  175:function(event){closeReportEditModal(event)
+},
+  176:function(event){closeReportEditModal()
+},
+  177:function(event){updateEditCompletionRequirement()
+},
+  178:function(event){saveReportCorrection()
+},
+  179:function(event){copyLastActivity()
+},
+  180:function(event){saveActivityDraft(true)
+},
+  181:function(event){clearActivityDraft(true)
+},
+  182:function(event){updateTowers()
+},
+  183:function(event){updateFloors()
+},
+  184:function(event){captureSiteLocation()
+},
+  185:function(event){updateSubTrades()
+},
+  186:function(event){updateActivities()
+},
+  187:function(event){updateProgressRequirements()
+},
+  188:function(event){updateInspectionRequirements()
+},
+  189:function(event){updatePhotoRequirements()
+},
+  190:function(event){previewSinglePhoto(this,'beforePreview')
+},
+  191:function(event){previewMultiplePhotos(this,'progressPreview')
+},
+  192:function(event){previewSinglePhoto(this,'completionPreview')
+},
+  193:function(event){previewSinglePhoto(this,'inspectionPreview')
+},
+  194:function(event){submitActivity()
+},
+};
+const events=["click","error","input","change"];
+for(const eventName of events){document.addEventListener(eventName,function(event){
+ const selector='[data-pmc-on'+eventName+']';
+ const node=event.target && event.target.closest ? event.target.closest(selector):null;
+ if(!node)return;
+ const id=Number(node.getAttribute('data-pmc-on'+eventName));
+ if(!Object.prototype.hasOwnProperty.call(callbacks,id))return;
+ const result=callbacks[id].call(node,event);
+ if(result===false){event.preventDefault();event.stopPropagation()}
+},true)}
+})();
