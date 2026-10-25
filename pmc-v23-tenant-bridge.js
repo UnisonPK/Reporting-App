@@ -41,10 +41,11 @@
     $('pmc-bridge-result').textContent='';
     if(!id)return;
     try{
-      const rows=await get('/api/tenant/projects');
-      const p=Array.isArray(rows)&&rows.find(p=>p.id===id);
-      if(!p)throw new Error('Project assignment was removed or changed.');
-      $('pmc-bridge-result').textContent='Verified: '+[p.name,p.code,p.permission].filter(Boolean).join(' — ')+'. Operational reporting is not enabled yet.';
+      const data=await get('/api/reporting-v23/projects/'+encodeURIComponent(id)+'/context');
+      if(!data || data.read_only!==true || !data.project || data.project.id!==id){
+        throw new Error('Unexpected authorized project response.');
+      }
+      $('pmc-bridge-result').textContent='Authenticated project context: '+[data.project.name,data.project.code,data.project.permission].filter(Boolean).join(' — ')+'. Operational reports remain disabled.';
     }catch(e){$('pmc-bridge-result').textContent=e.message; await reload();}
   });
   reload();
